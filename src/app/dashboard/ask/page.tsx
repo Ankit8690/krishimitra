@@ -13,7 +13,9 @@ import {
   Sparkles,
   Languages,
   Settings,
-  RefreshCw,
+  Play,
+  Pause,
+  RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import {
@@ -67,6 +69,8 @@ export default function AskPage() {
   const [showLangs, setShowLangs] = useState(false);
   const [availableVoiceLangs, setAvailableVoiceLangs] = useState<Set<string>>(new Set());
   const [voiceMissingNote, setVoiceMissingNote] = useState<string | null>(null);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+  const [speakingPaused, setSpeakingPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -175,7 +179,7 @@ export default function AskPage() {
         data.assistant,
       ]);
       if (prefs.readAloud === "always" && hasVoiceForLang(findLanguage(chatLang).bcp47)) {
-        speak(data.assistant.content);
+        speak(data.assistant.id, data.assistant.content);
       }
     } catch {
       setError("Network error");
@@ -185,7 +189,25 @@ export default function AskPage() {
     }
   }
 
-  function speak(text: string) {
+  function stopSpeaking() {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    setSpeakingId(null);
+    setSpeakingPaused(false);
+  }
+
+  function togglePauseResume() {
+    if (!("speechSynthesis" in window)) return;
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setSpeakingPaused(false);
+    } else if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      setSpeakingPaused(true);
+    }
+  }
+
+  function speak(id: string, text: string) {
     if (!("speechSynthesis" in window)) return;
     const lang = findLanguage(chatLang);
     if (!hasVoiceForLang(lang.bcp47)) {
@@ -195,12 +217,13 @@ export default function AskPage() {
       setTimeout(() => setVoiceMissingNote(null), 8000);
       return;
     }
+    // Always start fresh — cancel anything currently playing
+    window.speechSynthesis.cancel();
+
     const clean = text.replace(/[*_`#>]/g, "").replace(/\s+/g, " ").trim();
     const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = lang.bcp47;
     utter.rate = 0.95;
-    // Explicitly pick a matching voice — SpeechSynthesis defaults to the OS
-    // default (usually English) if none is set, which is why lang alone is unreliable.
     const voice = window.speechSynthesis
       .getVoices()
       .find(
@@ -209,9 +232,26 @@ export default function AskPage() {
           v.lang.toLowerCase().startsWith(lang.code)
       );
     if (voice) utter.voice = voice;
-    window.speechSynthesis.cancel();
+
+    utter.onstart = () => {
+      setSpeakingId(id);
+      setSpeakingPaused(false);
+    };
+    utter.onend = () => {
+      setSpeakingId((cur) => (cur === id ? null : cur));
+      setSpeakingPaused(false);
+    };
+    utter.onerror = utter.onend;
+
     window.speechSynthesis.speak(utter);
   }
+
+  // Stop any playback when the page unmounts
+  useEffect(() => {
+    return () => {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    };
+  }, []);
 
   async function startRecording() {
     setError(null);
@@ -265,44 +305,7 @@ export default function AskPage() {
     if (!confirm("Clear all chat history?")) return;
     await fetch("/api/chat/history", { method: "DELETE" });
     setMessages([]);
-    window.speechSynthesis?.cancel();
-  }
-
-  async function regenerateLast() {
-    if (sending) return;
-    setError(null);
-    setSending(true);
-    // Remove the last assistant bubble optimistically
-    setMessages((m) => {
-      const copy = [...m];
-      for (let i = copy.length - 1; i >= 0; i--) {
-        if (copy[i].role === "assistant") {
-          copy.splice(i, 1);
-          break;
-        }
-      }
-      return copy;
-    });
-    try {
-      const res = await fetch("/api/chat/regenerate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language: chatLang }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Regenerate failed");
-        return;
-      }
-      setMessages((m) => [...m, data.assistant]);
-      if (prefs.readAloud === "always" && hasVoiceForLang(findLanguage(chatLang).bcp47)) {
-        speak(data.assistant.content);
-      }
-    } catch {
-      setError("Network error");
-    } finally {
-      setSending(false);
-    }
+    stopSpeaking();
   }
 
   const suggestions = SUGGESTIONS[chatLang] ?? SUGGESTIONS.en!;
@@ -424,11 +427,9 @@ export default function AskPage() {
           </Card>
         )}
 
-        {messages.map((m, idx) => {
+        {messages.map((m) => {
           const isAssistant = m.role === "assistant";
-          const isLastAssistant =
-            isAssistant &&
-            !messages.slice(idx + 1).some((x) => x.role === "assistant");
+          const active = speakingId === m.id;
           return (
             <div key={m.id} className="space-y-1.5">
               <div
@@ -449,25 +450,41 @@ export default function AskPage() {
                 </div>
               </div>
 
-              {isAssistant && (
+              {isAssistant && showReadButton && (
                 <div className="flex justify-center items-center gap-2">
-                  {showReadButton && (
+                  {active ? (
+                    <>
+                      <IconAction
+                        onClick={togglePauseResume}
+                        label={speakingPaused ? "Resume" : "Pause"}
+                        variant="active"
+                      >
+                        {speakingPaused ? (
+                          <Play className="w-4 h-4" />
+                        ) : (
+                          <Pause className="w-4 h-4" />
+                        )}
+                      </IconAction>
+                      <IconAction
+                        onClick={() => speak(m.id, m.content)}
+                        label="Restart from beginning"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </IconAction>
+                      <IconAction
+                        onClick={stopSpeaking}
+                        label="Stop"
+                        variant="danger"
+                      >
+                        <Square className="w-3.5 h-3.5" />
+                      </IconAction>
+                    </>
+                  ) : (
                     <IconAction
-                      onClick={() => speak(m.content)}
+                      onClick={() => speak(m.id, m.content)}
                       label="Read aloud"
                     >
                       <Volume2 className="w-4 h-4" />
-                    </IconAction>
-                  )}
-                  {isLastAssistant && messages.length >= 2 && (
-                    <IconAction
-                      onClick={regenerateLast}
-                      label="Regenerate answer"
-                      disabled={sending}
-                    >
-                      <RefreshCw
-                        className={cn("w-4 h-4", sending && "animate-spin")}
-                      />
                     </IconAction>
                   )}
                 </div>
@@ -560,12 +577,21 @@ function IconAction({
   label,
   onClick,
   disabled,
+  variant = "idle",
 }: {
   children: React.ReactNode;
   label: string;
   onClick: () => void;
   disabled?: boolean;
+  variant?: "idle" | "active" | "danger";
 }) {
+  const styles: Record<typeof variant, string> = {
+    idle: "bg-white border-brand-line text-brand-primary hover:bg-brand-primary hover:text-white hover:border-brand-primary",
+    active:
+      "bg-brand-primary text-white border-brand-primary hover:bg-brand-primary-hover",
+    danger:
+      "bg-white border-brand-line text-brand-danger hover:bg-brand-danger hover:text-white hover:border-brand-danger",
+  };
   return (
     <button
       type="button"
@@ -574,11 +600,9 @@ function IconAction({
       aria-label={label}
       title={label}
       className={cn(
-        "w-9 h-9 grid place-items-center rounded-full bg-white border border-brand-line",
-        "text-brand-primary shadow-sm transition",
-        "hover:bg-brand-primary hover:text-white hover:border-brand-primary hover:shadow",
-        "active:scale-95",
-        "disabled:opacity-40 disabled:pointer-events-none"
+        "w-9 h-9 grid place-items-center rounded-full border shadow-sm transition active:scale-95",
+        "disabled:opacity-40 disabled:pointer-events-none",
+        styles[variant]
       )}
     >
       {children}
