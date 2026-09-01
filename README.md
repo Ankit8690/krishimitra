@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌾 KrishiMitra — Smart farming for every farmer
 
-## Getting Started
+An AI-powered agriculture platform for Indian farmers.
+Weather advisory, mandi prices, disease detection, and a multilingual AI advisor — all in one PWA.
 
-First, run the development server:
+## Stack (all free tier, no sleep)
+
+- **Framework:** Next.js 16 (App Router) + TypeScript + Tailwind v4
+- **Database:** MongoDB Atlas M0 (free forever)
+- **Auth:** JWT in HTTP-only cookie + bcryptjs
+- **i18n:** English / हिन्दी / ਪੰਜਾਬੀ (client-side, `src/i18n/`)
+- **Hosting:** Vercel (frontend + serverless API routes)
+- **Planned ML:** FastAPI on Hugging Face Spaces
+- **Planned chat:** Groq (Llama 3.1) + Whisper STT
+
+## Local setup
 
 ```bash
+cd krishimitra
+cp .env.example .env.local
+# fill MONGODB_URI + JWT_SECRET
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Generate a JWT secret
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
 
-## Learn More
+### MongoDB Atlas (2 minutes)
 
-To learn more about Next.js, take a look at the following resources:
+1. https://cloud.mongodb.com → create free M0 cluster
+2. Database Access → add user
+3. Network Access → allow 0.0.0.0/0 (or your IP)
+4. Connect → Drivers → copy connection string into `MONGODB_URI`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Roadmap
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Phase 1 (done):** auth, i18n, onboarding, dashboard shell
+- **Phase 2:** weather (Open-Meteo) + mandi prices (data.gov.in) + schemes
+- **Phase 3:** ML on HF Spaces — crop rec, fertilizer, disease detection
+- **Phase 4:** Groq chatbot + Whisper voice + RAG over govt schemes
+- **Phase 5:** alerts, community, PWA offline, yield prediction
 
-## Deploy on Vercel
+## Project structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── api/auth/         signup, login, logout, me
+│   ├── api/onboarding/   save farm profile
+│   ├── dashboard/        home + 5 tab pages
+│   ├── login/            login page
+│   ├── signup/           signup page
+│   ├── onboarding/       4-step wizard
+│   └── page.tsx          landing
+├── components/
+│   ├── ui/               Button, Input, Card primitives
+│   ├── BottomNav.tsx     mobile tab bar
+│   └── LanguageSwitcher.tsx
+├── i18n/
+│   ├── messages/         en.json, hi.json, pa.json
+│   └── I18nProvider.tsx
+├── lib/
+│   ├── db.ts             cached Mongo connection
+│   ├── auth.ts           JWT + bcrypt + cookies
+│   └── cn.ts             tailwind-merge helper
+└── models/
+    └── User.ts           Mongoose schema
+```

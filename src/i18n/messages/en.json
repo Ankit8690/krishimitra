@@ -1,0 +1,92 @@
+{
+  "brand": "KrishiMitra",
+  "tagline": "Your smart farming companion",
+  "nav": {
+    "home": "Home",
+    "scan": "Scan",
+    "ask": "Ask AI",
+    "prices": "Prices",
+    "profile": "Profile"
+  },
+  "landing": {
+    "hero_title": "Grow smarter. Earn more.",
+    "hero_sub": "Weather advisory, mandi prices, disease detection and an AI advisor — all in your language.",
+    "cta_start": "Get started free",
+    "cta_login": "I already have an account",
+    "features_title": "Made for the Indian farmer",
+    "f1_title": "Hyperlocal weather",
+    "f1_body": "7-day forecast for your village with spray-day advice.",
+    "f2_title": "Best price mandis",
+    "f2_body": "Live prices from the closest mandis, updated daily.",
+    "f3_title": "Snap a leaf, spot the disease",
+    "f3_body": "AI-based disease detection with local-language treatment.",
+    "f4_title": "Ask in Hindi or Punjabi",
+    "f4_body": "Voice-first assistant that answers your farm questions."
+  },
+  "auth": {
+    "signup_title": "Create your account",
+    "login_title": "Welcome back",
+    "name": "Your name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "password": "Password",
+    "language": "Language",
+    "submit_signup": "Create account",
+    "submit_login": "Log in",
+    "have_account": "Already have an account?",
+    "no_account": "New here?",
+    "login_link": "Log in",
+    "signup_link": "Sign up",
+    "signup_error": "Could not sign up. Try again.",
+    "login_error": "Wrong email or password."
+  },
+  "onboarding": {
+    "title": "Tell us about your farm",
+    "step": "Step {n} of 4",
+    "location_title": "Where is your farm?",
+    "use_gps": "Use my location",
+    "district": "District",
+    "state": "State",
+    "farm_title": "Farm details",
+    "land": "Land size (acres)",
+    "soil_title": "Soil type",
+    "irrigation_title": "Water source",
+    "crops_title": "What do you grow?",
+    "crops_hint": "Pick as many as you like",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish"
+  },
+  "dashboard": {
+    "greeting": "Namaste, {name}",
+    "weather_card": "Today's weather",
+    "spray_ok": "Good day to spray",
+    "spray_no": "Rain expected — do not spray",
+    "prices_card": "Best mandi prices today",
+    "task_card": "Today's farm task",
+    "ask_placeholder": "Ask anything about your farm...",
+    "loading": "Loading..."
+  },
+  "soil": {
+    "black": "Black",
+    "red": "Red",
+    "sandy": "Sandy",
+    "loamy": "Loamy",
+    "clay": "Clay",
+    "alluvial": "Alluvial",
+    "unknown": "Not sure"
+  },
+  "irrigation": {
+    "borewell": "Borewell",
+    "canal": "Canal",
+    "rainfed": "Rainfed",
+    "drip": "Drip",
+    "sprinkler": "Sprinkler",
+    "unknown": "Not sure"
+  },
+  "common": {
+    "logout": "Log out",
+    "cancel": "Cancel",
+    "save": "Save"
+  }
+}

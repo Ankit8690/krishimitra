@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-primary: #2e7d32;
+  --brand-primary-hover: #276a2b;
+  --brand-accent: #f4a340;
+  --brand-danger: #c53030;
+  --brand-ink: #1a1f16;
+  --brand-mute: #6b7566;
+  --brand-line: #e6e2d3;
+  --brand-bg: #fbf7ec;
+  --brand-surface: #ffffff;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--brand-bg);
+  --color-foreground: var(--brand-ink);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-danger: var(--brand-danger);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-mute: var(--brand-mute);
+  --color-brand-line: var(--brand-line);
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-surface: var(--brand-surface);
+  --font-sans: var(--font-inter);
+  --font-devanagari: var(--font-noto-dev);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--brand-bg);
+  color: var(--brand-ink);
+  font-family: var(--font-inter), var(--font-noto-dev), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Safe area for iOS notch on bottom tab */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
 }
