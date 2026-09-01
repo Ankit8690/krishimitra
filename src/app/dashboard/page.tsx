@@ -14,6 +14,8 @@ import {
   MapPin,
   ChevronRight,
   Landmark,
+  FlaskConical,
+  ScanLine,
 } from "lucide-react";
 import { inr } from "@/lib/format";
 import type { WeatherReport } from "@/lib/weather";
@@ -216,6 +218,42 @@ export default function DashboardHome() {
             </p>
           </Card>
         </Link>
+
+        {/* ML tools row */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link href="/dashboard/recommend" className="block">
+            <Card className="h-full active:scale-[0.99] transition">
+              <Sprout className="w-6 h-6 text-brand-primary" />
+              <p className="font-semibold mt-2">Best crop</p>
+              <p className="text-xs text-brand-mute">
+                AI picks the most profitable crop for your soil.
+              </p>
+            </Card>
+          </Link>
+          <Link href="/dashboard/fertilizer" className="block">
+            <Card className="h-full active:scale-[0.99] transition">
+              <FlaskConical className="w-6 h-6 text-brand-primary" />
+              <p className="font-semibold mt-2">Fertilizer</p>
+              <p className="text-xs text-brand-mute">
+                Exact bags and doses for your crop.
+              </p>
+            </Card>
+          </Link>
+          <Link href="/dashboard/scan" className="block col-span-2">
+            <Card className="bg-gradient-to-br from-brand-primary/10 to-white active:scale-[0.99] transition">
+              <div className="flex items-center gap-3">
+                <ScanLine className="w-8 h-8 text-brand-primary shrink-0" />
+                <div>
+                  <p className="font-semibold">Scan a diseased leaf</p>
+                  <p className="text-xs text-brand-mute mt-0.5">
+                    Take a photo → get treatment steps in your language.
+                  </p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-brand-mute ml-auto shrink-0" />
+              </div>
+            </Card>
+          </Link>
+        </div>
 
         {/* Task card (placeholder for Phase 5) */}
         <Card className="bg-gradient-to-br from-brand-primary/5 to-white">
