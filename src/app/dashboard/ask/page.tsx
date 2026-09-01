@@ -16,6 +16,9 @@ import {
   Play,
   Pause,
   RotateCcw,
+  Plus,
+  MessageSquare,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import {
@@ -33,6 +36,13 @@ type Msg = {
 
 type ReadAloudMode = "ask" | "always" | "never";
 type ChatPrefs = { readAloud: ReadAloudMode; chatLanguage?: ChatLangCode };
+type Session = {
+  id: string;
+  title: string;
+  lastMessageAt: string;
+  preview: string;
+  messageCount: number;
+};
 
 const SUGGESTIONS: Partial<Record<ChatLangCode, string[]>> = {
   en: [
@@ -71,6 +81,9 @@ export default function AskPage() {
   const [voiceMissingNote, setVoiceMissingNote] = useState<string | null>(null);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [speakingPaused, setSpeakingPaused] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [showSessions, setShowSessions] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -114,13 +127,53 @@ export default function AskPage() {
           }
         }
       });
-    fetch("/api/chat/history")
-      .then((r) => r.json())
-      .then((d) => {
-        if (Array.isArray(d.messages)) setMessages(d.messages);
-      })
-      .catch(() => {});
+    loadHistory();
+    loadSessions();
   }, []);
+
+  async function loadHistory(id?: string) {
+    const qs = id ? `?sessionId=${id}` : "";
+    const r = await fetch(`/api/chat/history${qs}`);
+    const d = await r.json();
+    if (d.sessionId) setSessionId(d.sessionId);
+    if (Array.isArray(d.messages)) setMessages(d.messages);
+    stopSpeaking();
+  }
+
+  async function loadSessions() {
+    try {
+      const r = await fetch("/api/chat/sessions");
+      const d = await r.json();
+      if (Array.isArray(d.sessions)) setSessions(d.sessions);
+    } catch {}
+  }
+
+  async function startNewSession() {
+    stopSpeaking();
+    const r = await fetch("/api/chat/sessions", { method: "POST" });
+    const d = await r.json();
+    if (d.id) {
+      setSessionId(d.id);
+      setMessages([]);
+      setShowSessions(false);
+      loadSessions();
+    }
+  }
+
+  async function switchSession(id: string) {
+    setShowSessions(false);
+    await loadHistory(id);
+  }
+
+  async function deleteSession(id: string) {
+    if (!confirm("Delete this chat?")) return;
+    await fetch(`/api/chat/sessions/${id}`, { method: "DELETE" });
+    if (id === sessionId) {
+      setSessionId(null);
+      setMessages([]);
+    }
+    loadSessions();
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -165,7 +218,11 @@ export default function AskPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, language: chatLang }),
+        body: JSON.stringify({
+          message: msg,
+          language: chatLang,
+          sessionId: sessionId ?? undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -173,6 +230,7 @@ export default function AskPage() {
         setMessages((m) => m.filter((x) => !x.id.startsWith("tmp-")));
         return;
       }
+      if (data.sessionId) setSessionId(data.sessionId);
       setMessages((m) => [
         ...m.filter((x) => !x.id.startsWith("tmp-")),
         data.user,
@@ -181,6 +239,7 @@ export default function AskPage() {
       if (prefs.readAloud === "always" && hasVoiceForLang(findLanguage(chatLang).bcp47)) {
         speak(data.assistant.id, data.assistant.content);
       }
+      loadSessions(); // refresh preview + title after first message
     } catch {
       setError("Network error");
       setMessages((m) => m.filter((x) => !x.id.startsWith("tmp-")));
@@ -301,12 +360,6 @@ export default function AskPage() {
     setRecording(false);
   }
 
-  async function clearChat() {
-    if (!confirm("Clear all chat history?")) return;
-    await fetch("/api/chat/history", { method: "DELETE" });
-    setMessages([]);
-    stopSpeaking();
-  }
 
   const suggestions = SUGGESTIONS[chatLang] ?? SUGGESTIONS.en!;
   const currentLang = findLanguage(chatLang);
@@ -314,13 +367,39 @@ export default function AskPage() {
   const currentVoiceOk = hasVoiceForLang(currentLang.bcp47);
 
   return (
-    <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100vh-4rem)]">
+    <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100vh-4rem)] relative">
+      {showSessions && (
+        <SessionsPanel
+          sessions={sessions}
+          currentId={sessionId}
+          onClose={() => setShowSessions(false)}
+          onPick={switchSession}
+          onDelete={deleteSession}
+          onNew={startNewSession}
+        />
+      )}
       <div className="flex items-center justify-between px-5 mb-2">
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowSessions(true)}
+            className="text-brand-mute hover:text-brand-ink p-1.5 -ml-1.5 rounded-full"
+            aria-label="Chat history"
+            title="Past chats"
+          >
+            <MessageSquare className="w-5 h-5" />
+          </button>
           <Sparkles className="w-5 h-5 text-brand-primary" />
           <h1 className="text-xl font-bold">Ask KrishiMitra</h1>
         </div>
         <div className="flex items-center gap-1">
+          <button
+            onClick={startNewSession}
+            className="text-brand-mute hover:text-brand-primary p-1.5 rounded-full"
+            aria-label="New chat"
+            title="New chat"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
           <button
             onClick={() => setShowSettings((s) => !s)}
             className="text-brand-mute hover:text-brand-ink p-1.5 rounded-full"
@@ -328,15 +407,6 @@ export default function AskPage() {
           >
             <Settings className="w-4 h-4" />
           </button>
-          {messages.length > 0 && (
-            <button
-              onClick={clearChat}
-              className="text-brand-mute hover:text-brand-danger p-1.5 rounded-full"
-              aria-label="Clear chat"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -570,6 +640,118 @@ export default function AskPage() {
       </form>
     </div>
   );
+}
+
+function SessionsPanel({
+  sessions,
+  currentId,
+  onClose,
+  onPick,
+  onDelete,
+  onNew,
+}: {
+  sessions: Session[];
+  currentId: string | null;
+  onClose: () => void;
+  onPick: (id: string) => void;
+  onDelete: (id: string) => void;
+  onNew: () => void;
+}) {
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-30 bg-black/30"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <aside className="absolute left-0 right-0 top-0 z-40 max-w-md mx-auto bg-brand-bg border border-brand-line rounded-b-2xl shadow-xl max-h-[80vh] flex flex-col">
+        <header className="flex items-center justify-between px-4 py-3 border-b border-brand-line">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-brand-primary" />
+            <h2 className="font-semibold">Past chats</h2>
+            <span className="text-xs text-brand-mute">{sessions.length}/10</span>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="p-1.5 rounded-full hover:bg-brand-line/40"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </header>
+        <div className="p-3">
+          <button
+            onClick={onNew}
+            className="w-full h-11 rounded-xl bg-brand-primary text-white font-semibold flex items-center justify-center gap-2 hover:bg-brand-primary-hover"
+          >
+            <Plus className="w-4 h-4" /> New chat
+          </button>
+        </div>
+        <ul className="overflow-y-auto flex-1 divide-y divide-brand-line">
+          {sessions.length === 0 && (
+            <li className="px-4 py-6 text-sm text-brand-mute text-center">
+              No past chats yet.
+            </li>
+          )}
+          {sessions.map((s) => {
+            const active = s.id === currentId;
+            return (
+              <li
+                key={s.id}
+                className={cn(
+                  "flex items-start gap-2 px-3 py-3",
+                  active && "bg-brand-primary/5"
+                )}
+              >
+                <button
+                  onClick={() => onPick(s.id)}
+                  className="flex-1 min-w-0 text-left"
+                >
+                  <p
+                    className={cn(
+                      "text-sm truncate",
+                      active ? "font-semibold text-brand-primary" : "font-medium"
+                    )}
+                  >
+                    {s.title}
+                  </p>
+                  {s.preview && (
+                    <p className="text-xs text-brand-mute truncate mt-0.5">
+                      {s.preview}
+                    </p>
+                  )}
+                  <p className="text-[10px] text-brand-mute mt-1">
+                    {s.messageCount} msg · {relTime(s.lastMessageAt)}
+                  </p>
+                </button>
+                <button
+                  onClick={() => onDelete(s.id)}
+                  aria-label="Delete chat"
+                  className="p-1.5 rounded-full text-brand-mute hover:text-brand-danger hover:bg-brand-danger/10"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+    </>
+  );
+}
+
+function relTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  const diffSec = Math.max(0, (Date.now() - then) / 1000);
+  if (diffSec < 60) return "just now";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)} min ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} h ago`;
+  const days = Math.floor(diffSec / 86400);
+  if (days < 7) return `${days} d ago`;
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+  });
 }
 
 function IconAction({

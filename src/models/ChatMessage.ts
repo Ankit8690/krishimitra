@@ -3,6 +3,7 @@ import mongoose, { Schema, InferSchemaType, Model } from "mongoose";
 const ChatMessageSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    sessionId: { type: Schema.Types.ObjectId, ref: "ChatSession", index: true },
     role: { type: String, enum: ["user", "assistant"], required: true },
     content: { type: String, required: true, maxlength: 8000 },
     tokensIn: { type: Number },
