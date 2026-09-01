@@ -1,0 +1,150 @@
+[
+  {
+    "id": "pm-kisan",
+    "name": "PM-KISAN Samman Nidhi",
+    "shortName": "PM-KISAN",
+    "benefit": "₹6,000/year in 3 equal installments",
+    "summary": "Income support of ₹6,000 per year to eligible land-holding farmer families across the country.",
+    "eligibility": {
+      "maxLandAcres": null,
+      "minLandAcres": 0,
+      "landOwnerRequired": true,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Visit pmkisan.gov.in or your nearest CSC (Common Service Centre)",
+      "Submit Aadhaar, land records, and bank account details",
+      "Get verified by the state nodal officer",
+      "Amount is credited every 4 months"
+    ],
+    "url": "https://pmkisan.gov.in",
+    "ministry": "Ministry of Agriculture & Farmers Welfare"
+  },
+  {
+    "id": "pmfby",
+    "name": "Pradhan Mantri Fasal Bima Yojana",
+    "shortName": "PMFBY",
+    "benefit": "Crop loss insurance at 1.5–5% premium",
+    "summary": "Comprehensive crop insurance covering pre-sowing to post-harvest losses due to natural calamities, pests, and diseases.",
+    "eligibility": {
+      "maxLandAcres": null,
+      "minLandAcres": 0,
+      "landOwnerRequired": false,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Approach your bank, PACS, or CSC before the cut-off date each season",
+      "Provide land records, sowing certificate, Aadhaar, bank details",
+      "Premium is auto-deducted; insured sum tied to crop MSP"
+    ],
+    "url": "https://pmfby.gov.in",
+    "ministry": "Ministry of Agriculture & Farmers Welfare"
+  },
+  {
+    "id": "kcc",
+    "name": "Kisan Credit Card",
+    "shortName": "KCC",
+    "benefit": "Loans up to ₹3 lakh at 4% interest (with subsidy)",
+    "summary": "Short-term credit for cultivation expenses, post-harvest expenses, and household consumption.",
+    "eligibility": {
+      "maxLandAcres": null,
+      "minLandAcres": 0,
+      "landOwnerRequired": true,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Visit any commercial bank, cooperative bank, or RRB",
+      "Submit Aadhaar, PAN, land records, and 2 passport photos",
+      "Card issued in 15 days; usable as RuPay debit card"
+    ],
+    "url": "https://www.myscheme.gov.in/schemes/kcc",
+    "ministry": "Department of Financial Services"
+  },
+  {
+    "id": "pmksy",
+    "name": "PM Krishi Sinchayee Yojana",
+    "shortName": "PMKSY",
+    "benefit": "Up to 55% subsidy on drip/sprinkler irrigation",
+    "summary": "Enhances water use efficiency through micro-irrigation. Higher subsidy for small & marginal farmers.",
+    "eligibility": {
+      "maxLandAcres": 12.5,
+      "minLandAcres": 0,
+      "landOwnerRequired": true,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Apply through your state horticulture / agriculture department",
+      "Get soil and water source verified",
+      "Choose an empanelled vendor for installation"
+    ],
+    "url": "https://pmksy.gov.in",
+    "ministry": "Ministry of Jal Shakti"
+  },
+  {
+    "id": "pm-kusum",
+    "name": "PM Kusum (Solar Pumps)",
+    "shortName": "PM-KUSUM",
+    "benefit": "60% subsidy on stand-alone solar pumps",
+    "summary": "Solar-powered agricultural pumps and grid-connected solar power plants for farmers.",
+    "eligibility": {
+      "maxLandAcres": null,
+      "minLandAcres": 0.5,
+      "landOwnerRequired": true,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Register on state discom portal",
+      "Submit land papers and existing electricity connection details",
+      "Pay farmer share (usually 10%) after approval"
+    ],
+    "url": "https://mnre.gov.in/solar/schemes/",
+    "ministry": "Ministry of New & Renewable Energy"
+  },
+  {
+    "id": "soil-health-card",
+    "name": "Soil Health Card Scheme",
+    "shortName": "SHC",
+    "benefit": "Free soil test + fertilizer recommendation",
+    "summary": "Farmers get a personalized soil health card every 2 years telling them exactly what nutrients their soil needs.",
+    "eligibility": {
+      "maxLandAcres": null,
+      "minLandAcres": 0,
+      "landOwnerRequired": false,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Contact your block agriculture officer or Krishi Vigyan Kendra",
+      "Soil samples are collected from your field",
+      "Card is issued within 30 days"
+    ],
+    "url": "https://soilhealth.dac.gov.in",
+    "ministry": "Ministry of Agriculture & Farmers Welfare"
+  },
+  {
+    "id": "enam",
+    "name": "e-NAM (National Agriculture Market)",
+    "shortName": "e-NAM",
+    "benefit": "Sell directly online — no middleman",
+    "summary": "Pan-India electronic trading platform networking existing APMC mandis for better price discovery.",
+    "eligibility": {
+      "maxLandAcres": null,
+      "minLandAcres": 0,
+      "landOwnerRequired": false,
+      "states": null,
+      "crops": null
+    },
+    "howToApply": [
+      "Register at enam.gov.in with Aadhaar and bank details",
+      "Get produce assayed at nearest e-NAM mandi",
+      "Accept the best online bid; payment in 24 hours"
+    ],
+    "url": "https://enam.gov.in",
+    "ministry": "Ministry of Agriculture & Farmers Welfare"
+  }
+]

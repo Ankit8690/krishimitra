@@ -6,9 +6,13 @@ import { useI18n } from "@/i18n/I18nProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
+import { Combobox } from "@/components/ui/Combobox";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
 import { MapPin } from "lucide-react";
+import DISTRICTS from "@/data/india-districts.json";
+
+const STATES = Object.keys(DISTRICTS as Record<string, string[]>).sort();
 
 const SOILS = ["black", "red", "sandy", "loamy", "clay", "alluvial", "unknown"] as const;
 const IRRIG = ["borewell", "canal", "rainfed", "drip", "sprinkler", "unknown"] as const;
@@ -113,27 +117,40 @@ export default function OnboardingPage() {
                 <MapPin className="w-5 h-5" /> {t("onboarding.use_gps")}
               </Button>
               <div>
-                <Label>{t("onboarding.district")}</Label>
-                <Input
-                  value={data.location.district || ""}
-                  onChange={(e) =>
+                <Label>{t("onboarding.state")}</Label>
+                <Combobox
+                  options={STATES}
+                  value={data.location.state || ""}
+                  onChange={(v) =>
                     setData({
                       ...data,
-                      location: { ...data.location, district: e.target.value },
+                      location: { ...data.location, state: v, district: "" },
                     })
                   }
+                  placeholder={t("onboarding.state")}
                 />
               </div>
               <div>
-                <Label>{t("onboarding.state")}</Label>
-                <Input
-                  value={data.location.state || ""}
-                  onChange={(e) =>
+                <Label>{t("onboarding.district")}</Label>
+                <Combobox
+                  options={
+                    data.location.state
+                      ? ((DISTRICTS as Record<string, string[]>)[data.location.state] ?? [])
+                      : []
+                  }
+                  value={data.location.district || ""}
+                  onChange={(v) =>
                     setData({
                       ...data,
-                      location: { ...data.location, state: e.target.value },
+                      location: { ...data.location, district: v },
                     })
                   }
+                  placeholder={
+                    data.location.state
+                      ? t("onboarding.district")
+                      : t("onboarding.state")
+                  }
+                  disabled={!data.location.state}
                 />
               </div>
               {data.location.lat && (
@@ -150,23 +167,45 @@ export default function OnboardingPage() {
                 {t("onboarding.farm_title")}
               </h2>
               <div>
-                <Label>
-                  {t("onboarding.land")}: <b>{data.farm.landSizeAcres}</b>
-                </Label>
+                <Label>{t("onboarding.land")}</Label>
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="number"
+                    min={0}
+                    step={0.1}
+                    inputMode="decimal"
+                    value={data.farm.landSizeAcres}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      const n = raw === "" ? 0 : Number(raw);
+                      if (Number.isFinite(n) && n >= 0 && n <= 10000) {
+                        setData({
+                          ...data,
+                          farm: { ...data.farm, landSizeAcres: n },
+                        });
+                      }
+                    }}
+                    className="max-w-[8rem] text-right font-semibold"
+                  />
+                  <span className="text-sm text-brand-mute">acres</span>
+                </div>
                 <input
                   type="range"
                   min={0.1}
                   max={50}
                   step={0.1}
-                  value={data.farm.landSizeAcres}
+                  value={Math.min(50, data.farm.landSizeAcres || 0)}
                   onChange={(e) =>
                     setData({
                       ...data,
                       farm: { ...data.farm, landSizeAcres: Number(e.target.value) },
                     })
                   }
-                  className="w-full accent-brand-primary"
+                  className="w-full accent-brand-primary mt-2"
                 />
+                <p className="text-xs text-brand-mute mt-1">
+                  Slider up to 50; type any larger value manually.
+                </p>
               </div>
               <div>
                 <Label>{t("onboarding.irrigation_title")}</Label>

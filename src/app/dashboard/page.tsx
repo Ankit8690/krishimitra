@@ -6,7 +6,18 @@ import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/I18nProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Card, CardTitle } from "@/components/ui/Card";
-import { CloudRain, TrendingUp, Sprout, Mic, MapPin } from "lucide-react";
+import {
+  CloudRain,
+  TrendingUp,
+  Sprout,
+  Mic,
+  MapPin,
+  ChevronRight,
+  Landmark,
+} from "lucide-react";
+import { inr } from "@/lib/format";
+import type { WeatherReport } from "@/lib/weather";
+import { weatherEmoji, weatherLabel } from "@/lib/weather";
 
 type Me = {
   id: string;
@@ -16,28 +27,54 @@ type Me = {
   farm?: { primaryCrops?: string[] };
 };
 
+type MandiCard = {
+  commodity: string;
+  market: string;
+  state: string;
+  modalPrice: number;
+  minPrice: number;
+  maxPrice: number;
+};
+
 export default function DashboardHome() {
   const { t } = useI18n();
   const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
+  const [wx, setWx] = useState<WeatherReport | null>(null);
+  const [wxError, setWxError] = useState<string | null>(null);
+  const [prices, setPrices] = useState<MandiCard[] | null>(null);
+  const [pricesError, setPricesError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((d) => {
-        if (!d.user) {
-          router.replace("/login");
-          return;
-        }
-        if (!d.user.onboardingCompleted) {
-          router.replace("/onboarding");
-          return;
-        }
-        setMe(d.user);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    (async () => {
+      const meRes = await fetch("/api/auth/me");
+      const meData = await meRes.json();
+      if (!meData.user) {
+        router.replace("/login");
+        return;
+      }
+      if (!meData.user.onboardingCompleted) {
+        router.replace("/onboarding");
+        return;
+      }
+      setMe(meData.user);
+      setLoading(false);
+
+      // Fire in parallel — page can show partial data if one fails
+      fetch("/api/weather")
+        .then((r) => r.json())
+        .then((d) => (d.report ? setWx(d.report) : setWxError(d.error ?? "Weather unavailable")))
+        .catch(() => setWxError("Weather unavailable"));
+
+      fetch("/api/mandi?mode=best")
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.records) setPrices(d.records);
+          else setPricesError(d.error ?? "Prices unavailable");
+        })
+        .catch(() => setPricesError("Prices unavailable"));
+    })();
   }, [router]);
 
   if (loading) {
@@ -68,58 +105,119 @@ export default function DashboardHome() {
       </header>
 
       <div className="space-y-4">
-        {/* Weather card */}
-        <Card className="bg-gradient-to-br from-sky-50 to-white">
-          <CardTitle>
-            <span className="inline-flex items-center gap-2">
-              <CloudRain className="w-4 h-4" /> {t("dashboard.weather_card")}
-            </span>
-          </CardTitle>
-          <div className="mt-3 flex items-end justify-between">
-            <div>
-              <p className="text-4xl font-bold">28°</p>
-              <p className="text-brand-mute text-sm">Partly cloudy · 62% RH</p>
+        {/* Weather card — tappable */}
+        <Link href="/dashboard/weather" className="block">
+          <Card className="bg-gradient-to-br from-sky-50 to-white active:scale-[0.99] transition">
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                <span className="inline-flex items-center gap-2">
+                  <CloudRain className="w-4 h-4" /> {t("dashboard.weather_card")}
+                </span>
+              </CardTitle>
+              <ChevronRight className="w-4 h-4 text-brand-mute" />
             </div>
-            <span className="rounded-full bg-brand-primary/10 text-brand-primary text-sm font-semibold px-3 py-1">
-              🟢 {t("dashboard.spray_ok")}
-            </span>
-          </div>
-        </Card>
-
-        {/* Prices card */}
-        <Card>
-          <CardTitle>
-            <span className="inline-flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" /> {t("dashboard.prices_card")}
-            </span>
-          </CardTitle>
-          <ul className="mt-3 divide-y divide-brand-line">
-            {[
-              { crop: "Wheat", mandi: "Khanna", price: "₹2,340", delta: "+₹120" },
-              { crop: "Mustard", mandi: "Ludhiana", price: "₹5,620", delta: "+₹80" },
-              { crop: "Potato", mandi: "Jalandhar", price: "₹1,180", delta: "-₹40" },
-            ].map((r) => (
-              <li key={r.crop} className="py-2 flex items-center justify-between">
+            {wx ? (
+              <div className="mt-3 flex items-end justify-between">
                 <div>
-                  <p className="font-semibold">{r.crop}</p>
-                  <p className="text-xs text-brand-mute">{r.mandi}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold">{r.price}/qtl</p>
-                  <p
-                    className={`text-xs font-semibold ${
-                      r.delta.startsWith("+") ? "text-brand-primary" : "text-brand-danger"
-                    }`}
-                  >
-                    {r.delta}
+                  <p className="text-4xl font-bold">
+                    {Math.round(wx.current.tempC)}°
+                    <span className="ml-2 text-2xl">
+                      {weatherEmoji(wx.current.weatherCode)}
+                    </span>
+                  </p>
+                  <p className="text-brand-mute text-sm">
+                    {weatherLabel(wx.current.weatherCode)} ·{" "}
+                    {Math.round(wx.current.humidity)}% RH
                   </p>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </Card>
+                <span
+                  className={`rounded-full text-sm font-semibold px-3 py-1 whitespace-nowrap ${
+                    wx.sprayAdvice.ok
+                      ? "bg-brand-primary/10 text-brand-primary"
+                      : "bg-brand-danger/10 text-brand-danger"
+                  }`}
+                >
+                  {wx.sprayAdvice.ok ? "🟢" : "🔴"}{" "}
+                  {wx.sprayAdvice.ok
+                    ? t("dashboard.spray_ok")
+                    : t("dashboard.spray_no")}
+                </span>
+              </div>
+            ) : wxError ? (
+              <p className="mt-3 text-sm text-brand-mute">{wxError}</p>
+            ) : (
+              <div className="mt-3 h-14 rounded-lg bg-brand-line/40 animate-pulse" />
+            )}
+          </Card>
+        </Link>
 
-        {/* Task card */}
+        {/* Prices card — tappable */}
+        <Link href="/dashboard/prices" className="block">
+          <Card className="active:scale-[0.99] transition">
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                <span className="inline-flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" /> {t("dashboard.prices_card")}
+                </span>
+              </CardTitle>
+              <ChevronRight className="w-4 h-4 text-brand-mute" />
+            </div>
+            {prices && prices.length > 0 ? (
+              <ul className="mt-3 divide-y divide-brand-line">
+                {prices.slice(0, 3).map((r) => (
+                  <li
+                    key={r.commodity + r.market}
+                    className="py-2 flex items-center justify-between"
+                  >
+                    <div>
+                      <p className="font-semibold">{r.commodity}</p>
+                      <p className="text-xs text-brand-mute">
+                        {r.market}, {r.state}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">{inr(r.modalPrice)}/qtl</p>
+                      <p className="text-xs text-brand-mute">
+                        {inr(r.minPrice)}–{inr(r.maxPrice)}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : prices ? (
+              <p className="mt-3 text-sm text-brand-mute">
+                No price data for your crops today. Try adding more crops in profile.
+              </p>
+            ) : pricesError ? (
+              <p className="mt-3 text-sm text-brand-mute">{pricesError}</p>
+            ) : (
+              <div className="mt-3 space-y-2">
+                <div className="h-8 rounded bg-brand-line/40 animate-pulse" />
+                <div className="h-8 rounded bg-brand-line/40 animate-pulse" />
+                <div className="h-8 rounded bg-brand-line/40 animate-pulse" />
+              </div>
+            )}
+          </Card>
+        </Link>
+
+        {/* Schemes card — tappable */}
+        <Link href="/dashboard/schemes" className="block">
+          <Card className="bg-gradient-to-br from-brand-accent/10 to-white active:scale-[0.99] transition">
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                <span className="inline-flex items-center gap-2">
+                  <Landmark className="w-4 h-4" /> Govt schemes for you
+                </span>
+              </CardTitle>
+              <ChevronRight className="w-4 h-4 text-brand-mute" />
+            </div>
+            <p className="mt-3 text-brand-ink">
+              Personalized list of schemes you can apply to today.
+            </p>
+          </Card>
+        </Link>
+
+        {/* Task card (placeholder for Phase 5) */}
         <Card className="bg-gradient-to-br from-brand-primary/5 to-white">
           <CardTitle>
             <span className="inline-flex items-center gap-2">
@@ -127,16 +225,11 @@ export default function DashboardHome() {
             </span>
           </CardTitle>
           <p className="mt-3 text-brand-ink">
-            Day 45 of wheat — apply 2nd irrigation this week 💧
+            Personalized daily tasks arrive with your crop calendar in Phase 5 🌱
           </p>
         </Card>
-
-        <p className="text-center text-xs text-brand-mute pt-2">
-          Live data + ML coming in Phase 2 & 3
-        </p>
       </div>
 
-      {/* Floating mic */}
       <Link
         href="/dashboard/ask"
         aria-label={t("nav.ask")}
