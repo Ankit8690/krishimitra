@@ -13,6 +13,7 @@ import {
   Sparkles,
   Languages,
   Settings,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import {
@@ -267,6 +268,43 @@ export default function AskPage() {
     window.speechSynthesis?.cancel();
   }
 
+  async function regenerateLast() {
+    if (sending) return;
+    setError(null);
+    setSending(true);
+    // Remove the last assistant bubble optimistically
+    setMessages((m) => {
+      const copy = [...m];
+      for (let i = copy.length - 1; i >= 0; i--) {
+        if (copy[i].role === "assistant") {
+          copy.splice(i, 1);
+          break;
+        }
+      }
+      return copy;
+    });
+    try {
+      const res = await fetch("/api/chat/regenerate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: chatLang }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Regenerate failed");
+        return;
+      }
+      setMessages((m) => [...m, data.assistant]);
+      if (prefs.readAloud === "always" && hasVoiceForLang(findLanguage(chatLang).bcp47)) {
+        speak(data.assistant.content);
+      }
+    } catch {
+      setError("Network error");
+    } finally {
+      setSending(false);
+    }
+  }
+
   const suggestions = SUGGESTIONS[chatLang] ?? SUGGESTIONS.en!;
   const currentLang = findLanguage(chatLang);
   const showReadButton = prefs.readAloud !== "never";
@@ -386,36 +424,57 @@ export default function AskPage() {
           </Card>
         )}
 
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={cn(
-              "flex",
-              m.role === "user" ? "justify-end" : "justify-start"
-            )}
-          >
-            <div
-              className={cn(
-                "max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm whitespace-pre-wrap leading-relaxed",
-                m.role === "user"
-                  ? "bg-brand-primary text-white rounded-br-sm"
-                  : "bg-white border border-brand-line rounded-bl-sm"
-              )}
-            >
-              {m.content}
-              {m.role === "assistant" && showReadButton && (
-                <button
-                  onClick={() => speak(m.content)}
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-brand-primary font-semibold"
-                  aria-label="Read aloud"
+        {messages.map((m, idx) => {
+          const isAssistant = m.role === "assistant";
+          const isLastAssistant =
+            isAssistant &&
+            !messages.slice(idx + 1).some((x) => x.role === "assistant");
+          return (
+            <div key={m.id} className="space-y-1.5">
+              <div
+                className={cn(
+                  "flex",
+                  m.role === "user" ? "justify-end" : "justify-start"
+                )}
+              >
+                <div
+                  className={cn(
+                    "max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm whitespace-pre-wrap leading-relaxed",
+                    m.role === "user"
+                      ? "bg-brand-primary text-white rounded-br-sm"
+                      : "bg-white border border-brand-line rounded-bl-sm"
+                  )}
                 >
-                  <Volume2 className="w-3.5 h-3.5" />
-                  {prefs.readAloud === "always" ? "Read again" : "Read this?"}
-                </button>
+                  {m.content}
+                </div>
+              </div>
+
+              {isAssistant && (
+                <div className="flex justify-center items-center gap-2">
+                  {showReadButton && (
+                    <IconAction
+                      onClick={() => speak(m.content)}
+                      label="Read aloud"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </IconAction>
+                  )}
+                  {isLastAssistant && messages.length >= 2 && (
+                    <IconAction
+                      onClick={regenerateLast}
+                      label="Regenerate answer"
+                      disabled={sending}
+                    >
+                      <RefreshCw
+                        className={cn("w-4 h-4", sending && "animate-spin")}
+                      />
+                    </IconAction>
+                  )}
+                </div>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {sending && (
           <div className="flex justify-start">
@@ -493,6 +552,37 @@ export default function AskPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+function IconAction({
+  children,
+  label,
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      title={label}
+      className={cn(
+        "w-9 h-9 grid place-items-center rounded-full bg-white border border-brand-line",
+        "text-brand-primary shadow-sm transition",
+        "hover:bg-brand-primary hover:text-white hover:border-brand-primary hover:shadow",
+        "active:scale-95",
+        "disabled:opacity-40 disabled:pointer-events-none"
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
