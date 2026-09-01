@@ -1,21 +1,381 @@
 {
-  "Tomato___Bacterial_spot": {
+  "Apple Scab": {
+    "displayName": "Apple — Scab",
+    "hi": "सेब — पपड़ी रोग",
+    "pa": "ਸੇਬ — ਸਕੈਬ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Mancozeb 75% WP @ 2g/litre at green tip and repeat every 10–14 days",
+      "Prune and burn infected leaves and fallen debris",
+      "Choose scab-resistant varieties next season (e.g., Prima, Priscilla)"
+    ],
+    "hiTreatment": [
+      "मैंकोज़ेब 75% WP 2 ग्राम/लीटर पानी में हरे कल्ले पर छिड़कें, 10–14 दिन में दोहराएँ",
+      "संक्रमित पत्तियाँ और गिरा हुआ मलबा जला दें",
+      "अगले सीज़न में प्रतिरोधी किस्में लगाएँ"
+    ]
+  },
+  "Apple with Black Rot": {
+    "displayName": "Apple — Black Rot",
+    "hi": "सेब — काला सड़न",
+    "pa": "ਸੇਬ — ਬਲੈਕ ਰੌਟ",
+    "severity": "high",
+    "treatment": [
+      "Prune and destroy all cankered branches immediately",
+      "Spray Captan @ 2g/litre at pink bud and every 10 days after",
+      "Remove all mummified fruit from tree and ground"
+    ],
+    "hiTreatment": [
+      "तुरंत सभी संक्रमित शाखाएँ काटकर नष्ट कर दें",
+      "कैप्टान 2 ग्राम/लीटर छिड़कें, 10 दिन में दोहराएँ",
+      "पेड़ और ज़मीन से सभी सूखे सड़े फल हटाएँ"
+    ]
+  },
+  "Cedar Apple Rust": {
+    "displayName": "Apple — Cedar Apple Rust",
+    "hi": "सेब — देवदार-सेब रस्ट",
+    "pa": "ਸੇਬ — ਸੀਡਰ ਐਪਲ ਰਸਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Myclobutanil @ 1ml/litre from tight cluster to petal fall",
+      "Remove nearby juniper/cedar trees within 300m if possible",
+      "Plant rust-resistant apple varieties"
+    ],
+    "hiTreatment": [
+      "मायक्लोब्यूटैनिल 1ml/लीटर छिड़कें",
+      "300 मीटर के अंदर देवदार/जुनिपर हटा दें",
+      "प्रतिरोधी किस्में लगाएँ"
+    ]
+  },
+  "Healthy Apple": {
+    "displayName": "Apple — Healthy",
+    "hi": "सेब — स्वस्थ",
+    "pa": "ਸੇਬ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Your apple tree looks healthy. Continue regular monitoring."],
+    "hiTreatment": ["आपका सेब का पेड़ स्वस्थ है। नियमित जाँच करते रहें।"]
+  },
+  "Healthy Blueberry Plant": {
+    "displayName": "Blueberry — Healthy",
+    "hi": "ब्लूबेरी — स्वस्थ",
+    "pa": "ਬਲੂਬੇਰੀ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Plant looks healthy. Keep monitoring."],
+    "hiTreatment": ["पौधा स्वस्थ है। जाँच जारी रखें।"]
+  },
+  "Cherry with Powdery Mildew": {
+    "displayName": "Cherry — Powdery Mildew",
+    "hi": "चेरी — पाउडरी मिल्ड्यू",
+    "pa": "ਚੈਰੀ — ਪਾਊਡਰੀ ਮਿਲਡਿਊ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Sulphur 80% WP @ 3g/litre when first symptoms appear",
+      "Improve air flow — prune dense canopy",
+      "Avoid overhead watering"
+    ],
+    "hiTreatment": [
+      "सल्फर 80% WP 3 ग्राम/लीटर छिड़कें",
+      "घनी शाखाएँ काटकर हवा का बहाव बढ़ाएँ",
+      "ऊपर से पानी न दें"
+    ]
+  },
+  "Healthy Cherry Plant": {
+    "displayName": "Cherry — Healthy",
+    "hi": "चेरी — स्वस्थ",
+    "pa": "ਚੈਰੀ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Plant is healthy. Continue routine care."],
+    "hiTreatment": ["पौधा स्वस्थ है। नियमित देखभाल जारी रखें।"]
+  },
+  "Corn (Maize) with Cercospora and Gray Leaf Spot": {
+    "displayName": "Maize — Gray Leaf Spot",
+    "hi": "मक्का — ग्रे लीफ स्पॉट",
+    "pa": "ਮੱਕੀ — ਗ੍ਰੇ ਲੀਫ ਸਪੌਟ",
+    "severity": "high",
+    "treatment": [
+      "Spray Propiconazole @ 1ml/litre at first sign",
+      "Rotate to a non-cereal crop next season",
+      "Bury crop residues after harvest — do not leave on surface"
+    ],
+    "hiTreatment": [
+      "पहले लक्षण पर प्रोपिकोनाज़ोल 1ml/लीटर छिड़कें",
+      "अगले सीज़न गैर-अनाज फ़सल लगाएँ",
+      "कटाई के बाद फ़सल अवशेष मिट्टी में दबा दें"
+    ]
+  },
+  "Corn (Maize) with Common Rust": {
+    "displayName": "Maize — Common Rust",
+    "hi": "मक्का — कॉमन रस्ट",
+    "pa": "ਮੱਕੀ — ਕਾਮਨ ਰਸਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Propiconazole @ 1ml/litre or Mancozeb @ 2g/litre",
+      "Repeat after 15 days if symptoms persist",
+      "Choose rust-resistant hybrids next season"
+    ],
+    "hiTreatment": [
+      "प्रोपिकोनाज़ोल 1ml/लीटर या मैंकोज़ेब 2 ग्राम/लीटर छिड़कें",
+      "15 दिन बाद दोहराएँ",
+      "अगले सीज़न प्रतिरोधी किस्म लगाएँ"
+    ]
+  },
+  "Corn (Maize) with Northern Leaf Blight": {
+    "displayName": "Maize — Northern Leaf Blight",
+    "hi": "मक्का — नॉर्दर्न लीफ ब्लाइट",
+    "pa": "ਮੱਕੀ — ਨੌਰਦਰਨ ਲੀਫ ਬਲਾਈਟ",
+    "severity": "high",
+    "treatment": [
+      "Spray Mancozeb 75% WP @ 2.5g/litre at first sign",
+      "Rotate with legume next season",
+      "Remove and burn infected debris"
+    ],
+    "hiTreatment": [
+      "पहले लक्षण पर मैंकोज़ेब 75% WP 2.5 ग्राम/लीटर छिड़कें",
+      "अगले सीज़न दलहनी फ़सल लगाएँ",
+      "संक्रमित अवशेष जला दें"
+    ]
+  },
+  "Healthy Corn (Maize) Plant": {
+    "displayName": "Maize — Healthy",
+    "hi": "मक्का — स्वस्थ",
+    "pa": "ਮੱਕੀ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Crop looks healthy. Monitor weekly."],
+    "hiTreatment": ["फ़सल स्वस्थ है। हर हफ्ते जाँच करें।"]
+  },
+  "Grape with Black Rot": {
+    "displayName": "Grape — Black Rot",
+    "hi": "अंगूर — काला सड़न",
+    "pa": "ਅੰਗੂਰ — ਬਲੈਕ ਰੌਟ",
+    "severity": "high",
+    "treatment": [
+      "Spray Mancozeb @ 2g/litre + Myclobutanil at bloom and every 10–14 days",
+      "Remove all mummified berries and infected canes",
+      "Improve air circulation with canopy pruning"
+    ],
+    "hiTreatment": [
+      "फूल आने पर मैंकोज़ेब 2 ग्राम/लीटर + मायक्लोब्यूटैनिल छिड़कें, 10–14 दिन में दोहराएँ",
+      "सूखे सड़े दाने और संक्रमित बेल हटा दें",
+      "छाँट कर हवा का बहाव बढ़ाएँ"
+    ]
+  },
+  "Grape with Esca (Black Measles)": {
+    "displayName": "Grape — Esca (Black Measles)",
+    "hi": "अंगूर — एस्का (ब्लैक मीज़ल्स)",
+    "pa": "ਅੰਗੂਰ — ਏਸਕਾ",
+    "severity": "high",
+    "treatment": [
+      "Prune and burn heavily infected vines — this disease has no cure",
+      "Protect fresh pruning wounds with sealer",
+      "Replace worst vines with certified disease-free stock"
+    ],
+    "hiTreatment": [
+      "बुरी तरह संक्रमित बेल काटकर जला दें — इसका इलाज नहीं है",
+      "ताजा कटे घावों पर सीलर लगाएँ",
+      "सबसे खराब बेलें रोगमुक्त पौधों से बदलें"
+    ]
+  },
+  "Grape with Isariopsis Leaf Spot": {
+    "displayName": "Grape — Leaf Blight",
+    "hi": "अंगूर — पत्ती झुलसा",
+    "pa": "ਅੰਗੂਰ — ਪੱਤਾ ਝੁਲਸ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Copper Oxychloride @ 3g/litre or Mancozeb @ 2g/litre",
+      "Remove and destroy infected leaves",
+      "Repeat spray every 10–15 days in wet weather"
+    ],
+    "hiTreatment": [
+      "कॉपर ऑक्सीक्लोराइड 3 ग्राम/लीटर या मैंकोज़ेब 2 ग्राम/लीटर छिड़कें",
+      "संक्रमित पत्तियाँ हटाकर नष्ट करें",
+      "बारिश के मौसम में 10–15 दिन में दोहराएँ"
+    ]
+  },
+  "Healthy Grape Plant": {
+    "displayName": "Grape — Healthy",
+    "hi": "अंगूर — स्वस्थ",
+    "pa": "ਅੰਗੂਰ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Vine is healthy. Continue routine spraying schedule."],
+    "hiTreatment": ["बेल स्वस्थ है। नियमित छिड़काव जारी रखें।"]
+  },
+  "Orange with Citrus Greening": {
+    "displayName": "Orange — Citrus Greening (HLB)",
+    "hi": "संतरा — सिट्रस ग्रीनिंग",
+    "pa": "ਸੰਤਰਾ — ਸਿਟਰਸ ਗ੍ਰੀਨਿੰਗ",
+    "severity": "high",
+    "treatment": [
+      "No cure — remove and burn infected trees to protect the orchard",
+      "Control the Asian citrus psyllid vector with Imidacloprid drenches",
+      "Plant only certified disease-free saplings"
+    ],
+    "hiTreatment": [
+      "कोई इलाज नहीं — संक्रमित पेड़ हटाकर जला दें",
+      "इमिडाक्लोप्रिड ड्रेंच से सिट्रस साइलिड कीट नियंत्रित करें",
+      "केवल प्रमाणित रोगमुक्त पौधे लगाएँ"
+    ]
+  },
+  "Peach with Bacterial Spot": {
+    "displayName": "Peach — Bacterial Spot",
+    "hi": "आड़ू — बैक्टीरियल स्पॉट",
+    "pa": "ਆੜੂ — ਬੈਕਟੀਰੀਅਲ ਸਪੌਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Copper Hydroxide @ 2g/litre during dormancy and shuck split",
+      "Avoid overhead watering",
+      "Plant resistant varieties like Redhaven"
+    ],
+    "hiTreatment": [
+      "सुप्तावस्था में कॉपर हाइड्रॉक्साइड 2 ग्राम/लीटर छिड़कें",
+      "ऊपर से पानी न दें",
+      "प्रतिरोधी किस्में लगाएँ"
+    ]
+  },
+  "Healthy Peach Plant": {
+    "displayName": "Peach — Healthy",
+    "hi": "आड़ू — स्वस्थ",
+    "pa": "ਆੜੂ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Tree is healthy. Continue care."],
+    "hiTreatment": ["पेड़ स्वस्थ है। देखभाल जारी रखें।"]
+  },
+  "Bell Pepper with Bacterial Spot": {
+    "displayName": "Bell Pepper — Bacterial Spot",
+    "hi": "शिमला मिर्च — बैक्टीरियल स्पॉट",
+    "pa": "ਸ਼ਿਮਲਾ ਮਿਰਚ — ਬੈਕਟੀਰੀਅਲ ਸਪੌਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Copper Oxychloride @ 3g/litre + Streptomycin @ 0.5g/litre",
+      "Avoid working in wet fields — spreads by hand contact",
+      "Use certified disease-free seed"
+    ],
+    "hiTreatment": [
+      "कॉपर ऑक्सीक्लोराइड 3 ग्राम/लीटर + स्ट्रेप्टोमाइसिन 0.5 ग्राम/लीटर छिड़कें",
+      "गीले खेत में काम न करें",
+      "प्रमाणित रोगमुक्त बीज लगाएँ"
+    ]
+  },
+  "Healthy Bell Pepper Plant": {
+    "displayName": "Bell Pepper — Healthy",
+    "hi": "शिमला मिर्च — स्वस्थ",
+    "pa": "ਸ਼ਿਮਲਾ ਮਿਰਚ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Plant is healthy. Keep monitoring."],
+    "hiTreatment": ["पौधा स्वस्थ है। जाँच जारी रखें।"]
+  },
+  "Potato with Early Blight": {
+    "displayName": "Potato — Early Blight",
+    "hi": "आलू — अर्ली ब्लाइट",
+    "pa": "ਆਲੂ — ਅਰਲੀ ਬਲਾਈਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Chlorothalonil @ 2ml/litre or Mancozeb @ 2g/litre",
+      "Remove and destroy infected foliage",
+      "Ensure good drainage in field"
+    ],
+    "hiTreatment": [
+      "क्लोरोथेलोनिल 2ml/लीटर या मैंकोज़ेब 2 ग्राम/लीटर छिड़कें",
+      "संक्रमित पत्तियाँ हटाकर नष्ट करें",
+      "खेत में जल निकासी अच्छी रखें"
+    ]
+  },
+  "Potato with Late Blight": {
+    "displayName": "Potato — Late Blight",
+    "hi": "आलू — लेट ब्लाइट",
+    "pa": "ਆਲੂ — ਲੇਟ ਬਲਾਈਟ",
+    "severity": "high",
+    "treatment": [
+      "Spray Metalaxyl + Mancozeb (Ridomil MZ) @ 2.5g/litre urgently",
+      "Repeat every 5–7 days in cool wet weather",
+      "Destroy affected plants completely — do not compost"
+    ],
+    "hiTreatment": [
+      "तुरंत मेटालैक्सिल + मैंकोज़ेब (रिडोमिल MZ) 2.5 ग्राम/लीटर छिड़कें",
+      "ठंडे-गीले मौसम में 5–7 दिन में दोहराएँ",
+      "प्रभावित पौधे पूरी तरह नष्ट करें, कंपोस्ट न बनाएँ"
+    ]
+  },
+  "Healthy Potato Plant": {
+    "displayName": "Potato — Healthy",
+    "hi": "आलू — स्वस्थ",
+    "pa": "ਆਲੂ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Crop is healthy. Continue regular monitoring."],
+    "hiTreatment": ["फ़सल स्वस्थ है। नियमित जाँच जारी रखें।"]
+  },
+  "Healthy Raspberry Plant": {
+    "displayName": "Raspberry — Healthy",
+    "hi": "रास्पबेरी — स्वस्थ",
+    "pa": "ਰਸਬੇਰੀ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Plant is healthy."],
+    "hiTreatment": ["पौधा स्वस्थ है।"]
+  },
+  "Healthy Soybean Plant": {
+    "displayName": "Soybean — Healthy",
+    "hi": "सोयाबीन — स्वस्थ",
+    "pa": "ਸੋਇਆਬੀਨ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Plant is healthy. Continue routine field checks."],
+    "hiTreatment": ["पौधा स्वस्थ है। नियमित जाँच करें।"]
+  },
+  "Squash with Powdery Mildew": {
+    "displayName": "Squash — Powdery Mildew",
+    "hi": "कद्दू — पाउडरी मिल्ड्यू",
+    "pa": "ਕੱਦੂ — ਪਾਊਡਰੀ ਮਿਲਡਿਊ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Sulphur 80% WP @ 3g/litre or Potassium bicarbonate @ 5g/litre",
+      "Water at base — avoid wetting leaves",
+      "Space plants for good air flow"
+    ],
+    "hiTreatment": [
+      "सल्फर 80% WP 3 ग्राम/लीटर या पोटैशियम बाइकार्बोनेट 5 ग्राम/लीटर छिड़कें",
+      "जड़ में पानी दें, पत्तियाँ न भिगाएँ",
+      "पौधों के बीच जगह रखें"
+    ]
+  },
+  "Strawberry with Leaf Scorch": {
+    "displayName": "Strawberry — Leaf Scorch",
+    "hi": "स्ट्रॉबेरी — पत्ती झुलसा",
+    "pa": "ਸਟ੍ਰਾਬੇਰੀ — ਲੀਫ ਸਕੌਰਚ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Captan @ 2g/litre after harvest and again after renovation",
+      "Remove old leaves after harvest — mow to 2.5 cm",
+      "Improve field drainage"
+    ],
+    "hiTreatment": [
+      "कटाई के बाद कैप्टान 2 ग्राम/लीटर छिड़कें",
+      "पुरानी पत्तियाँ हटाकर 2.5 सेमी तक काटें",
+      "खेत की जल निकासी सुधारें"
+    ]
+  },
+  "Healthy Strawberry Plant": {
+    "displayName": "Strawberry — Healthy",
+    "hi": "स्ट्रॉबेरी — स्वस्थ",
+    "pa": "ਸਟ੍ਰਾਬੇਰੀ — ਸਿਹਤਮੰਦ",
+    "severity": "none",
+    "treatment": ["Plant is healthy. Keep checking regularly."],
+    "hiTreatment": ["पौधा स्वस्थ है। नियमित जाँच करें।"]
+  },
+  "Tomato with Bacterial Spot": {
     "displayName": "Tomato — Bacterial Spot",
     "hi": "टमाटर — बैक्टीरियल स्पॉट",
     "pa": "ਟਮਾਟਰ — ਬੈਕਟੀਰੀਅਲ ਸਪੌਟ",
     "severity": "moderate",
     "treatment": [
       "Remove and burn affected leaves immediately",
-      "Spray copper oxychloride 3g/litre water, every 10 days",
+      "Spray Copper Oxychloride @ 3g/litre + Streptomycin @ 0.5g/litre every 10 days",
       "Avoid overhead irrigation — water at the base"
     ],
     "hiTreatment": [
       "प्रभावित पत्तियाँ तुरंत तोड़कर जला दें",
-      "कॉपर ऑक्सीक्लोराइड 3 ग्राम/लीटर पानी में मिलाकर हर 10 दिन में छिड़काव करें",
+      "कॉपर ऑक्सीक्लोराइड 3 ग्राम/लीटर + स्ट्रेप्टोमाइसिन 0.5 ग्राम/लीटर हर 10 दिन में छिड़कें",
       "ऊपर से पानी न दें — जड़ में पानी दें"
     ]
   },
-  "Tomato___Early_blight": {
+  "Tomato with Early Blight": {
     "displayName": "Tomato — Early Blight",
     "hi": "टमाटर — अर्ली ब्लाइट",
     "pa": "ਟਮਾਟਰ — ਅਰਲੀ ਬਲਾਈਟ",
@@ -26,98 +386,130 @@
       "Rotate crop next season with a non-solanaceous crop"
     ],
     "hiTreatment": [
-      "मैंकोज़ेब 75% WP @ 2 ग्राम/लीटर पानी में छिड़कें",
+      "मैंकोज़ेब 75% WP 2 ग्राम/लीटर पानी में छिड़कें",
       "7–10 दिन के अंतराल पर 3 बार दोहराएँ",
-      "अगले सीजन में सोलेनेसी के अलावा दूसरी फ़सल लगाएँ"
+      "अगले सीज़न सोलेनेसी के अलावा दूसरी फ़सल लगाएँ"
     ]
   },
-  "Tomato___Late_blight": {
+  "Tomato with Late Blight": {
     "displayName": "Tomato — Late Blight",
     "hi": "टमाटर — लेट ब्लाइट",
     "pa": "ਟਮਾਟਰ — ਲੇਟ ਬਲਾਈਟ",
     "severity": "high",
     "treatment": [
-      "Spray Metalaxyl + Mancozeb (Ridomil) @ 2.5g/litre",
+      "Spray Metalaxyl + Mancozeb (Ridomil MZ) @ 2.5g/litre",
       "Ensure good air circulation — remove lower leaves",
       "Do not spray in evening — leaf wetness worsens spread"
     ],
     "hiTreatment": [
-      "मेटालैक्सिल + मैंकोज़ेब (रिडोमिल) 2.5 ग्राम/लीटर छिड़कें",
+      "मेटालैक्सिल + मैंकोज़ेब (रिडोमिल MZ) 2.5 ग्राम/लीटर छिड़कें",
       "हवा का बहाव अच्छा रखें — नीचे की पत्तियाँ हटा दें",
       "शाम को छिड़काव न करें"
     ]
   },
-  "Tomato___healthy": {
+  "Tomato with Leaf Mold": {
+    "displayName": "Tomato — Leaf Mold",
+    "hi": "टमाटर — पत्ती फफूँदी",
+    "pa": "ਟਮਾਟਰ — ਪੱਤਾ ਫਫੂੰਦੀ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Chlorothalonil @ 2ml/litre",
+      "Reduce humidity — increase ventilation in polyhouse",
+      "Remove and destroy heavily infected leaves"
+    ],
+    "hiTreatment": [
+      "क्लोरोथेलोनिल 2ml/लीटर छिड़कें",
+      "पॉलीहाउस में नमी कम करें, हवा का बहाव बढ़ाएँ",
+      "बहुत संक्रमित पत्तियाँ हटाकर नष्ट करें"
+    ]
+  },
+  "Tomato with Septoria Leaf Spot": {
+    "displayName": "Tomato — Septoria Leaf Spot",
+    "hi": "टमाटर — सेप्टोरिया पत्ती धब्बा",
+    "pa": "ਟਮਾਟਰ — ਸੈਪਟੋਰੀਆ ਲੀਫ ਸਪੌਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Mancozeb @ 2g/litre or Copper Fungicide every 7–10 days",
+      "Mulch base of plants to stop soil splash",
+      "Remove infected lower leaves"
+    ],
+    "hiTreatment": [
+      "मैंकोज़ेब 2 ग्राम/लीटर या कॉपर फफूँदनाशी 7–10 दिन में छिड़कें",
+      "पौधों की जड़ पर मल्च डालें",
+      "संक्रमित निचली पत्तियाँ हटाएँ"
+    ]
+  },
+  "Tomato with Spider Mites or Two-spotted Spider Mite": {
+    "displayName": "Tomato — Spider Mites",
+    "hi": "टमाटर — मकड़ी माइट",
+    "pa": "ਟਮਾਟਰ — ਮੱਕੜੀ ਮਾਈਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Abamectin @ 0.5ml/litre or Neem oil @ 5ml/litre",
+      "Rinse leaves with strong water jet to knock mites off",
+      "Increase humidity — mites hate wet conditions"
+    ],
+    "hiTreatment": [
+      "एबामेक्टिन 0.5ml/लीटर या नीम तेल 5ml/लीटर छिड़कें",
+      "तेज़ पानी की धार से पत्तियाँ धोएँ",
+      "नमी बढ़ाएँ — माइट को गीलापन पसंद नहीं"
+    ]
+  },
+  "Tomato with Target Spot": {
+    "displayName": "Tomato — Target Spot",
+    "hi": "टमाटर — टारगेट स्पॉट",
+    "pa": "ਟਮਾਟਰ — ਟਾਰਗੇਟ ਸਪੌਟ",
+    "severity": "moderate",
+    "treatment": [
+      "Spray Azoxystrobin @ 1ml/litre or Mancozeb @ 2g/litre",
+      "Remove infected leaves and rotate crop next year",
+      "Improve air flow with stake pruning"
+    ],
+    "hiTreatment": [
+      "एज़ोक्सीस्ट्रोबिन 1ml/लीटर या मैंकोज़ेब 2 ग्राम/लीटर छिड़कें",
+      "संक्रमित पत्तियाँ हटाएँ, अगले साल फ़सल बदलें",
+      "स्टेक छँटाई से हवा का बहाव बढ़ाएँ"
+    ]
+  },
+  "Tomato Yellow Leaf Curl Virus": {
+    "displayName": "Tomato — Yellow Leaf Curl Virus",
+    "hi": "टमाटर — पीला पत्ती मोड़ वायरस",
+    "pa": "ਟਮਾਟਰ — ਪੀਲਾ ਲੀਫ ਕਰਲ ਵਾਇਰਸ",
+    "severity": "high",
+    "treatment": [
+      "No cure for the virus — remove and burn infected plants",
+      "Control the whitefly vector with Imidacloprid @ 0.5ml/litre",
+      "Use virus-resistant varieties (ToLCV-tolerant hybrids)"
+    ],
+    "hiTreatment": [
+      "वायरस का इलाज नहीं — संक्रमित पौधे हटाकर जला दें",
+      "इमिडाक्लोप्रिड 0.5ml/लीटर से सफ़ेद मक्खी नियंत्रित करें",
+      "प्रतिरोधी हाइब्रिड लगाएँ"
+    ]
+  },
+  "Tomato Mosaic Virus": {
+    "displayName": "Tomato — Mosaic Virus",
+    "hi": "टमाटर — मोज़ेक वायरस",
+    "pa": "ਟਮਾਟਰ — ਮੋਜ਼ੇਕ ਵਾਇਰਸ",
+    "severity": "high",
+    "treatment": [
+      "No cure — remove and burn infected plants immediately",
+      "Wash hands and tools with soap before working with healthy plants",
+      "Use resistant varieties and virus-free seed"
+    ],
+    "hiTreatment": [
+      "इलाज नहीं — संक्रमित पौधे तुरंत हटाकर जला दें",
+      "स्वस्थ पौधों के पास जाने से पहले हाथ और औज़ार साबुन से धोएँ",
+      "प्रतिरोधी किस्में और वायरस-मुक्त बीज लगाएँ"
+    ]
+  },
+  "Healthy Tomato Plant": {
     "displayName": "Tomato — Healthy",
     "hi": "टमाटर — स्वस्थ",
     "pa": "ਟਮਾਟਰ — ਸਿਹਤਮੰਦ",
     "severity": "none",
     "treatment": ["Your crop looks healthy! Keep monitoring weekly."],
     "hiTreatment": ["आपकी फ़सल स्वस्थ है! हर हफ्ते जाँच करते रहें।"]
-  },
-  "Potato___Early_blight": {
-    "displayName": "Potato — Early Blight",
-    "hi": "आलू — अर्ली ब्लाइट",
-    "pa": "ਆਲੂ — ਅਰਲੀ ਬਲਾਈਟ",
-    "severity": "moderate",
-    "treatment": [
-      "Spray Chlorothalonil @ 2ml/litre",
-      "Remove and destroy infected foliage",
-      "Ensure good drainage in field"
-    ],
-    "hiTreatment": [
-      "क्लोरोथेलोनिल 2ml/लीटर में छिड़कें",
-      "संक्रमित पत्तियाँ हटाकर नष्ट करें",
-      "खेत में जल निकासी अच्छी रखें"
-    ]
-  },
-  "Potato___Late_blight": {
-    "displayName": "Potato — Late Blight",
-    "hi": "आलू — लेट ब्लाइट",
-    "pa": "ਆਲੂ — ਲੇਟ ਬਲਾਈਟ",
-    "severity": "high",
-    "treatment": [
-      "Spray Metalaxyl + Mancozeb 2.5g/litre urgently",
-      "Repeat every 5–7 days",
-      "Destroy affected plants completely — do not compost"
-    ],
-    "hiTreatment": [
-      "तुरंत मेटालैक्सिल + मैंकोज़ेब 2.5 ग्राम/लीटर छिड़कें",
-      "5–7 दिन में दोहराएँ",
-      "प्रभावित पौधे पूरी तरह नष्ट करें"
-    ]
-  },
-  "Potato___healthy": {
-    "displayName": "Potato — Healthy",
-    "hi": "आलू — स्वस्थ",
-    "pa": "ਆਲੂ — ਸਿਹਤਮੰਦ",
-    "severity": "none",
-    "treatment": ["Crop is healthy. Continue regular monitoring."],
-    "hiTreatment": ["फ़सल स्वस्थ है। नियमित जाँच जारी रखें।"]
-  },
-  "Corn___Common_rust": {
-    "displayName": "Maize — Common Rust",
-    "hi": "मक्का — कॉमन रस्ट",
-    "pa": "ਮੱਕੀ — ਕਾਮਨ ਰਸਟ",
-    "severity": "moderate",
-    "treatment": [
-      "Spray Propiconazole @ 1ml/litre",
-      "Repeat after 15 days if symptoms persist",
-      "Plant resistant varieties next season"
-    ],
-    "hiTreatment": [
-      "प्रोपिकोनाज़ोल 1ml/लीटर छिड़कें",
-      "15 दिन बाद दोहराएँ",
-      "अगले सीज़न में प्रतिरोधी किस्म लगाएँ"
-    ]
-  },
-  "Corn___healthy": {
-    "displayName": "Maize — Healthy",
-    "hi": "मक्का — स्वस्थ",
-    "pa": "ਮੱਕੀ — ਸਿਹਤਮੰਦ",
-    "severity": "none",
-    "treatment": ["Crop looks healthy. Keep monitoring weekly."],
-    "hiTreatment": ["फ़सल स्वस्थ है। हर हफ्ते जाँच करते रहें।"]
   },
   "unknown": {
     "displayName": "Unknown — please try a clearer photo",
