@@ -64,9 +64,35 @@ export default function AskPage() {
   const [prefs, setPrefs] = useState<ChatPrefs>({ readAloud: "ask" });
   const [showSettings, setShowSettings] = useState(false);
   const [showLangs, setShowLangs] = useState(false);
+  const [availableVoiceLangs, setAvailableVoiceLangs] = useState<Set<string>>(new Set());
+  const [voiceMissingNote, setVoiceMissingNote] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+
+  // Detect installed TTS voices (updates when OS voices load asynchronously)
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+    const refresh = () => {
+      const langs = new Set(
+        window.speechSynthesis.getVoices().map((v) => v.lang.toLowerCase())
+      );
+      setAvailableVoiceLangs(langs);
+    };
+    refresh();
+    window.speechSynthesis.addEventListener("voiceschanged", refresh);
+    return () =>
+      window.speechSynthesis.removeEventListener("voiceschanged", refresh);
+  }, []);
+
+  function hasVoiceForLang(bcp47: string): boolean {
+    const lower = bcp47.toLowerCase();
+    const base = lower.split("-")[0];
+    for (const v of availableVoiceLangs) {
+      if (v === lower || v.split("-")[0] === base) return true;
+    }
+    return false;
+  }
 
   // Load user prefs + history
   useEffect(() => {
@@ -147,7 +173,9 @@ export default function AskPage() {
         data.user,
         data.assistant,
       ]);
-      if (prefs.readAloud === "always") speak(data.assistant.content);
+      if (prefs.readAloud === "always" && hasVoiceForLang(findLanguage(chatLang).bcp47)) {
+        speak(data.assistant.content);
+      }
     } catch {
       setError("Network error");
       setMessages((m) => m.filter((x) => !x.id.startsWith("tmp-")));
@@ -158,10 +186,28 @@ export default function AskPage() {
 
   function speak(text: string) {
     if (!("speechSynthesis" in window)) return;
+    const lang = findLanguage(chatLang);
+    if (!hasVoiceForLang(lang.bcp47)) {
+      setVoiceMissingNote(
+        `No ${lang.name} voice installed on this device. To enable it: Windows Settings → Time & Language → Speech → Add voices → search "${lang.name}".`
+      );
+      setTimeout(() => setVoiceMissingNote(null), 8000);
+      return;
+    }
     const clean = text.replace(/[*_`#>]/g, "").replace(/\s+/g, " ").trim();
     const utter = new SpeechSynthesisUtterance(clean);
-    utter.lang = findLanguage(chatLang).bcp47;
+    utter.lang = lang.bcp47;
     utter.rate = 0.95;
+    // Explicitly pick a matching voice — SpeechSynthesis defaults to the OS
+    // default (usually English) if none is set, which is why lang alone is unreliable.
+    const voice = window.speechSynthesis
+      .getVoices()
+      .find(
+        (v) =>
+          v.lang.toLowerCase() === lang.bcp47.toLowerCase() ||
+          v.lang.toLowerCase().startsWith(lang.code)
+      );
+    if (voice) utter.voice = voice;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
   }
@@ -224,6 +270,7 @@ export default function AskPage() {
   const suggestions = SUGGESTIONS[chatLang] ?? SUGGESTIONS.en!;
   const currentLang = findLanguage(chatLang);
   const showReadButton = prefs.readAloud !== "never";
+  const currentVoiceOk = hasVoiceForLang(currentLang.bcp47);
 
   return (
     <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100vh-4rem)]">
@@ -253,7 +300,7 @@ export default function AskPage() {
       </div>
 
       {/* Language chip */}
-      <div className="px-5 mb-2 relative">
+      <div className="px-5 mb-2 relative flex items-center gap-2 flex-wrap">
         <button
           onClick={() => setShowLangs((v) => !v)}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary bg-brand-primary/10 rounded-full px-3 py-1.5 hover:bg-brand-primary/15"
@@ -261,10 +308,19 @@ export default function AskPage() {
           <Languages className="w-3.5 h-3.5" />
           {currentLang.nativeName} · {currentLang.name}
         </button>
+        {!currentVoiceOk && prefs.readAloud !== "never" && (
+          <span
+            className="text-[10px] text-brand-mute inline-flex items-center gap-1"
+            title="No TTS voice installed for this language"
+          >
+            🔇 no {currentLang.name} voice
+          </span>
+        )}
         {showLangs && (
           <LanguagePicker
             current={chatLang}
             defaultLang={prefs.chatLanguage}
+            availableVoiceLangs={availableVoiceLangs}
             onPick={saveChatLanguage}
             onClose={() => setShowLangs(false)}
           />
@@ -374,6 +430,11 @@ export default function AskPage() {
             {error}
           </div>
         )}
+        {voiceMissingNote && (
+          <div className="text-xs text-brand-ink bg-brand-accent/10 border border-brand-accent/40 rounded-lg py-2 px-3">
+            {voiceMissingNote}
+          </div>
+        )}
       </div>
 
       <form
@@ -438,14 +499,24 @@ export default function AskPage() {
 function LanguagePicker({
   current,
   defaultLang,
+  availableVoiceLangs,
   onPick,
   onClose,
 }: {
   current: ChatLangCode;
   defaultLang?: ChatLangCode;
+  availableVoiceLangs: Set<string>;
   onPick: (code: ChatLangCode, makeDefault: boolean) => void;
   onClose: () => void;
 }) {
+  const hasVoice = (bcp: string) => {
+    const l = bcp.toLowerCase();
+    const b = l.split("-")[0];
+    for (const v of availableVoiceLangs) {
+      if (v === l || v.split("-")[0] === b) return true;
+    }
+    return false;
+  };
   return (
     <>
       {/* backdrop */}
@@ -474,6 +545,14 @@ function LanguagePicker({
                   >
                     <span className="mr-2">{l.nativeName}</span>
                     <span className="text-xs text-brand-mute">{l.name}</span>
+                    {!hasVoice(l.bcp47) && (
+                      <span
+                        className="ml-2 text-[10px] text-brand-mute"
+                        title="No text-to-speech voice installed for this language"
+                      >
+                        🔇 text only
+                      </span>
+                    )}
                     {isDefault && (
                       <span className="ml-2 text-[10px] uppercase tracking-wide text-brand-primary">
                         default
