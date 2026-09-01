@@ -19,6 +19,7 @@ export async function GET() {
       location: user.location,
       farm: user.farm,
       onboardingCompleted: user.onboardingCompleted,
+      chatPrefs: user.chatPrefs ?? { readAloud: "ask" },
     },
   });
 }

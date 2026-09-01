@@ -28,6 +28,22 @@ const LocationSchema = new Schema(
   { _id: false }
 );
 
+const ChatPrefsSchema = new Schema(
+  {
+    // "ask" (default): show a Read-aloud button under each reply
+    // "always": auto-speak every reply
+    // "never": hide read-aloud entirely
+    readAloud: {
+      type: String,
+      enum: ["ask", "always", "never"],
+      default: "ask",
+    },
+    // Chat can use any of the 13 Indian languages; falls back to preferredLanguage.
+    chatLanguage: { type: String },
+  },
+  { _id: false }
+);
+
 const UserSchema = new Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 80 },
@@ -48,6 +64,7 @@ const UserSchema = new Schema(
     location: { type: LocationSchema, default: () => ({}) },
     farm: { type: FarmSchema, default: () => ({}) },
     onboardingCompleted: { type: Boolean, default: false },
+    chatPrefs: { type: ChatPrefsSchema, default: () => ({}) },
   },
   { timestamps: true }
 );

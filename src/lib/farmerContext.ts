@@ -5,6 +5,7 @@ import { geocode } from "@/lib/geocode";
 import { fetchMandi, bestMarketsByCommodity } from "@/lib/mandi";
 import { rankedSchemes } from "@/lib/schemes";
 import { inr } from "@/lib/format";
+import { findLanguage, languageInstruction, type ChatLangCode } from "@/lib/languages";
 
 // Assemble a compact system-prompt string with the farmer's live context.
 // This is what makes the chatbot answer with real numbers instead of guesses.
@@ -12,26 +13,26 @@ import { inr } from "@/lib/format";
 export type ContextResult = {
   system: string;
   farmerName: string;
-  language: "en" | "hi" | "pa";
+  language: ChatLangCode;
 };
 
-const LANG_NAMES: Record<"en" | "hi" | "pa", string> = {
-  en: "English",
-  hi: "Hindi (हिन्दी)",
-  pa: "Punjabi (ਪੰਜਾਬੀ)",
-};
-
-export async function buildFarmerContext(userId: string): Promise<ContextResult> {
+export async function buildFarmerContext(
+  userId: string,
+  languageOverride?: ChatLangCode
+): Promise<ContextResult> {
   await dbConnect();
   const user = await User.findById(userId).exec();
   if (!user) throw new Error("User not found");
 
-  const language: "en" | "hi" | "pa" =
-    (user.preferredLanguage as "en" | "hi" | "pa") ?? "en";
+  const stored =
+    (user.chatPrefs?.chatLanguage as ChatLangCode | undefined) ??
+    (user.preferredLanguage as ChatLangCode | undefined) ??
+    "en";
+  const language = findLanguage(languageOverride ?? stored).code;
   const parts: string[] = [];
 
   parts.push(
-    `You are KrishiMitra, an AI farming assistant for Indian smallholder farmers. Respond ONLY in ${LANG_NAMES[language]}. Be concise, friendly, and specific with numbers (₹, °C, kg/ha). If you don't know something, say so — do not invent government prices, subsidies, or agronomy facts.`
+    `You are KrishiMitra, an AI farming assistant for Indian smallholder farmers. Respond ONLY in ${languageInstruction(language)}. Be concise, friendly, and specific with numbers (₹, °C, kg/ha). If you don't know something, say so — do not invent government prices, subsidies, or agronomy facts.`
   );
 
   // Farmer profile block

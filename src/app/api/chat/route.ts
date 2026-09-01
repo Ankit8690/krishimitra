@@ -5,9 +5,14 @@ import { dbConnect } from "@/lib/db";
 import { ChatMessage } from "@/models/ChatMessage";
 import { buildFarmerContext } from "@/lib/farmerContext";
 import { chatCompletion, type ChatMessage as LLMMsg } from "@/lib/groq";
+import { CHAT_LANGUAGES, type ChatLangCode } from "@/lib/languages";
 
 const HISTORY_TURNS = 6; // last N user+assistant messages included
-const Body = z.object({ message: z.string().min(1).max(2000) });
+const LANG_CODES = CHAT_LANGUAGES.map((l) => l.code) as [ChatLangCode, ...ChatLangCode[]];
+const Body = z.object({
+  message: z.string().min(1).max(2000),
+  language: z.enum(LANG_CODES).optional(),
+});
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -39,7 +44,7 @@ export async function POST(req: Request) {
 
   try {
     const [context, history] = await Promise.all([
-      buildFarmerContext(session.sub),
+      buildFarmerContext(session.sub, parsed.data.language),
       ChatMessage.find({ userId: session.sub })
         .sort({ createdAt: -1 })
         .limit(HISTORY_TURNS * 2)

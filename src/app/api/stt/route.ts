@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { transcribeAudio } from "@/lib/groq";
+import { findLanguage } from "@/lib/languages";
 
 export const runtime = "nodejs";
 
@@ -9,10 +10,7 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   if (!process.env.GROQ_API_KEY) {
-    return NextResponse.json(
-      { error: "GROQ_API_KEY not configured" },
-      { status: 503 }
-    );
+    return NextResponse.json({ error: "GROQ_API_KEY not configured" }, { status: 503 });
   }
 
   const ct = req.headers.get("content-type") || "";
@@ -25,8 +23,8 @@ export async function POST(req: Request) {
   const form = await req.formData();
   const file = form.get("file");
   const langRaw = form.get("language");
-  const language =
-    langRaw === "en" || langRaw === "hi" || langRaw === "pa" ? langRaw : undefined;
+  const whisperCode =
+    typeof langRaw === "string" ? findLanguage(langRaw).whisper : undefined;
 
   if (!(file instanceof Blob)) {
     return NextResponse.json({ error: "Missing file" }, { status: 400 });
@@ -39,7 +37,7 @@ export async function POST(req: Request) {
     (file as File).name || `audio.${(file.type.split("/")[1] || "webm").split(";")[0]}`;
 
   try {
-    const text = await transcribeAudio(buf, name, language);
+    const text = await transcribeAudio(buf, name, whisperCode);
     return NextResponse.json({ text });
   } catch (err) {
     console.error("[stt] error", err);

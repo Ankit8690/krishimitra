@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import {
   Mic,
   Square,
@@ -12,8 +11,15 @@ import {
   Volume2,
   Loader2,
   Sparkles,
+  Languages,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
+import {
+  CHAT_LANGUAGES,
+  findLanguage,
+  type ChatLangCode,
+} from "@/lib/languages";
 
 type Msg = {
   id: string;
@@ -22,7 +28,10 @@ type Msg = {
   createdAt?: string;
 };
 
-const SUGGESTIONS: Record<"en" | "hi" | "pa", string[]> = {
+type ReadAloudMode = "ask" | "always" | "never";
+type ChatPrefs = { readAloud: ReadAloudMode; chatLanguage?: ChatLangCode };
+
+const SUGGESTIONS: Partial<Record<ChatLangCode, string[]>> = {
   en: [
     "Is today good for spraying?",
     "Best price for wheat today?",
@@ -51,11 +60,29 @@ export default function AskPage() {
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [chatLang, setChatLang] = useState<ChatLangCode>(locale as ChatLangCode);
+  const [prefs, setPrefs] = useState<ChatPrefs>({ readAloud: "ask" });
+  const [showSettings, setShowSettings] = useState(false);
+  const [showLangs, setShowLangs] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
+  // Load user prefs + history
   useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.user?.chatPrefs) {
+          setPrefs({
+            readAloud: d.user.chatPrefs.readAloud ?? "ask",
+            chatLanguage: d.user.chatPrefs.chatLanguage,
+          });
+          if (d.user.chatPrefs.chatLanguage) {
+            setChatLang(d.user.chatPrefs.chatLanguage);
+          }
+        }
+      });
     fetch("/api/chat/history")
       .then((r) => r.json())
       .then((d) => {
@@ -71,12 +98,33 @@ export default function AskPage() {
     });
   }, [messages, sending]);
 
+  async function saveReadAloud(mode: ReadAloudMode) {
+    setPrefs((p) => ({ ...p, readAloud: mode }));
+    await fetch("/api/user/preferences", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ readAloud: mode }),
+    });
+  }
+
+  async function saveChatLanguage(code: ChatLangCode, makeDefault: boolean) {
+    setChatLang(code);
+    setShowLangs(false);
+    if (makeDefault) {
+      setPrefs((p) => ({ ...p, chatLanguage: code }));
+      await fetch("/api/user/preferences", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chatLanguage: code }),
+      });
+    }
+  }
+
   async function send(text: string) {
     const msg = text.trim();
     if (!msg || sending) return;
     setError(null);
     setSending(true);
-    // Optimistic user bubble
     setMessages((m) => [
       ...m,
       { id: `tmp-${Date.now()}`, role: "user", content: msg },
@@ -86,7 +134,7 @@ export default function AskPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg }),
+        body: JSON.stringify({ message: msg, language: chatLang }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -99,7 +147,7 @@ export default function AskPage() {
         data.user,
         data.assistant,
       ]);
-      speak(data.assistant.content);
+      if (prefs.readAloud === "always") speak(data.assistant.content);
     } catch {
       setError("Network error");
       setMessages((m) => m.filter((x) => !x.id.startsWith("tmp-")));
@@ -110,10 +158,9 @@ export default function AskPage() {
 
   function speak(text: string) {
     if (!("speechSynthesis" in window)) return;
-    // Strip markdown for TTS clarity
     const clean = text.replace(/[*_`#>]/g, "").replace(/\s+/g, " ").trim();
     const utter = new SpeechSynthesisUtterance(clean);
-    utter.lang = locale === "hi" ? "hi-IN" : locale === "pa" ? "pa-IN" : "en-IN";
+    utter.lang = findLanguage(chatLang).bcp47;
     utter.rate = 0.95;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
@@ -139,7 +186,7 @@ export default function AskPage() {
         try {
           const fd = new FormData();
           fd.append("file", blob, "audio.webm");
-          fd.append("language", locale);
+          fd.append("language", chatLang);
           const res = await fetch("/api/stt", { method: "POST", body: fd });
           const data = await res.json();
           if (!res.ok) {
@@ -174,25 +221,89 @@ export default function AskPage() {
     window.speechSynthesis?.cancel();
   }
 
-  const suggestions = SUGGESTIONS[locale];
+  const suggestions = SUGGESTIONS[chatLang] ?? SUGGESTIONS.en!;
+  const currentLang = findLanguage(chatLang);
+  const showReadButton = prefs.readAloud !== "never";
 
   return (
     <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100vh-4rem)]">
-      <div className="flex items-center justify-between px-5 mb-3">
+      <div className="flex items-center justify-between px-5 mb-2">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-brand-primary" />
           <h1 className="text-xl font-bold">Ask KrishiMitra</h1>
         </div>
-        {messages.length > 0 && (
+        <div className="flex items-center gap-1">
           <button
-            onClick={clearChat}
-            className="text-brand-mute hover:text-brand-danger p-1.5 rounded-full"
-            aria-label="Clear chat"
+            onClick={() => setShowSettings((s) => !s)}
+            className="text-brand-mute hover:text-brand-ink p-1.5 rounded-full"
+            aria-label="Chat settings"
           >
-            <Trash2 className="w-4 h-4" />
+            <Settings className="w-4 h-4" />
           </button>
+          {messages.length > 0 && (
+            <button
+              onClick={clearChat}
+              className="text-brand-mute hover:text-brand-danger p-1.5 rounded-full"
+              aria-label="Clear chat"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Language chip */}
+      <div className="px-5 mb-2 relative">
+        <button
+          onClick={() => setShowLangs((v) => !v)}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary bg-brand-primary/10 rounded-full px-3 py-1.5 hover:bg-brand-primary/15"
+        >
+          <Languages className="w-3.5 h-3.5" />
+          {currentLang.nativeName} · {currentLang.name}
+        </button>
+        {showLangs && (
+          <LanguagePicker
+            current={chatLang}
+            defaultLang={prefs.chatLanguage}
+            onPick={saveChatLanguage}
+            onClose={() => setShowLangs(false)}
+          />
         )}
       </div>
+
+      {/* Settings panel */}
+      {showSettings && (
+        <div className="px-5 mb-3">
+          <Card>
+            <p className="text-xs uppercase tracking-wide text-brand-mute mb-2">
+              Read aloud
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {(["ask", "always", "never"] as ReadAloudMode[]).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => saveReadAloud(m)}
+                  className={cn(
+                    "h-10 rounded-lg text-sm capitalize transition",
+                    prefs.readAloud === m
+                      ? "bg-brand-primary text-white font-semibold"
+                      : "bg-brand-bg border border-brand-line text-brand-ink"
+                  )}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-brand-mute mt-2">
+              {prefs.readAloud === "ask" &&
+                "A speaker button appears under each reply."}
+              {prefs.readAloud === "always" &&
+                "Every reply is spoken automatically."}
+              {prefs.readAloud === "never" && "Replies stay silent."}
+            </p>
+          </Card>
+        </div>
+      )}
 
       <div
         ref={scrollRef}
@@ -236,13 +347,14 @@ export default function AskPage() {
               )}
             >
               {m.content}
-              {m.role === "assistant" && (
+              {m.role === "assistant" && showReadButton && (
                 <button
                   onClick={() => speak(m.content)}
                   className="mt-2 inline-flex items-center gap-1 text-xs text-brand-primary font-semibold"
                   aria-label="Read aloud"
                 >
-                  <Volume2 className="w-3.5 h-3.5" /> Read aloud
+                  <Volume2 className="w-3.5 h-3.5" />
+                  {prefs.readAloud === "always" ? "Read again" : "Read this?"}
                 </button>
               )}
             </div>
@@ -320,5 +432,69 @@ export default function AskPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+function LanguagePicker({
+  current,
+  defaultLang,
+  onPick,
+  onClose,
+}: {
+  current: ChatLangCode;
+  defaultLang?: ChatLangCode;
+  onPick: (code: ChatLangCode, makeDefault: boolean) => void;
+  onClose: () => void;
+}) {
+  return (
+    <>
+      {/* backdrop */}
+      <div
+        className="fixed inset-0 z-30 bg-black/20"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="absolute left-5 right-5 top-full mt-1 z-40 bg-white border border-brand-line rounded-xl shadow-lg overflow-hidden">
+        <div className="px-4 py-2 border-b border-brand-line text-xs uppercase tracking-wide text-brand-mute">
+          Chat language
+        </div>
+        <ul className="max-h-80 overflow-y-auto">
+          {CHAT_LANGUAGES.map((l) => {
+            const active = l.code === current;
+            const isDefault = l.code === defaultLang;
+            return (
+              <li key={l.code}>
+                <div className="flex items-center border-b border-brand-line last:border-b-0">
+                  <button
+                    onClick={() => onPick(l.code, false)}
+                    className={cn(
+                      "flex-1 text-left px-4 py-2.5 text-sm hover:bg-brand-line/30",
+                      active && "bg-brand-primary/10 text-brand-primary font-semibold"
+                    )}
+                  >
+                    <span className="mr-2">{l.nativeName}</span>
+                    <span className="text-xs text-brand-mute">{l.name}</span>
+                    {isDefault && (
+                      <span className="ml-2 text-[10px] uppercase tracking-wide text-brand-primary">
+                        default
+                      </span>
+                    )}
+                  </button>
+                  {!isDefault && (
+                    <button
+                      onClick={() => onPick(l.code, true)}
+                      className="text-[10px] uppercase tracking-wide text-brand-mute hover:text-brand-primary px-3 py-2 whitespace-nowrap"
+                      title="Make default for future chats"
+                    >
+                      set default
+                    </button>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </>
   );
 }
