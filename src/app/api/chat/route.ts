@@ -43,8 +43,10 @@ type MsgOut = {
   imageUrl?: string;
 };
 
+// SSE format: each event is `data: <json>\n\n`. Browsers do NOT buffer
+// text/event-stream, which is why we prefer it over NDJSON in dev.
 function encodeEvent(evt: Event): Uint8Array {
-  return new TextEncoder().encode(JSON.stringify(evt) + "\n");
+  return new TextEncoder().encode(`data: ${JSON.stringify(evt)}\n\n`);
 }
 
 export async function POST(req: Request) {
@@ -256,8 +258,9 @@ export async function POST(req: Request) {
 
   return new Response(stream, {
     headers: {
-      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
+      "Connection": "keep-alive",
       "X-Accel-Buffering": "no",
     },
   });

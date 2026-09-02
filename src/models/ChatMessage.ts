@@ -17,12 +17,24 @@ const ChatMessageSchema = new Schema(
     tokensIn: { type: Number },
     tokensOut: { type: Number },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    // strict:false lets us persist newly added fields even if Next.js dev has
+    // cached the model in memory from before a schema change. Prevents the
+    // silent-drop bug we hit after adding sessionId and again after imageUrl.
+    strict: false,
+  }
 );
 
 export type ChatMessageDoc = InferSchemaType<typeof ChatMessageSchema> & {
   _id: mongoose.Types.ObjectId;
 };
+
+// In dev, force-rebuild the model whenever this file is (re-)imported, so
+// schema changes are picked up without a full server restart.
+if (process.env.NODE_ENV !== "production" && mongoose.models.ChatMessage) {
+  delete (mongoose.models as Record<string, unknown>).ChatMessage;
+}
 
 export const ChatMessage: Model<ChatMessageDoc> =
   (mongoose.models.ChatMessage as Model<ChatMessageDoc>) ||

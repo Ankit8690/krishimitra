@@ -377,11 +377,17 @@ export default function AskPage() {
         const { value, done } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
-        let nl;
-        while ((nl = buffer.indexOf("\n")) >= 0) {
-          const line = buffer.slice(0, nl).trim();
-          buffer = buffer.slice(nl + 1);
-          if (!line) continue;
+        // SSE events are separated by blank lines. Each event starts with "data: ".
+        let boundary;
+        while ((boundary = buffer.indexOf("\n\n")) >= 0) {
+          const raw = buffer.slice(0, boundary);
+          buffer = buffer.slice(boundary + 2);
+          const payload = raw
+            .split("\n")
+            .filter((l) => l.startsWith("data:"))
+            .map((l) => l.slice(5).trimStart())
+            .join("");
+          if (!payload) continue;
           let evt: {
             type: string;
             text?: string;
@@ -390,14 +396,13 @@ export default function AskPage() {
             error?: string;
           };
           try {
-            evt = JSON.parse(line);
+            evt = JSON.parse(payload);
           } catch {
             continue;
           }
           if (evt.type === "session" && evt.sessionId) {
             setSessionId(evt.sessionId);
           } else if (evt.type === "user" && evt.message) {
-            // Swap the temporary user bubble for the real one
             const real = evt.message;
             setMessages((m) =>
               m.map((x) => (x.id.startsWith("tmp-") ? real : x))
