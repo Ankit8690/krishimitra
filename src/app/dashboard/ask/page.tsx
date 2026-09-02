@@ -94,6 +94,7 @@ export default function AskPage() {
   const [exporting, setExporting] = useState(false);
   const [userName, setUserName] = useState<string>("");
   const [micLevel, setMicLevel] = useState(0); // 0..1, for the pulse animation
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -191,21 +192,50 @@ export default function AskPage() {
   }
 
   async function deleteMessage(id: string) {
-    if (!confirm("Delete this question and its answer?")) return;
+    // Two-tap confirm — first tap arms, second tap (within 4 s) deletes.
+    // Avoids window.confirm() which can be blocked / suppressed by mobile browsers.
+    if (deleteConfirmId !== id) {
+      setDeleteConfirmId(id);
+      setTimeout(
+        () => setDeleteConfirmId((cur) => (cur === id ? null : cur)),
+        4000
+      );
+      return;
+    }
+    setDeleteConfirmId(null);
     stopSpeaking();
+    // Optimistically remove from UI, restore if the server rejects
+    const snapshot = messages;
+    setMessages((m) => m.filter((x) => x.id !== id && !isImmediateFollower(m, id, x)));
     try {
       const res = await fetch(`/api/chat/messages/${id}`, { method: "DELETE" });
-      const data = await res.json();
+      let data: { deletedIds?: string[]; error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {}
+      console.log("[chat] delete result", res.status, data);
       if (!res.ok) {
-        setError(data.error || "Delete failed");
+        setError(data.error || `Delete failed (${res.status})`);
+        setMessages(snapshot);
         return;
       }
+      // Reconcile with server truth
       const deleted = new Set<string>(data.deletedIds ?? [id]);
       setMessages((m) => m.filter((x) => !deleted.has(x.id)));
       loadSessions();
-    } catch {
-      setError("Delete failed");
+    } catch (e) {
+      console.error("[chat] delete network error", e);
+      setError("Delete failed — check your connection");
+      setMessages(snapshot);
     }
+  }
+
+  // Helper for optimistic removal: does `candidate` immediately follow message id in the array?
+  function isImmediateFollower(all: Msg[], id: string, candidate: Msg): boolean {
+    const idx = all.findIndex((x) => x.id === id);
+    if (idx < 0) return false;
+    const next = all[idx + 1];
+    return !!next && next.id === candidate.id && next.role === "assistant";
   }
 
   async function copyMessage(id: string, content: string) {
@@ -394,7 +424,7 @@ export default function AskPage() {
   // Auto-stop settings for the mic:
   //   SILENCE_STOP_MS  — how long of silence auto-stops the recording
   //   SPEECH_THRESHOLD — mic level (0..1) above which we consider it real speech
-  const SILENCE_STOP_MS = 10_000;
+  const SILENCE_STOP_MS = 7_000;
   const SPEECH_THRESHOLD = 0.03;
 
   function cleanupMicResources() {
@@ -712,10 +742,18 @@ export default function AskPage() {
                   </IconAction>
                   <IconAction
                     onClick={() => deleteMessage(m.id)}
-                    label="Delete this question + its answer"
+                    label={
+                      deleteConfirmId === m.id
+                        ? "Tap again to confirm delete"
+                        : "Delete this question + its answer"
+                    }
                     variant="danger"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    {deleteConfirmId === m.id ? (
+                      <span className="text-[10px] font-bold px-1">SURE?</span>
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
                   </IconAction>
                 </div>
               )}
