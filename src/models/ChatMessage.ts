@@ -16,16 +16,6 @@ export type ChatMessageDoc = InferSchemaType<typeof ChatMessageSchema> & {
   _id: mongoose.Types.ObjectId;
 };
 
-// Dev-time safeguard: if the cached model was registered before we added
-// sessionId to the schema, its schema won't have that path and Mongoose will
-// silently drop it on every write. Detect and rebuild in that case.
-function getModel(): Model<ChatMessageDoc> {
-  const existing = mongoose.models.ChatMessage as Model<ChatMessageDoc> | undefined;
-  if (existing && !existing.schema.path("sessionId")) {
-    mongoose.deleteModel("ChatMessage");
-    return mongoose.model<ChatMessageDoc>("ChatMessage", ChatMessageSchema);
-  }
-  return existing ?? mongoose.model<ChatMessageDoc>("ChatMessage", ChatMessageSchema);
-}
-
-export const ChatMessage: Model<ChatMessageDoc> = getModel();
+export const ChatMessage: Model<ChatMessageDoc> =
+  (mongoose.models.ChatMessage as Model<ChatMessageDoc>) ||
+  mongoose.model<ChatMessageDoc>("ChatMessage", ChatMessageSchema);
