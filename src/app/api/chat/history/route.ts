@@ -33,6 +33,7 @@ export async function GET(req: Request) {
       role: m.role,
       content: m.content,
       createdAt: m.createdAt,
+      imageUrl: m.imageUrl ?? undefined,
     })),
   });
 }

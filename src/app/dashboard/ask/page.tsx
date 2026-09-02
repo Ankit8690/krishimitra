@@ -23,7 +23,11 @@ import {
   Share2,
   FileDown,
   Check,
+  Camera,
+  ImagePlus,
 } from "lucide-react";
+import Image from "next/image";
+import { compressToJpegDataUrl } from "@/lib/imageCompress";
 import { cn } from "@/lib/cn";
 import {
   CHAT_LANGUAGES,
@@ -38,6 +42,7 @@ type Msg = {
   role: "user" | "assistant";
   content: string;
   createdAt?: string;
+  imageUrl?: string;
 };
 
 type ReadAloudMode = "ask" | "always" | "never";
@@ -95,6 +100,8 @@ export default function AskPage() {
   const [userName, setUserName] = useState<string>("");
   const [micLevel, setMicLevel] = useState(0); // 0..1, for the pulse animation
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -315,45 +322,136 @@ export default function AskPage() {
 
   async function send(text: string) {
     const msg = text.trim();
-    if (!msg || sending) return;
+    const image = pendingImage;
+    if ((!msg && !image) || sending) return;
+    const finalText = msg || (image ? "What's wrong with this leaf?" : "");
     setError(null);
     setSending(true);
+    setPendingImage(null);
+    const streamingId = `stream-${Date.now()}`;
+    // Optimistic user bubble with the image if present
     setMessages((m) => [
       ...m,
-      { id: `tmp-${Date.now()}`, role: "user", content: msg },
+      {
+        id: `tmp-${Date.now()}`,
+        role: "user",
+        content: finalText,
+        imageUrl: image ?? undefined,
+      },
+      // Empty assistant bubble that we fill with tokens as they arrive
+      { id: streamingId, role: "assistant", content: "" },
     ]);
     setInput("");
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: msg,
+          message: finalText,
           language: chatLang,
           sessionId: sessionId ?? undefined,
+          imageDataUrl: image ?? undefined,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Failed");
-        setMessages((m) => m.filter((x) => !x.id.startsWith("tmp-")));
+      if (!res.ok || !res.body) {
+        // Server rejected before streaming started (e.g. missing GROQ_API_KEY)
+        let msg = `Request failed (${res.status})`;
+        try {
+          const j = await res.json();
+          msg = j.error || msg;
+        } catch {}
+        setError(msg);
+        setMessages((m) =>
+          m.filter((x) => !x.id.startsWith("tmp-") && x.id !== streamingId)
+        );
         return;
       }
-      if (data.sessionId) setSessionId(data.sessionId);
-      setMessages((m) => [
-        ...m.filter((x) => !x.id.startsWith("tmp-")),
-        data.user,
-        data.assistant,
-      ]);
-      if (prefs.readAloud === "always" && hasVoiceForLang(findLanguage(chatLang).bcp47)) {
-        speak(data.assistant.id, data.assistant.content);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let finalAssistant: Msg | null = null;
+      let streamOk = true;
+
+      while (streamOk) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let nl;
+        while ((nl = buffer.indexOf("\n")) >= 0) {
+          const line = buffer.slice(0, nl).trim();
+          buffer = buffer.slice(nl + 1);
+          if (!line) continue;
+          let evt: {
+            type: string;
+            text?: string;
+            sessionId?: string;
+            message?: Msg;
+            error?: string;
+          };
+          try {
+            evt = JSON.parse(line);
+          } catch {
+            continue;
+          }
+          if (evt.type === "session" && evt.sessionId) {
+            setSessionId(evt.sessionId);
+          } else if (evt.type === "user" && evt.message) {
+            // Swap the temporary user bubble for the real one
+            const real = evt.message;
+            setMessages((m) =>
+              m.map((x) => (x.id.startsWith("tmp-") ? real : x))
+            );
+          } else if (evt.type === "token" && evt.text) {
+            setMessages((m) =>
+              m.map((x) =>
+                x.id === streamingId ? { ...x, content: x.content + evt.text } : x
+              )
+            );
+          } else if (evt.type === "done" && evt.message) {
+            finalAssistant = evt.message;
+          } else if (evt.type === "error" && evt.error) {
+            setError(evt.error);
+            streamOk = false;
+          }
+        }
       }
-      loadSessions(); // refresh preview + title after first message
+
+      if (finalAssistant) {
+        const real = finalAssistant;
+        setMessages((m) => m.map((x) => (x.id === streamingId ? real : x)));
+        if (
+          prefs.readAloud === "always" &&
+          hasVoiceForLang(findLanguage(chatLang).bcp47)
+        ) {
+          speak(real.id, real.content);
+        }
+      } else {
+        // Stream ended without a done event — drop the empty placeholder
+        setMessages((m) => m.filter((x) => x.id !== streamingId));
+      }
+      loadSessions();
     } catch {
       setError("Network error");
-      setMessages((m) => m.filter((x) => !x.id.startsWith("tmp-")));
+      setMessages((m) =>
+        m.filter((x) => !x.id.startsWith("tmp-") && x.id !== streamingId)
+      );
     } finally {
       setSending(false);
+    }
+  }
+
+  async function onPickImage(file: File) {
+    setError(null);
+    if (file.size > 8 * 1024 * 1024) {
+      setError("Image too large — please pick one under 8 MB");
+      return;
+    }
+    try {
+      const dataUrl = await compressToJpegDataUrl(file);
+      setPendingImage(dataUrl);
+    } catch {
+      setError("Couldn't read that image");
     }
   }
 
@@ -707,17 +805,35 @@ export default function AskPage() {
               >
                 <div
                   className={cn(
-                    "max-w-[85%] px-3.5 py-2.5 rounded-2xl leading-relaxed",
+                    "max-w-[85%] rounded-2xl leading-relaxed overflow-hidden",
                     m.role === "user"
-                      ? "bg-brand-primary text-white rounded-br-sm text-sm whitespace-pre-wrap"
+                      ? "bg-brand-primary text-white rounded-br-sm text-sm"
                       : "bg-white border border-brand-line rounded-bl-sm text-brand-ink"
                   )}
                 >
-                  {isAssistant ? (
-                    <ChatMarkdown>{m.content}</ChatMarkdown>
-                  ) : (
-                    m.content
+                  {m.imageUrl && (
+                    <div className="relative w-full aspect-[4/3] bg-black/20">
+                      <Image
+                        src={m.imageUrl}
+                        alt="Attached leaf"
+                        fill
+                        sizes="(max-width: 480px) 80vw, 400px"
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </div>
                   )}
+                  <div className="px-3.5 py-2.5 whitespace-pre-wrap">
+                    {isAssistant ? (
+                      m.content ? (
+                        <ChatMarkdown>{m.content}</ChatMarkdown>
+                      ) : (
+                        <Loader2 className="w-4 h-4 animate-spin text-brand-primary" />
+                      )
+                    ) : (
+                      m.content
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -822,14 +938,6 @@ export default function AskPage() {
           );
         })}
 
-        {sending && (
-          <div className="flex justify-start">
-            <div className="bg-white border border-brand-line rounded-2xl rounded-bl-sm px-4 py-3">
-              <Loader2 className="w-4 h-4 animate-spin text-brand-primary" />
-            </div>
-          </div>
-        )}
-
         {error && (
           <div className="text-center text-xs text-brand-danger bg-brand-danger/10 rounded-lg py-2 px-3">
             {error}
@@ -870,8 +978,68 @@ export default function AskPage() {
           e.preventDefault();
           send(input);
         }}
-        className="border-t border-brand-line bg-brand-surface px-3 py-3 flex items-center gap-2"
+        className="border-t border-brand-line bg-brand-surface px-3 py-3 flex flex-col gap-2"
       >
+        {pendingImage && (
+          <div className="flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 rounded-lg p-2">
+            <div className="relative w-14 h-14 rounded overflow-hidden shrink-0 bg-black">
+              <Image
+                src={pendingImage}
+                alt="Attached"
+                fill
+                sizes="56px"
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+            <div className="flex-1 text-xs text-brand-ink">
+              <p className="font-semibold text-brand-primary">Leaf photo attached</p>
+              <p className="text-brand-mute">
+                AI will identify disease and answer your question about it.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPendingImage(null)}
+              className="p-1 rounded-full text-brand-mute hover:bg-brand-danger/10 hover:text-brand-danger"
+              aria-label="Remove image"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+        <div className="flex items-center gap-2">
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onPickImage(f);
+            if (e.target) e.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => imageInputRef.current?.click()}
+          disabled={sending || recording || transcribing}
+          className={cn(
+            "w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
+            "bg-white border border-brand-line text-brand-primary",
+            "hover:bg-brand-primary hover:text-white hover:border-brand-primary",
+            "disabled:opacity-50 disabled:pointer-events-none"
+          )}
+          aria-label="Attach a leaf photo"
+          title="Attach a leaf photo"
+        >
+          {pendingImage ? (
+            <Camera className="w-5 h-5" />
+          ) : (
+            <ImagePlus className="w-5 h-5" />
+          )}
+        </button>
         <button
           type="button"
           onClick={recording ? stopRecording : startRecording}
@@ -921,7 +1089,9 @@ export default function AskPage() {
         />
         <button
           type="submit"
-          disabled={!input.trim() || sending || recording || transcribing}
+          disabled={
+            (!input.trim() && !pendingImage) || sending || recording || transcribing
+          }
           className={cn(
             "w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
             "bg-brand-primary text-white hover:bg-brand-primary-hover",
@@ -931,6 +1101,7 @@ export default function AskPage() {
         >
           <Send className="w-5 h-5" />
         </button>
+        </div>
       </form>
     </div>
   );

@@ -95,6 +95,70 @@ export async function chatCompletion(
   };
 }
 
+/**
+ * Stream a chat completion, yielding text deltas as they arrive.
+ * Does NOT support tools — call chatCompletion first if you need those, then
+ * stream the final turn.
+ */
+export async function* chatCompletionStream(
+  messages: ChatMessage[],
+  opts: { model?: string; temperature?: number; maxTokens?: number } = {}
+): AsyncGenerator<string, void, unknown> {
+  const model = opts.model ?? CHAT_MODEL;
+  const res = await fetch(`${GROQ_BASE}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: opts.temperature ?? 0.4,
+      max_tokens: opts.maxTokens ?? 800,
+      stream: true,
+    }),
+  });
+  if (!res.ok || !res.body) {
+    const err = await res.text().catch(() => "");
+    if (
+      (res.status === 429 || res.status >= 500) &&
+      model !== CHAT_MODEL_FALLBACK
+    ) {
+      console.warn(`[groq stream] ${model} failed ${res.status}, retrying with fallback`);
+      yield* chatCompletionStream(messages, { ...opts, model: CHAT_MODEL_FALLBACK });
+      return;
+    }
+    throw new Error(`Groq stream error ${res.status}: ${err.slice(0, 200)}`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let sep;
+    while ((sep = buffer.indexOf("\n")) >= 0) {
+      const line = buffer.slice(0, sep).trim();
+      buffer = buffer.slice(sep + 1);
+      if (!line.startsWith("data:")) continue;
+      const payload = line.slice(5).trim();
+      if (payload === "[DONE]") return;
+      try {
+        const json = JSON.parse(payload) as {
+          choices?: { delta?: { content?: string } }[];
+        };
+        const delta = json.choices?.[0]?.delta?.content;
+        if (delta) yield delta;
+      } catch {
+        // Ignore malformed chunk, keep going
+      }
+    }
+  }
+}
+
 export async function transcribeAudio(
   buffer: ArrayBuffer,
   filename: string,
