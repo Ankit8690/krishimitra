@@ -84,7 +84,9 @@ export default function AskPage() {
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [chatLang, setChatLang] = useState<ChatLangCode>(locale as ChatLangCode);
+  // chatLang is the language KrishiMitra will *reply in*. It always starts from
+  // the user's server-stored preference (loaded below), NOT the UI locale.
+  const [chatLang, setChatLang] = useState<ChatLangCode>("en");
   const [prefs, setPrefs] = useState<ChatPrefs>({ readAloud: "ask" });
   const [showSettings, setShowSettings] = useState(false);
   const [showLangs, setShowLangs] = useState(false);
@@ -140,15 +142,17 @@ export default function AskPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.user?.name) setUserName(d.user.name);
-        if (d.user?.chatPrefs) {
-          setPrefs({
-            readAloud: d.user.chatPrefs.readAloud ?? "ask",
-            chatLanguage: d.user.chatPrefs.chatLanguage,
-          });
-          if (d.user.chatPrefs.chatLanguage) {
-            setChatLang(d.user.chatPrefs.chatLanguage);
-          }
-        }
+        // Resolve chat language: explicit chatPrefs override wins, else the
+        // profile's preferredLanguage, else fall back to UI locale.
+        const resolved: ChatLangCode =
+          (d.user?.chatPrefs?.chatLanguage as ChatLangCode | undefined) ??
+          (d.user?.preferredLanguage as ChatLangCode | undefined) ??
+          (locale as ChatLangCode);
+        setChatLang(resolved);
+        setPrefs({
+          readAloud: d.user?.chatPrefs?.readAloud ?? "ask",
+          chatLanguage: d.user?.chatPrefs?.chatLanguage,
+        });
       });
     loadHistory();
     loadSessions();

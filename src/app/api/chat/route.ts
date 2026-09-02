@@ -11,7 +11,7 @@ import {
   chatCompletionStream,
   type ChatMessage as LLMMsg,
 } from "@/lib/groq";
-import { CHAT_LANGUAGES, type ChatLangCode } from "@/lib/languages";
+import { CHAT_LANGUAGES, type ChatLangCode, findLanguage, languageInstruction } from "@/lib/languages";
 import { deriveTitle, ensureCurrentSession } from "@/lib/chatSessions";
 import { CHAT_TOOLS, runTool } from "@/lib/chatTools";
 import { detectDisease } from "@/lib/disease";
@@ -173,9 +173,20 @@ export async function POST(req: Request) {
             content: m.content,
           }));
 
+        // Last-mile language reminder: placed AFTER history and right before the
+        // user's turn, so the LLM sees the instruction fresh regardless of any
+        // Hindi/Punjabi/etc. text sitting in prior messages.
+        const languageReminder: LLMMsg = {
+          role: "system",
+          content: `⚠ Reply to the next user message ONLY in ${languageInstruction(
+            context.language
+          )}. Do NOT copy the language of prior turns. End with the mandatory Sources: section.`,
+        };
+
         const messages: LLMMsg[] = [
           { role: "system", content: context.system },
           ...prior,
+          languageReminder,
           { role: "user", content: message + imageAnnotation },
         ];
 
