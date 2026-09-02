@@ -93,9 +93,14 @@ export default function AskPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   const [userName, setUserName] = useState<string>("");
+  const [micLevel, setMicLevel] = useState(0); // 0..1, for the pulse animation
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const silenceTimerRef = useRef<number | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const heardSpeechRef = useRef(false);
 
   // Detect installed TTS voices (updates when OS voices load asynchronously)
   useEffect(() => {
@@ -183,6 +188,24 @@ export default function AskPage() {
       setMessages([]);
     }
     loadSessions();
+  }
+
+  async function deleteMessage(id: string) {
+    if (!confirm("Delete this question and its answer?")) return;
+    stopSpeaking();
+    try {
+      const res = await fetch(`/api/chat/messages/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Delete failed");
+        return;
+      }
+      const deleted = new Set<string>(data.deletedIds ?? [id]);
+      setMessages((m) => m.filter((x) => !deleted.has(x.id)));
+      loadSessions();
+    } catch {
+      setError("Delete failed");
+    }
   }
 
   async function copyMessage(id: string, content: string) {
@@ -368,20 +391,45 @@ export default function AskPage() {
     };
   }, []);
 
+  // Auto-stop settings for the mic:
+  //   SILENCE_STOP_MS  — how long of silence auto-stops the recording
+  //   SPEECH_THRESHOLD — mic level (0..1) above which we consider it real speech
+  const SILENCE_STOP_MS = 10_000;
+  const SPEECH_THRESHOLD = 0.03;
+
+  function cleanupMicResources() {
+    if (silenceTimerRef.current) {
+      window.cancelAnimationFrame(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setMicLevel(0);
+  }
+
   async function startRecording() {
     setError(null);
+    heardSpeechRef.current = false;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
       const rec = new MediaRecorder(stream, { mimeType: "audio/webm" });
       chunksRef.current = [];
       rec.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       rec.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
+        cleanupMicResources();
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        if (blob.size < 1000) {
-          setError("Recording too short — hold the mic longer");
+        // No speech detected → don't waste a Whisper call, tell the farmer to retry
+        if (!heardSpeechRef.current || blob.size < 1500) {
+          setError("Didn't catch that — please tap the mic and speak again.");
           return;
         }
         setTranscribing(true);
@@ -393,8 +441,10 @@ export default function AskPage() {
           const data = await res.json();
           if (!res.ok) {
             setError(data.error || "Transcription failed");
-          } else if (data.text) {
+          } else if (data.text && data.text.trim().length > 0) {
             send(data.text);
+          } else {
+            setError("Didn't catch that — please tap the mic and speak again.");
           }
         } catch {
           setError("Transcription failed");
@@ -402,19 +452,64 @@ export default function AskPage() {
           setTranscribing(false);
         }
       };
+
+      // Silence detection with Web Audio API
+      const AudioCtxCls =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
+      const audioCtx = new AudioCtxCls();
+      audioContextRef.current = audioCtx;
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      const buffer = new Uint8Array(analyser.frequencyBinCount);
+      let lastSpeechAt = Date.now();
+
+      const tick = () => {
+        analyser.getByteTimeDomainData(buffer);
+        // Compute RMS deviation from silence (128 is the center for 8-bit PCM)
+        let sum = 0;
+        for (let i = 0; i < buffer.length; i++) {
+          const v = (buffer[i] - 128) / 128;
+          sum += v * v;
+        }
+        const rms = Math.sqrt(sum / buffer.length);
+        setMicLevel(Math.min(1, rms * 4));
+        if (rms > SPEECH_THRESHOLD) {
+          heardSpeechRef.current = true;
+          lastSpeechAt = Date.now();
+        } else if (Date.now() - lastSpeechAt > SILENCE_STOP_MS) {
+          stopRecording();
+          return;
+        }
+        silenceTimerRef.current = window.requestAnimationFrame(tick);
+      };
+      silenceTimerRef.current = window.requestAnimationFrame(tick);
+
       mediaRef.current = rec;
       rec.start();
       setRecording(true);
     } catch {
       setError("Microphone access denied");
+      cleanupMicResources();
     }
   }
 
   function stopRecording() {
-    mediaRef.current?.stop();
+    // The recorder's onstop handler runs cleanup for us; here we just stop it.
+    if (mediaRef.current && mediaRef.current.state !== "inactive") {
+      mediaRef.current.stop();
+    }
     mediaRef.current = null;
     setRecording(false);
   }
+
+  // Safety net: stop mic if the user leaves the page mid-recording
+  useEffect(() => {
+    return () => cleanupMicResources();
+  }, []);
 
 
   const suggestions = SUGGESTIONS[chatLang] ?? SUGGESTIONS.en!;
@@ -615,6 +710,13 @@ export default function AskPage() {
                   >
                     <RotateCcw className="w-4 h-4" />
                   </IconAction>
+                  <IconAction
+                    onClick={() => deleteMessage(m.id)}
+                    label="Delete this question + its answer"
+                    variant="danger"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </IconAction>
                 </div>
               )}
 
@@ -737,22 +839,34 @@ export default function AskPage() {
           onClick={recording ? stopRecording : startRecording}
           disabled={transcribing || sending}
           className={cn(
-            "w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
+            "relative w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
             recording
-              ? "bg-brand-danger text-white animate-pulse"
+              ? "bg-brand-danger text-white"
               : transcribing
                 ? "bg-brand-line text-brand-mute"
                 : "bg-brand-primary text-white hover:bg-brand-primary-hover"
           )}
           aria-label={recording ? "Stop recording" : "Start recording"}
         >
-          {transcribing ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : recording ? (
-            <Square className="w-5 h-5" />
-          ) : (
-            <Mic className="w-5 h-5" />
+          {recording && (
+            <span
+              className="absolute inset-0 rounded-full bg-brand-danger/40"
+              style={{
+                transform: `scale(${1 + micLevel * 0.6})`,
+                transition: "transform 80ms linear",
+              }}
+              aria-hidden="true"
+            />
           )}
+          <span className="relative z-10">
+            {transcribing ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : recording ? (
+              <Square className="w-5 h-5" />
+            ) : (
+              <Mic className="w-5 h-5" />
+            )}
+          </span>
         </button>
         <input
           value={input}
