@@ -19,6 +19,10 @@ import {
   Plus,
   MessageSquare,
   X,
+  Copy,
+  Share2,
+  FileDown,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import {
@@ -27,6 +31,7 @@ import {
   type ChatLangCode,
 } from "@/lib/languages";
 import { ChatMarkdown } from "@/components/ChatMarkdown";
+import { exportChatAsPdf } from "@/lib/exportPdf";
 
 type Msg = {
   id: string;
@@ -85,6 +90,9 @@ export default function AskPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [showSessions, setShowSessions] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const [userName, setUserName] = useState<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -118,6 +126,7 @@ export default function AskPage() {
     fetch("/api/auth/me")
       .then((r) => r.json())
       .then((d) => {
+        if (d.user?.name) setUserName(d.user.name);
         if (d.user?.chatPrefs) {
           setPrefs({
             readAloud: d.user.chatPrefs.readAloud ?? "ask",
@@ -174,6 +183,52 @@ export default function AskPage() {
       setMessages([]);
     }
     loadSessions();
+  }
+
+  async function copyMessage(id: string, content: string) {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId((cur) => (cur === id ? null : cur)), 1500);
+    } catch {
+      setError("Could not copy to clipboard");
+    }
+  }
+
+  async function shareMessage(content: string) {
+    const text = `${content}\n\n— from KrishiMitra`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ text, title: "KrishiMitra reply" });
+      } catch (e) {
+        // User cancelled — ignore
+        if ((e as DOMException)?.name !== "AbortError") {
+          setError("Could not open share sheet");
+        }
+      }
+      return;
+    }
+    // Desktop fallback: WhatsApp Web
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  }
+
+  async function exportChat() {
+    if (messages.length === 0) {
+      setError("Nothing to export in this chat yet");
+      return;
+    }
+    setExporting(true);
+    setError(null);
+    try {
+      const currentSession = sessions.find((s) => s.id === sessionId);
+      const title = currentSession?.title ?? "Chat";
+      await exportChatAsPdf(title, userName || "Farmer", messages);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "PDF export failed");
+    } finally {
+      setExporting(false);
+    }
   }
 
   useEffect(() => {
@@ -393,6 +448,21 @@ export default function AskPage() {
           <h1 className="text-xl font-bold">Ask KrishiMitra</h1>
         </div>
         <div className="flex items-center gap-1">
+          {messages.length > 0 && (
+            <button
+              onClick={exportChat}
+              disabled={exporting}
+              className="text-brand-mute hover:text-brand-primary p-1.5 rounded-full disabled:opacity-50"
+              aria-label="Export chat as PDF"
+              title="Export chat as PDF"
+            >
+              {exporting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <FileDown className="w-4 h-4" />
+              )}
+            </button>
+          )}
           <button
             onClick={startNewSession}
             className="text-brand-mute hover:text-brand-primary p-1.5 rounded-full"
@@ -525,8 +595,8 @@ export default function AskPage() {
                 </div>
               </div>
 
-              {isAssistant && showReadButton && (
-                <div className="flex justify-center items-center gap-2">
+              {isAssistant && (
+                <div className="flex justify-center items-center gap-2 flex-wrap">
                   {active ? (
                     <>
                       <IconAction
@@ -555,12 +625,33 @@ export default function AskPage() {
                       </IconAction>
                     </>
                   ) : (
-                    <IconAction
-                      onClick={() => speak(m.id, m.content)}
-                      label="Read aloud"
-                    >
-                      <Volume2 className="w-4 h-4" />
-                    </IconAction>
+                    <>
+                      {showReadButton && (
+                        <IconAction
+                          onClick={() => speak(m.id, m.content)}
+                          label="Read aloud"
+                        >
+                          <Volume2 className="w-4 h-4" />
+                        </IconAction>
+                      )}
+                      <IconAction
+                        onClick={() => copyMessage(m.id, m.content)}
+                        label={copiedId === m.id ? "Copied" : "Copy text"}
+                        variant={copiedId === m.id ? "active" : "idle"}
+                      >
+                        {copiedId === m.id ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </IconAction>
+                      <IconAction
+                        onClick={() => shareMessage(m.content)}
+                        label="Share"
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </IconAction>
+                    </>
                   )}
                 </div>
               )}
