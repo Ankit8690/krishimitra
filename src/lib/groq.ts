@@ -3,8 +3,30 @@
 
 const GROQ_BASE = "https://api.groq.com/openai/v1";
 
-export type ChatRole = "system" | "user" | "assistant";
-export type ChatMessage = { role: ChatRole; content: string };
+export type ChatRole = "system" | "user" | "assistant" | "tool";
+export type ToolCall = {
+  id: string;
+  type: "function";
+  function: { name: string; arguments: string };
+};
+export type ChatMessage =
+  | { role: "system" | "user"; content: string }
+  | { role: "assistant"; content: string | null; tool_calls?: ToolCall[] }
+  | { role: "tool"; content: string; tool_call_id: string };
+
+export type Tool = {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>;
+  };
+};
+
+export type ChatResponse = {
+  content: string | null;
+  toolCalls?: ToolCall[];
+};
 
 // Groq's 2026 roster — Llama removed, replaced by OpenAI's gpt-oss + Qwen.
 // gpt-oss-120b is highest quality; gpt-oss-20b is a fast fallback.
@@ -20,25 +42,35 @@ function key(): string {
 
 export async function chatCompletion(
   messages: ChatMessage[],
-  opts: { model?: string; temperature?: number; maxTokens?: number } = {}
-): Promise<string> {
+  opts: {
+    model?: string;
+    temperature?: number;
+    maxTokens?: number;
+    tools?: Tool[];
+  } = {}
+): Promise<ChatResponse> {
   const model = opts.model ?? CHAT_MODEL;
+  const body: Record<string, unknown> = {
+    model,
+    messages,
+    temperature: opts.temperature ?? 0.4,
+    max_tokens: opts.maxTokens ?? 800,
+  };
+  if (opts.tools && opts.tools.length > 0) {
+    body.tools = opts.tools;
+    body.tool_choice = "auto";
+  }
+
   const res = await fetch(`${GROQ_BASE}/chat/completions`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${key()}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      model,
-      messages,
-      temperature: opts.temperature ?? 0.4,
-      max_tokens: opts.maxTokens ?? 800,
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
-    const body = await res.text();
-    // Auto-fall-back to the smaller model if the big one is rate-limited or down
+    const err = await res.text();
     if (
       (res.status === 429 || res.status >= 500) &&
       model !== CHAT_MODEL_FALLBACK
@@ -46,12 +78,21 @@ export async function chatCompletion(
       console.warn(`[groq] ${model} failed ${res.status}, retrying with fallback`);
       return chatCompletion(messages, { ...opts, model: CHAT_MODEL_FALLBACK });
     }
-    throw new Error(`Groq chat error ${res.status}: ${body.slice(0, 200)}`);
+    throw new Error(`Groq chat error ${res.status}: ${err.slice(0, 200)}`);
   }
   const json = (await res.json()) as {
-    choices: { message: { content: string } }[];
+    choices: {
+      message: {
+        content: string | null;
+        tool_calls?: ToolCall[];
+      };
+    }[];
   };
-  return json.choices[0]?.message?.content ?? "";
+  const msg = json.choices[0]?.message;
+  return {
+    content: msg?.content ?? null,
+    toolCalls: msg?.tool_calls,
+  };
 }
 
 export async function transcribeAudio(

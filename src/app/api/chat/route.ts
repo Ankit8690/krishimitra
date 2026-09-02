@@ -9,6 +9,9 @@ import { buildFarmerContext } from "@/lib/farmerContext";
 import { chatCompletion, type ChatMessage as LLMMsg } from "@/lib/groq";
 import { CHAT_LANGUAGES, type ChatLangCode } from "@/lib/languages";
 import { deriveTitle, ensureCurrentSession } from "@/lib/chatSessions";
+import { CHAT_TOOLS, runTool } from "@/lib/chatTools";
+
+const MAX_TOOL_TURNS = 3;
 
 const HISTORY_TURNS = 6;
 const LANG_CODES = CHAT_LANGUAGES.map((l) => l.code) as [ChatLangCode, ...ChatLangCode[]];
@@ -97,10 +100,43 @@ export async function POST(req: Request) {
       { role: "user", content: parsed.data.message },
     ];
 
-    const reply = await chatCompletion(messages, {
-      temperature: 0.4,
-      maxTokens: 700,
-    });
+    // Tool-augmented loop: LLM may call tools (mandi/weather for other states),
+    // we execute, feed results back, ask again. Bounded to MAX_TOOL_TURNS
+    // to protect against runaway loops.
+    let reply = "";
+    for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
+      const resp = await chatCompletion(messages, {
+        temperature: 0.4,
+        maxTokens: 700,
+        tools: CHAT_TOOLS,
+      });
+      if (!resp.toolCalls || resp.toolCalls.length === 0) {
+        reply = resp.content ?? "";
+        break;
+      }
+      // Push the assistant's tool-call message onto the transcript first
+      messages.push({
+        role: "assistant",
+        content: resp.content,
+        tool_calls: resp.toolCalls,
+      });
+      // Execute each tool and feed its result back
+      for (const call of resp.toolCalls) {
+        const result = await runTool(call.function.name, call.function.arguments);
+        console.log(
+          `[chat] tool ${call.function.name}(${call.function.arguments.slice(0, 80)}) → ${result.slice(0, 100)}…`
+        );
+        messages.push({
+          role: "tool",
+          tool_call_id: call.id,
+          content: result,
+        });
+      }
+    }
+    if (!reply) {
+      reply =
+        "I hit my tool-call limit. Please rephrase or ask a simpler question.";
+    }
 
     const asstMsg = await ChatMessage.create({
       userId: session.sub,
