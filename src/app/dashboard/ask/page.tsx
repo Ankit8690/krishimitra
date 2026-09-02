@@ -26,6 +26,7 @@ import {
   findLanguage,
   type ChatLangCode,
 } from "@/lib/languages";
+import { ChatMarkdown } from "@/components/ChatMarkdown";
 
 type Msg = {
   id: string;
@@ -510,13 +511,17 @@ export default function AskPage() {
               >
                 <div
                   className={cn(
-                    "max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm whitespace-pre-wrap leading-relaxed",
+                    "max-w-[85%] px-3.5 py-2.5 rounded-2xl leading-relaxed",
                     m.role === "user"
-                      ? "bg-brand-primary text-white rounded-br-sm"
-                      : "bg-white border border-brand-line rounded-bl-sm"
+                      ? "bg-brand-primary text-white rounded-br-sm text-sm whitespace-pre-wrap"
+                      : "bg-white border border-brand-line rounded-bl-sm text-brand-ink"
                   )}
                 >
-                  {m.content}
+                  {isAssistant ? (
+                    <ChatMarkdown>{m.content}</ChatMarkdown>
+                  ) : (
+                    m.content
+                  )}
                 </div>
               </div>
 

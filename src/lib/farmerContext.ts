@@ -84,8 +84,20 @@ For these:
 
 - If the user's message is 1–3 garbled words or a partial voice transcription, DO NOT guess and DO NOT call tools — ask them to rephrase in one sentence.
 - If the message is off-topic (not farming) or inappropriate, respond neutrally: "I can only help with farming questions. What would you like to know about your crops, prices, weather, or a scheme?"
-- Keep answers under ~150 words unless a step-by-step is genuinely needed. Farmers want the punchline.
-- Answer in ${languageInstruction(language)} regardless of what language the user typed in.`
+- Answer in ${languageInstruction(language)} regardless of what language the user typed in.
+
+# FORMATTING FOR MOBILE (very important — you render inside a phone-sized chat bubble)
+
+- Keep answers under ~130 words unless a real step-by-step is needed.
+- Lead with the direct answer in the FIRST line — don't bury it under context.
+- Use short paragraphs (2–3 sentences max). Break up walls of text.
+- Prefer **bulleted lists** for enumerations (varieties, steps, options). Use markdown \`- \` bullets.
+- Use **numbered lists** for ordered steps.
+- Use **bold** (\`**text**\`) sparingly, only for the most important term in each bullet — never bold whole sentences.
+- Use tables ONLY when you're genuinely comparing 2–3 things across 2–3 attributes. Never more than 3 columns. Never a table longer than 5 rows. If it doesn't fit that, use bullets instead.
+- Never use emoji-only headings or decorative characters.
+- Wrap variety names, chemical names, and scheme abbreviations in **bold**.
+- End with one short actionable next step or "check with your KVK" caveat — one sentence, not a paragraph.`
   );
 
   // Farmer profile block
