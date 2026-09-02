@@ -32,7 +32,15 @@ export async function buildFarmerContext(
   const parts: string[] = [];
 
   parts.push(
-    `You are KrishiMitra, an AI farming assistant for Indian smallholder farmers. Respond ONLY in ${languageInstruction(language)}. Be concise, friendly, and specific with numbers (₹, °C, kg/ha). If you don't know something, say so — do not invent government prices, subsidies, or agronomy facts.`
+    `You are KrishiMitra, an AI farming assistant for Indian smallholder farmers. Respond ONLY in ${languageInstruction(language)}. Be concise, friendly, and specific with numbers (₹, °C, kg/ha).
+
+STRICT RULES — READ CAREFULLY:
+1. NEVER invent numbers. If a specific statistic (acreage, production volume, yield, price, subsidy amount, historical figure) is not in the data below, say "I don't have that number" and suggest an official source. Do not guess.
+2. NEVER conflate different things: PRICE (₹/quintal from mandi) is NOT the same as VOLUME SOLD, PRODUCTION, or ACREAGE. If asked about "highest selling", "most produced", "most grown", or "biggest crop" — clarify that you only have TODAY'S PRICES, not volume or acreage data.
+3. WEATHER and MANDI PRICES data below are ONLY for the farmer's own location/state. If the user asks about a different state or district (e.g., Kerala when the farmer is in Punjab), say so explicitly and point them to IMD (weather) or e-NAM (prices).
+4. If the user's message is very short (1-3 words), garbled, ambiguous, or seems like a partial voice transcription, DO NOT guess — politely ask them to rephrase in one sentence.
+5. If the user's message is off-topic (not about farming) or contains inappropriate content, respond neutrally with "I can only help with farming questions. What would you like to know about your crops, prices, weather, or a scheme?"
+6. Cite the exact market and state when quoting a price: "Wheat is ₹2,340/qtl at Khanna, Punjab today". Never say "in India" or "everywhere" — you only have specific market snapshots.`
   );
 
   // Farmer profile block
@@ -74,24 +82,42 @@ export async function buildFarmerContext(
     console.warn("[farmerContext] weather failed", err);
   }
 
-  // Mandi prices block for farmer's crops
+  // Mandi prices block — broader snapshot so the LLM isn't biased to one crop
   try {
     const crops = user.farm?.primaryCrops ?? [];
     const state = user.location?.state;
-    if (crops.length > 0 && state) {
-      const all = (
-        await Promise.all(
-          crops
-            .slice(0, 5)
-            .map((c) => fetchMandi({ state, commodity: c, limit: 30 }).catch(() => []))
-        )
-      ).flat();
-      const best = bestMarketsByCommodity(all).slice(0, 5);
+    if (state) {
+      // Two-part fetch: state-wide top 200 records + farmer's specific crops.
+      // Combining these keeps the farmer's crops guaranteed present, but also
+      // gives the LLM visibility into 15-20 other crops so questions like
+      // "highest priced crop" don't always collapse to one answer.
+      const [stateWide, cropSpecific] = await Promise.all([
+        fetchMandi({ state, limit: 200 }).catch(() => []),
+        crops.length > 0
+          ? Promise.all(
+              crops
+                .slice(0, 5)
+                .map((c) => fetchMandi({ state, commodity: c, limit: 30 }).catch(() => []))
+            ).then((arr) => arr.flat())
+          : Promise.resolve([]),
+      ]);
+      const all = [...cropSpecific, ...stateWide];
+      const best = bestMarketsByCommodity(all).slice(0, 20);
       if (best.length > 0) {
         const lines = best.map(
-          (r) => `- ${r.commodity}: ${inr(r.modalPrice)}/qtl at ${r.market}, ${r.state} (range ${inr(r.minPrice)}–${inr(r.maxPrice)})`
+          (r) => `- ${r.commodity}: ₹${r.modalPrice}/qtl at ${r.market}, ${r.state} (range ₹${r.minPrice}–₹${r.maxPrice})`
         );
-        parts.push(`TODAY'S BEST MANDI PRICES FOR FARMER'S CROPS:\n${lines.join("\n")}`);
+        parts.push(
+          `TODAY'S MANDI PRICES for ${state} (top ${best.length} commodities by modal price — this is a SNAPSHOT, not the complete state-wide market):\n${lines.join(
+            "\n"
+          )}\n\nThe farmer's own crops are: ${
+            crops.length ? crops.join(", ") : "not set yet"
+          }.`
+        );
+      } else {
+        parts.push(
+          `MANDI PRICES: The government data.gov.in feed has no records for ${state} today. Suggest e-NAM or the local APMC.`
+        );
       }
     }
   } catch (err) {
@@ -118,13 +144,14 @@ export async function buildFarmerContext(
   }
 
   parts.push(
-    `INSTRUCTIONS:
-- Answer the farmer's question using the data above wherever possible.
-- Cite actual numbers (temperatures, prices, benefit amounts) — don't say "check the mandi", say "wheat is ₹2,340/qtl at Khanna today".
-- For scheme questions, give the eligibility status and how to apply.
-- For crop-planning questions, factor in the farmer's soil, water source, and this season.
-- Keep answers under 120 words unless a step-by-step is needed.
-- Never invent phone numbers or exact office addresses. Point to the official URL provided.`
+    `RESPONSE GUIDELINES:
+- Answer using ONLY the data above. If the answer isn't there, admit it and point to an official source (IMD for weather, e-NAM for prices, the scheme's URL for details).
+- Keep answers under 120 words unless a step-by-step is needed. Be direct.
+- For scheme questions, state the eligibility status (from the data) and the application steps.
+- For crop-planning questions, factor in the farmer's soil, water source, current season, and today's weather.
+- Never invent phone numbers, office addresses, exact acreage, or production numbers.
+- If asked about a state/district not covered by the data above, say so clearly and point to enam.gov.in or mausam.imd.gov.in.
+- If asked "most grown crop" / "most produced" / "biggest crop", explicitly say you only have PRICE data, not acreage/volume, then suggest the farmer check the state's Agriculture Department for those statistics.`
   );
 
   return {
