@@ -570,6 +570,7 @@ export default function AskPage() {
 
         {messages.map((m) => {
           const isAssistant = m.role === "assistant";
+          const isUser = m.role === "user";
           const active = speakingId === m.id;
           return (
             <div key={m.id} className="space-y-1.5">
@@ -594,6 +595,28 @@ export default function AskPage() {
                   )}
                 </div>
               </div>
+
+              {isUser && (
+                <div className="flex justify-end items-center gap-2 pr-1">
+                  <IconAction
+                    onClick={() => copyMessage(m.id, m.content)}
+                    label={copiedId === m.id ? "Copied" : "Copy your question"}
+                    variant={copiedId === m.id ? "active" : "idle"}
+                  >
+                    {copiedId === m.id ? (
+                      <Check className="w-4 h-4" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </IconAction>
+                  <IconAction
+                    onClick={() => setInput(m.content)}
+                    label="Reuse this question in the input"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </IconAction>
+                </div>
+              )}
 
               {isAssistant && (
                 <div className="flex justify-center items-center gap-2 flex-wrap">
@@ -675,6 +698,29 @@ export default function AskPage() {
         {voiceMissingNote && (
           <div className="text-xs text-brand-ink bg-brand-accent/10 border border-brand-accent/40 rounded-lg py-2 px-3">
             {voiceMissingNote}
+          </div>
+        )}
+        {messages.length > 0 && (
+          <div className="pt-2">
+            <button
+              onClick={exportChat}
+              disabled={exporting}
+              className={cn(
+                "w-full h-12 rounded-xl border-2 border-dashed border-brand-primary/40 text-brand-primary font-semibold text-sm",
+                "flex items-center justify-center gap-2 hover:bg-brand-primary/5 transition",
+                "disabled:opacity-60 disabled:cursor-wait"
+              )}
+            >
+              {exporting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Creating PDF…
+                </>
+              ) : (
+                <>
+                  <FileDown className="w-4 h-4" /> Save complete chat as PDF
+                </>
+              )}
+            </button>
           </div>
         )}
       </div>
