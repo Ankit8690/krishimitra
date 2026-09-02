@@ -20,6 +20,12 @@ export const metadata: Metadata = {
   description:
     "Weather, mandi prices, disease detection and AI advice in Hindi, Punjabi and English.",
   manifest: "/manifest.webmanifest",
+  // Prevent Chrome / Edge / Safari from auto-translating the page.
+  // Auto-translation inserts extra DOM nodes that React can't reconcile,
+  // which causes intermittent "removeChild on Node" errors.
+  other: {
+    google: "notranslate",
+  },
 };
 
 export const viewport = {
@@ -34,7 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${notoDev.variable} h-full antialiased`}
+      translate="no"
+      className={`${inter.variable} ${notoDev.variable} notranslate h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-brand-bg text-brand-ink">
         <I18nProvider>{children}</I18nProvider>
