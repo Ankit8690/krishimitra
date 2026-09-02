@@ -173,21 +173,33 @@ export async function POST(req: Request) {
             content: m.content,
           }));
 
-        // Last-mile language reminder: placed AFTER history and right before the
-        // user's turn, so the LLM sees the instruction fresh regardless of any
-        // Hindi/Punjabi/etc. text sitting in prior messages.
+        console.log(
+          `[chat] user=%s lang=%s (requested=%s, profile-lang=%s)`,
+          session.sub,
+          context.language,
+          language ?? "(none)",
+          context.language
+        );
+
+        // Belt + suspenders language enforcement. Three separate cues:
+        //   1. System-prompt rule (already in context.system)
+        //   2. A fresh system message right before the user's turn
+        //   3. A directive appended INSIDE the user's message content
+        // The third is the most effective — LLMs pay closest attention to
+        // instructions in the user turn.
+        const langName = languageInstruction(context.language);
         const languageReminder: LLMMsg = {
           role: "system",
-          content: `⚠ Reply to the next user message ONLY in ${languageInstruction(
-            context.language
-          )}. Do NOT copy the language of prior turns. End with the mandatory Sources: section.`,
+          content: `⚠ HARD RULE: Reply to the next user message ONLY in ${langName}. Do NOT copy the language of prior turns. End with the mandatory Sources: section.`,
         };
+        const enforcedUserContent =
+          `${message}${imageAnnotation}\n\n---\n(SYSTEM: Reply in ${langName} only. This overrides any language used in earlier messages of this chat.)`;
 
         const messages: LLMMsg[] = [
           { role: "system", content: context.system },
           ...prior,
           languageReminder,
-          { role: "user", content: message + imageAnnotation },
+          { role: "user", content: enforcedUserContent },
         ];
 
         // Tool loop (non-streaming) — resolves any get_mandi_prices / get_weather calls
