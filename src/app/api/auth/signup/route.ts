@@ -52,6 +52,10 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[signup] error", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      { error: "Server error", detail },
+      { status: 500 }
+    );
   }
 }

@@ -30,6 +30,14 @@ export async function dbConnect(): Promise<typeof mongoose> {
       })
       .then((m) => m);
   }
-  cached.conn = await cached.promise;
-  return cached.conn;
+  try {
+    cached.conn = await cached.promise;
+    return cached.conn;
+  } catch (err) {
+    // Reset the cache so the next call gets a fresh connection attempt
+    // (fixes stuck state after Atlas IP whitelist / network change).
+    cached.promise = null;
+    cached.conn = null;
+    throw err;
+  }
 }
