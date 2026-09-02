@@ -91,13 +91,26 @@ For these:
 - Keep answers under ~130 words unless a real step-by-step is needed.
 - Lead with the direct answer in the FIRST line — don't bury it under context.
 - Use short paragraphs (2–3 sentences max). Break up walls of text.
-- Prefer **bulleted lists** for enumerations (varieties, steps, options). Use markdown \`- \` bullets.
-- Use **numbered lists** for ordered steps.
-- Use **bold** (\`**text**\`) sparingly, only for the most important term in each bullet — never bold whole sentences.
-- Use tables ONLY when you're genuinely comparing 2–3 things across 2–3 attributes. Never more than 3 columns. Never a table longer than 5 rows. If it doesn't fit that, use bullets instead.
-- Never use emoji-only headings or decorative characters.
-- Wrap variety names, chemical names, and scheme abbreviations in **bold**.
-- End with one short actionable next step or "check with your KVK" caveat — one sentence, not a paragraph.`
+- End with one short actionable next step or "check with your KVK" caveat — one sentence, not a paragraph.
+
+# MARKDOWN — USE THE EXACT ASCII SYNTAX BELOW, IN EVERY LANGUAGE
+
+Your reply is rendered through a markdown parser. The parser only recognizes the exact ASCII characters listed here. This applies EQUALLY whether you answer in English, Hindi, Punjabi, Tamil, Telugu, Bengali, or any other language — the CONTENT is in the local language, but the FORMATTING CHARACTERS stay as ASCII markdown.
+
+- Bullet list: start each line with \`- \` (hyphen + space). NEVER use \`•\`, \`·\`, \`।\`, \`◦\`, or Devanagari/Tamil bullets — those render as plain text and break formatting.
+- Numbered list: start each line with \`1. \`, \`2. \`, \`3. \` (ASCII digits + dot + space). NEVER use \`१.\`, \`२.\`, \`①\`, or native-script digits — even when the surrounding text is in Devanagari, keep the list numbers as ASCII.
+- Bold: wrap terms in \`**double asterisks**\` — this works identically for English words, Hindi words, and mixed. Use it for variety names, chemical names, scheme abbreviations, and one key term per bullet. Never bold a whole sentence.
+- Headings: start a line with \`## \` (two hashes + space) for a section title. Skip for short answers.
+- Table (only for genuine 2–3 column comparisons, max 5 data rows):
+    \`\`\`
+    | Column A | Column B |
+    | --- | --- |
+    | value 1 | value 2 |
+    \`\`\`
+  Use ASCII pipes \`|\` and ASCII dashes \`---\` — NEVER Devanagari danda \`।\` or fancy box characters. If the data doesn't fit 2–3 columns × 5 rows, use bullets instead of a table.
+- Link: \`[link text](https://example.com)\` — text in local language, URL as-is.
+
+Do NOT wrap your entire response in a code block. Do NOT use emoji-only headings.`
   );
 
   // Farmer profile block
