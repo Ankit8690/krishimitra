@@ -1,0 +1,47 @@
+{
+  "Wheat": [
+    { "das": [0, 5], "en": "Sow seed 4-5 cm deep at 100-125 kg/ha. Apply basal DAP + MOP.", "hi": "बीज 4-5 सेमी गहरा 100-125 kg/ha बोएं। DAP + MOP का बेसल डोज़ डालें।", "pa": "ਬੀਜ 4-5 ਸੈਮੀ ਡੂੰਘਾ 100-125 kg/ha ਬੀਜੋ। DAP + MOP ਬੇਸਲ ਪਾਓ।" },
+    { "das": [18, 25], "en": "First irrigation (CRI stage — crown root initiation). Top-dress 1/3 N as urea.", "hi": "पहली सिंचाई (CRI अवस्था)। 1/3 यूरिया टॉप-ड्रेस करें।", "pa": "ਪਹਿਲੀ ਸਿੰਚਾਈ (CRI ਸਟੇਜ)। 1/3 ਯੂਰੀਆ ਟਾਪ-ਡ੍ਰੈੱਸ ਕਰੋ।" },
+    { "das": [40, 50], "en": "Second irrigation at tillering. Watch for yellow rust — spray Propiconazole if seen.", "hi": "फूटान अवस्था में दूसरी सिंचाई। पीली रस्ट दिखे तो प्रोपिकोनाज़ोल छिड़कें।", "pa": "ਫੁਟਾਨ ਸਮੇਂ ਦੂਜੀ ਸਿੰਚਾਈ। ਪੀਲੀ ਰਸਟ ਦਿਸੇ ਤਾਂ ਪ੍ਰੋਪਿਕੋਨਾਜ਼ੋਲ ਸਪਰੇ ਕਰੋ।" },
+    { "das": [60, 75], "en": "Third irrigation at jointing. Top-dress remaining N.", "hi": "जॉइंटिंग अवस्था में तीसरी सिंचाई। बची यूरिया डालें।", "pa": "ਜੌਇੰਟਿੰਗ ਸਮੇਂ ਤੀਜੀ ਸਿੰਚਾਈ। ਬਾਕੀ ਯੂਰੀਆ ਪਾਓ।" },
+    { "das": [80, 95], "en": "Fourth irrigation at booting. Scout for aphids on flag leaf.", "hi": "बूटिंग अवस्था में चौथी सिंचाई। ऊपरी पत्ती पर माहू देखें।", "pa": "ਬੂਟਿੰਗ ਸਮੇਂ ਚੌਥੀ ਸਿੰਚਾਈ। ਉੱਪਰਲੇ ਪੱਤੇ 'ਤੇ ਮਾਹੂ ਵੇਖੋ।" },
+    { "das": [100, 115], "en": "Fifth irrigation at grain fill. This is the critical yield stage — don't skip.", "hi": "दाना भरने पर पांचवीं सिंचाई। यह उपज की सबसे ज़रूरी अवस्था है।", "pa": "ਦਾਣਾ ਭਰਨ ਵੇਲੇ ਪੰਜਵੀਂ ਸਿੰਚਾਈ। ਇਹ ਸਭ ਤੋਂ ਜ਼ਰੂਰੀ ਸਟੇਜ ਹੈ।" },
+    { "das": [125, 140], "en": "Harvest when grain moisture drops to ~14%. Dry to 12% before storage.", "hi": "जब दाने में 14% नमी हो तब कटाई करें। भंडारण से पहले 12% तक सुखाएं।", "pa": "ਜਦ ਦਾਣੇ ਵਿੱਚ 14% ਨਮੀ ਹੋਵੇ, ਕਟਾਈ ਕਰੋ। ਸਟੋਰੇਜ ਤੋਂ ਪਹਿਲਾਂ 12% ਤੱਕ ਸੁਕਾਓ।" }
+  ],
+  "Rice": [
+    { "das": [0, 5], "en": "Transplant 25-30 day nursery seedlings at 20×15 cm spacing. Keep 5 cm standing water.", "hi": "25-30 दिन की नर्सरी के पौधे 20×15 सेमी दूरी पर लगाएं। 5 सेमी पानी रखें।", "pa": "25-30 ਦਿਨ ਦੀ ਪਨੀਰੀ 20×15 ਸੈਮੀ ਦੂਰੀ 'ਤੇ ਲਾਓ। 5 ਸੈਮੀ ਪਾਣੀ ਰੱਖੋ।" },
+    { "das": [15, 25], "en": "Apply first N top-dress (1/3 urea). Weed manually or with Butachlor.", "hi": "पहला यूरिया टॉप-ड्रेस (1/3)। खरपतवार हटाएं या ब्यूटाक्लोर डालें।", "pa": "ਪਹਿਲੀ ਯੂਰੀਆ ਟਾਪ-ਡ੍ਰੈੱਸ (1/3)। ਨਦੀਨ ਹਟਾਓ ਜਾਂ ਬਿਊਟਾਕਲੋਰ ਪਾਓ।" },
+    { "das": [40, 55], "en": "Second N top-dress at panicle initiation. Watch for stem borer — install pheromone traps.", "hi": "पेनिकल शुरू होने पर दूसरा यूरिया। तना छेदक के लिए फेरोमोन ट्रैप लगाएं।", "pa": "ਪੈਨਿਕਲ ਸ਼ੁਰੂ ਹੋਣ 'ਤੇ ਦੂਜੀ ਯੂਰੀਆ। ਤਣਾ ਬੋਰਰ ਲਈ ਫੇਰੋਮੋਨ ਟ੍ਰੈਪ ਲਾਓ।" },
+    { "das": [70, 85], "en": "Third N at flowering. Drain field for 3-4 days if BLB shows.", "hi": "फूल आने पर तीसरा यूरिया। बैक्टीरियल लीफ ब्लाइट दिखे तो 3-4 दिन पानी सुखाएं।", "pa": "ਫੁੱਲ ਆਉਣ 'ਤੇ ਤੀਜੀ ਯੂਰੀਆ। BLB ਦਿਸੇ ਤਾਂ 3-4 ਦਿਨ ਪਾਣੀ ਸੁਕਾਓ।" },
+    { "das": [95, 115], "en": "Grain fill stage — maintain 2-3 cm water. Stop irrigation 10 days before harvest.", "hi": "दाना भरने पर 2-3 सेमी पानी रखें। कटाई से 10 दिन पहले पानी बंद करें।", "pa": "ਦਾਣਾ ਭਰਨ ਵੇਲੇ 2-3 ਸੈਮੀ ਪਾਣੀ। ਕਟਾਈ ਤੋਂ 10 ਦਿਨ ਪਹਿਲਾਂ ਪਾਣੀ ਬੰਦ ਕਰੋ।" },
+    { "das": [115, 130], "en": "Harvest at 20-22% grain moisture. Dry to 14% for storage.", "hi": "20-22% नमी पर कटाई करें। भंडारण के लिए 14% तक सुखाएं।", "pa": "20-22% ਨਮੀ 'ਤੇ ਕਟਾਈ। ਸਟੋਰੇਜ ਲਈ 14% ਤੱਕ ਸੁਕਾਓ।" }
+  ],
+  "Cotton": [
+    { "das": [0, 7], "en": "Sow at 67×30 cm (BT) or 90×60 cm (desi). Treat seed with Imidacloprid.", "hi": "BT कपास 67×30 सेमी, देसी 90×60 सेमी। बीज को इमिडाक्लोप्रिड से उपचारित करें।", "pa": "BT ਕਪਾਹ 67×30 ਸੈਮੀ, ਦੇਸੀ 90×60 ਸੈਮੀ। ਬੀਜ ਨੂੰ ਇਮਿਡਾਕਲੋਪ੍ਰਿਡ ਨਾਲ ਟ੍ਰੀਟ ਕਰੋ।" },
+    { "das": [20, 30], "en": "Thin to one plant per hill. First irrigation. Weed manually.", "hi": "एक जगह एक पौधा रखें। पहली सिंचाई करें। खरपतवार हटाएं।", "pa": "ਇੱਕ ਥਾਂ ਇੱਕ ਬੂਟਾ ਰੱਖੋ। ਪਹਿਲੀ ਸਿੰਚਾਈ। ਨਦੀਨ ਹਟਾਓ।" },
+    { "das": [45, 60], "en": "Square formation. Scout for jassids and whitefly — spray neem 5ml/L if threshold crossed.", "hi": "स्क्वायर बनने की अवस्था। जैसिड/सफ़ेद मक्खी दिखे तो नीम तेल 5ml/L छिड़कें।", "pa": "ਸਕੁਏਅਰ ਬਣਨ ਦੀ ਸਟੇਜ। ਜੈਸਿਡ/ਸਫੈਦ ਮੱਖੀ ਦਿਸੇ ਤਾਂ ਨੀਮ ਤੇਲ 5ml/L।" },
+    { "das": [80, 110], "en": "Flowering + boll formation. Critical water need — irrigate every 12-15 days.", "hi": "फूल और टिंडा अवस्था। हर 12-15 दिन में सिंचाई ज़रूरी।", "pa": "ਫੁੱਲ ਤੇ ਟਿੰਡਾ ਸਟੇਜ। ਹਰ 12-15 ਦਿਨਾਂ 'ਤੇ ਸਿੰਚਾਈ ਜ਼ਰੂਰੀ।" },
+    { "das": [120, 160], "en": "First picking (Kapas) when 40% bolls open. Pick every 15-20 days.", "hi": "40% टिंडे खुलने पर पहली चुनाई। हर 15-20 दिन में चुनाई करें।", "pa": "40% ਟਿੰਡੇ ਖੁੱਲ੍ਹਣ 'ਤੇ ਪਹਿਲੀ ਚੁਗਾਈ। ਹਰ 15-20 ਦਿਨਾਂ 'ਤੇ ਚੁਗਾਈ।" }
+  ],
+  "Potato": [
+    { "das": [0, 5], "en": "Plant sprouted tubers 5 cm deep at 60×20 cm. Apply full P + K basal.", "hi": "अंकुरित कंद 5 सेमी गहरे 60×20 सेमी पर लगाएं। बेसल P + K पूरा डालें।", "pa": "ਅੰਗਰੇ ਹੋਏ ਕੰਦ 5 ਸੈਮੀ ਡੂੰਘੇ 60×20 ਸੈਮੀ 'ਤੇ ਲਾਓ। ਪੂਰਾ P + K ਬੇਸਲ ਪਾਓ।" },
+    { "das": [20, 30], "en": "Earthing up + first N top-dress. Watch for cutworm.", "hi": "मिट्टी चढ़ाएं और पहला यूरिया डालें। कटवर्म पर नज़र रखें।", "pa": "ਮਿੱਟੀ ਚੜ੍ਹਾਓ ਤੇ ਪਹਿਲੀ ਯੂਰੀਆ ਪਾਓ। ਕਟਵਰਮ 'ਤੇ ਨਜ਼ਰ ਰੱਖੋ।" },
+    { "das": [45, 60], "en": "Second earthing up. Spray Mancozeb 2g/L as protective — late blight risk window.", "hi": "दूसरी बार मिट्टी चढ़ाएं। लेट ब्लाइट के बचाव में मैंकोज़ेब 2g/L।", "pa": "ਦੂਜੀ ਮਿੱਟੀ ਚੜ੍ਹਾਈ। ਲੇਟ ਬਲਾਈਟ ਬਚਾਅ ਲਈ ਮੈਂਕੋਜ਼ੇਬ 2g/L।" },
+    { "das": [75, 90], "en": "Stop irrigation 8-10 days before harvest so skin sets.", "hi": "कटाई से 8-10 दिन पहले सिंचाई बंद करें ताकि छिलका मज़बूत हो।", "pa": "ਕਟਾਈ ਤੋਂ 8-10 ਦਿਨ ਪਹਿਲਾਂ ਸਿੰਚਾਈ ਬੰਦ ਕਰੋ।" },
+    { "das": [90, 100], "en": "Harvest. Cure at 15-18°C for 10 days before cold storage.", "hi": "कटाई करें। कोल्ड स्टोर से पहले 15-18°C पर 10 दिन क्योरिंग करें।", "pa": "ਕਟਾਈ। ਕੋਲਡ ਸਟੋਰ ਤੋਂ ਪਹਿਲਾਂ 15-18°C 'ਤੇ 10 ਦਿਨ ਕਿਊਰਿੰਗ।" }
+  ],
+  "Mustard": [
+    { "das": [0, 5], "en": "Sow at 30×10 cm, 4-5 kg/ha seed. Apply full P + basal N.", "hi": "30×10 सेमी पर 4-5 kg/ha बीज बोएं। पूरा P + बेसल N डालें।", "pa": "30×10 ਸੈਮੀ 'ਤੇ 4-5 kg/ha ਬੀਜ ਬੀਜੋ। ਪੂਰਾ P + ਬੇਸਲ N ਪਾਓ।" },
+    { "das": [20, 30], "en": "Thin to 10 cm plant spacing. Apply first N top-dress at first irrigation.", "hi": "10 सेमी दूरी रखें। पहली सिंचाई पर पहला यूरिया डालें।", "pa": "10 ਸੈਮੀ ਦੂਰੀ ਰੱਖੋ। ਪਹਿਲੀ ਸਿੰਚਾਈ 'ਤੇ ਪਹਿਲੀ ਯੂਰੀਆ।" },
+    { "das": [40, 55], "en": "Watch for aphids at flowering — spray Dimethoate 1ml/L if colonies seen.", "hi": "फूल आने पर माहू देखें — कॉलोनी दिखे तो डाइमेथोएट 1ml/L।", "pa": "ਫੁੱਲ ਆਉਣ 'ਤੇ ਮਾਹੂ ਵੇਖੋ — ਕਲੋਨੀ ਦਿਸੇ ਤਾਂ ਡਾਈਮੇਥੋਏਟ 1ml/L।" },
+    { "das": [70, 90], "en": "Pod formation — second light irrigation only if very dry.", "hi": "फली बनने पर हल्की दूसरी सिंचाई (ज़रूरी हो तभी)।", "pa": "ਫਲੀ ਬਣਨ 'ਤੇ ਹਲਕੀ ਦੂਜੀ ਸਿੰਚਾਈ।" },
+    { "das": [105, 120], "en": "Harvest when 70% pods turn yellow-brown. Dry in field 3-4 days before threshing.", "hi": "70% फलियां पीली-भूरी हों तो कटाई करें। थ्रेशिंग से पहले 3-4 दिन सुखाएं।", "pa": "70% ਫਲੀਆਂ ਪੀਲੀਆਂ-ਭੂਰੀਆਂ ਹੋਣ 'ਤੇ ਕਟਾਈ। ਥ੍ਰੈਸ਼ਿੰਗ ਤੋਂ ਪਹਿਲਾਂ 3-4 ਦਿਨ ਸੁਕਾਓ।" }
+  ],
+  "Maize": [
+    { "das": [0, 5], "en": "Sow at 60×20 cm, 20 kg/ha. Treat seed with Trichoderma 4g/kg.", "hi": "60×20 सेमी पर 20 kg/ha बीज बोएं। ट्राइकोडर्मा 4g/kg से उपचार करें।", "pa": "60×20 ਸੈਮੀ 'ਤੇ 20 kg/ha ਬੀਜ। ਟ੍ਰਾਈਕੋਡਰਮਾ 4g/kg ਨਾਲ ਟ੍ਰੀਟ ਕਰੋ।" },
+    { "das": [25, 35], "en": "Knee-high stage — first N top-dress + earthing up. Weed control.", "hi": "घुटने की ऊंचाई पर पहला यूरिया और मिट्टी चढ़ाना। खरपतवार हटाएं।", "pa": "ਗੋਡੇ ਦੀ ਉਚਾਈ 'ਤੇ ਪਹਿਲੀ ਯੂਰੀਆ ਤੇ ਮਿੱਟੀ ਚੜ੍ਹਾਓ। ਨਦੀਨ ਹਟਾਓ।" },
+    { "das": [45, 60], "en": "Tasseling — second N. Fall armyworm scout: check leaf whorls for larvae.", "hi": "टैसल आने पर दूसरा यूरिया। फॉल आर्मीवर्म के लिए पत्ती के अंदर देखें।", "pa": "ਟੈਸਲ ਆਉਣ 'ਤੇ ਦੂਜੀ ਯੂਰੀਆ। ਫਾਲ ਆਰਮੀਵਰਮ ਲਈ ਪੱਤੇ ਦੇ ਅੰਦਰ ਵੇਖੋ।" },
+    { "das": [75, 90], "en": "Grain fill — critical water need, irrigate every 10 days.", "hi": "दाना भरने पर हर 10 दिन में सिंचाई ज़रूरी।", "pa": "ਦਾਣਾ ਭਰਨ ਵੇਲੇ ਹਰ 10 ਦਿਨਾਂ 'ਤੇ ਸਿੰਚਾਈ।" },
+    { "das": [100, 115], "en": "Harvest when cobs' husks turn brown and grain hits 20% moisture.", "hi": "जब भुट्टे के छिलके भूरे हों और दाने में 20% नमी हो, कटाई करें।", "pa": "ਜਦ ਭੁੱਟੇ ਦੇ ਛਿਲਕੇ ਭੂਰੇ ਹੋਣ ਤੇ 20% ਨਮੀ ਹੋਵੇ, ਕਟਾਈ।" }
+  ]
+}

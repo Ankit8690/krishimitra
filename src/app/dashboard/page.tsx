@@ -16,6 +16,8 @@ import {
   Landmark,
   FlaskConical,
   ScanLine,
+  Users,
+  Calendar,
 } from "lucide-react";
 import { inr } from "@/lib/format";
 import type { WeatherReport } from "@/lib/weather";
@@ -38,6 +40,14 @@ type MandiCard = {
   maxPrice: number;
 };
 
+type TodayTask = {
+  crop: string;
+  sowingDate: string;
+  daysSince: number;
+  stageRange: [number, number];
+  text: string;
+};
+
 export default function DashboardHome() {
   const { t } = useI18n();
   const router = useRouter();
@@ -46,6 +56,7 @@ export default function DashboardHome() {
   const [wxError, setWxError] = useState<string | null>(null);
   const [prices, setPrices] = useState<MandiCard[] | null>(null);
   const [pricesError, setPricesError] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<TodayTask[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,6 +87,11 @@ export default function DashboardHome() {
           else setPricesError(d.error ?? "Prices unavailable");
         })
         .catch(() => setPricesError("Prices unavailable"));
+
+      fetch("/api/tasks/today")
+        .then((r) => r.json())
+        .then((d) => setTasks(d.tasks ?? []))
+        .catch(() => setTasks([]));
     })();
   }, [router]);
 
@@ -255,17 +271,61 @@ export default function DashboardHome() {
           </Link>
         </div>
 
-        {/* Task card (placeholder for Phase 5) */}
+        {/* Today's tasks — live from crop calendar */}
         <Card className="bg-gradient-to-br from-brand-primary/5 to-white">
-          <CardTitle>
-            <span className="inline-flex items-center gap-2">
-              <Sprout className="w-4 h-4" /> {t("dashboard.task_card")}
-            </span>
-          </CardTitle>
-          <p className="mt-3 text-brand-ink">
-            Personalized daily tasks arrive with your crop calendar in Phase 5 🌱
-          </p>
+          <div className="flex items-center justify-between">
+            <CardTitle>
+              <span className="inline-flex items-center gap-2">
+                <Calendar className="w-4 h-4" /> {t("dashboard.task_card")}
+              </span>
+            </CardTitle>
+            <Link
+              href="/dashboard/profile#sowing"
+              className="text-xs text-brand-primary font-semibold"
+            >
+              Set dates
+            </Link>
+          </div>
+          {tasks && tasks.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {tasks.slice(0, 3).map((task) => (
+                <li key={task.crop} className="text-sm">
+                  <p className="font-semibold text-brand-primary">
+                    {task.crop}
+                    <span className="ml-2 text-xs text-brand-mute font-normal">
+                      Day {task.daysSince}
+                    </span>
+                  </p>
+                  <p className="text-brand-ink mt-0.5">{task.text}</p>
+                </li>
+              ))}
+            </ul>
+          ) : tasks ? (
+            <p className="mt-3 text-sm text-brand-mute">
+              Add sowing dates for your crops on the Profile page to see today&apos;s
+              tasks personalised to each crop&apos;s stage.
+            </p>
+          ) : (
+            <div className="mt-3 h-14 rounded-lg bg-brand-line/40 animate-pulse" />
+          )}
         </Card>
+
+        {/* Community shortcut */}
+        <Link href="/dashboard/community" className="block">
+          <Card className="active:scale-[0.99] transition">
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                <span className="inline-flex items-center gap-2">
+                  <Users className="w-4 h-4" /> Community board
+                </span>
+              </CardTitle>
+              <ChevronRight className="w-4 h-4 text-brand-mute" />
+            </div>
+            <p className="mt-3 text-sm text-brand-mute">
+              Rent equipment, exchange seeds, hire labour, sell produce.
+            </p>
+          </Card>
+        </Link>
       </div>
 
       <Link

@@ -14,6 +14,8 @@ const FarmSchema = new Schema(
       default: "unknown",
     },
     primaryCrops: { type: [String], default: [] },
+    // Map crop name → ISO date string of sowing. Powers today's task card.
+    sowingDates: { type: Map, of: String, default: () => ({}) },
   },
   { _id: false }
 );
