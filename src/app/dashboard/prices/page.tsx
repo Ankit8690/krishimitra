@@ -6,6 +6,7 @@ import { Combobox } from "@/components/ui/Combobox";
 import { ArrowUpDown, TrendingUp } from "lucide-react";
 import { inr, fmtShortDate } from "@/lib/format";
 import { useI18n } from "@/i18n/I18nProvider";
+import { tCommodity } from "@/lib/dictionaries";
 
 type Record = {
   state: string;
@@ -22,7 +23,7 @@ type Record = {
 type SortKey = "modalPrice" | "commodity" | "market";
 
 export default function PricesPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [records, setRecords] = useState<Record[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [commodity, setCommodity] = useState<string>("");
@@ -125,7 +126,7 @@ export default function PricesPage() {
                   className="grid grid-cols-[1fr_1fr_5rem] px-3 py-2.5 text-sm items-center"
                 >
                   <div>
-                    <p className="font-semibold">{r.commodity}</p>
+                    <p className="font-semibold">{tCommodity(r.commodity, locale)}</p>
                     {r.variety && (
                       <p className="text-xs text-brand-mute">{r.variety}</p>
                     )}

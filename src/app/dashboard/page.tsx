@@ -22,6 +22,7 @@ import {
 import { inr } from "@/lib/format";
 import type { WeatherReport } from "@/lib/weather";
 import { weatherEmoji, weatherLabel } from "@/lib/weather";
+import { tCommodity, tWeather } from "@/lib/dictionaries";
 
 type Me = {
   id: string;
@@ -49,7 +50,7 @@ type TodayTask = {
 };
 
 export default function DashboardHome() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
   const [wx, setWx] = useState<WeatherReport | null>(null);
@@ -144,7 +145,7 @@ export default function DashboardHome() {
                     </span>
                   </p>
                   <p className="text-brand-mute text-sm">
-                    {weatherLabel(wx.current.weatherCode)} ·{" "}
+                    {tWeather(weatherLabel(wx.current.weatherCode), locale)} ·{" "}
                     {Math.round(wx.current.humidity)}% RH
                   </p>
                 </div>
@@ -188,7 +189,7 @@ export default function DashboardHome() {
                     className="py-2 flex items-center justify-between"
                   >
                     <div>
-                      <p className="font-semibold">{r.commodity}</p>
+                      <p className="font-semibold">{tCommodity(r.commodity, locale)}</p>
                       <p className="text-xs text-brand-mute">
                         {r.market}, {r.state}
                       </p>

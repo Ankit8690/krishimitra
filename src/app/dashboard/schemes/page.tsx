@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { ArrowLeft, ExternalLink, Check, X, Landmark } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
+import { tSchemeName, tSchemeBenefit } from "@/lib/dictionaries";
 
 type Scheme = {
   id: string;
@@ -19,7 +20,7 @@ type Scheme = {
 };
 
 export default function SchemesPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [schemes, setSchemes] = useState<Scheme[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -73,13 +74,15 @@ export default function SchemesPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className="font-semibold truncate">{s.name}</p>
+                        <p className="font-semibold truncate">
+                          {tSchemeName(s.id, locale, s.name)}
+                        </p>
                         <span className="text-[10px] uppercase tracking-wide text-brand-mute shrink-0">
                           {s.shortName}
                         </span>
                       </div>
                       <p className="text-sm text-brand-primary font-semibold mt-0.5">
-                        {s.benefit}
+                        {tSchemeBenefit(s.id, locale, s.benefit)}
                       </p>
                       <p className="text-xs text-brand-mute mt-1 line-clamp-2">
                         {s.summary}

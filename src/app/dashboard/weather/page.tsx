@@ -8,9 +8,10 @@ import type { WeatherReport } from "@/lib/weather";
 import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { dayShort, hourShort } from "@/lib/format";
 import { useI18n } from "@/i18n/I18nProvider";
+import { tWeather, tSprayReason } from "@/lib/dictionaries";
 
 export default function WeatherPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [wx, setWx] = useState<WeatherReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +54,7 @@ export default function WeatherPage() {
                   </span>
                 </p>
                 <p className="text-brand-mute mt-1">
-                  {weatherLabel(wx.current.weatherCode)}
+                  {tWeather(weatherLabel(wx.current.weatherCode), locale)}
                 </p>
               </div>
               <div className="text-right space-y-1 text-sm text-brand-mute">
@@ -76,7 +77,7 @@ export default function WeatherPage() {
                   : "bg-brand-danger/10 text-brand-danger"
               }`}
             >
-              {wx.sprayAdvice.ok ? "🟢" : "🔴"} {wx.sprayAdvice.reason}
+              {wx.sprayAdvice.ok ? "🟢" : "🔴"} {tSprayReason(wx.sprayAdvice.reason, locale)}
             </div>
           </Card>
 
