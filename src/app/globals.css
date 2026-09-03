@@ -32,6 +32,40 @@ html {
   color-scheme: light;
 }
 
+/* Soft agricultural background pattern (barely-there wheat weave) */
+.km-hero-pattern {
+  background-color: var(--brand-bg);
+  background-image:
+    radial-gradient(at 20% 20%, rgba(46, 125, 50, 0.10) 0px, transparent 55%),
+    radial-gradient(at 80% 10%, rgba(244, 163, 64, 0.10) 0px, transparent 55%),
+    radial-gradient(at 60% 90%, rgba(46, 125, 50, 0.10) 0px, transparent 60%);
+}
+
+.km-field-pattern {
+  background-image:
+    linear-gradient(180deg, transparent 0, transparent 32px, rgba(46, 125, 50, 0.06) 32px, rgba(46, 125, 50, 0.06) 34px),
+    linear-gradient(90deg, transparent 0, transparent 48px, rgba(46, 125, 50, 0.04) 48px, rgba(46, 125, 50, 0.04) 49px);
+  background-size: 100% 34px, 49px 100%;
+}
+
+.km-glow-card {
+  position: relative;
+}
+.km-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.4), rgba(244, 163, 64, 0.4));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
 body {
   background: var(--brand-bg);
   color: var(--brand-ink);

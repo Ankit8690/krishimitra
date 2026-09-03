@@ -23,7 +23,7 @@ import { inr } from "@/lib/format";
 import type { WeatherReport } from "@/lib/weather";
 import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { tCommodity, tWeather } from "@/lib/dictionaries";
-import { ViewModeToggle } from "@/components/ViewModeToggle";
+import { DailyQuote } from "@/components/DailyQuote";
 
 type Me = {
   id: string;
@@ -125,6 +125,10 @@ export default function DashboardHome() {
           <LanguageSwitcher />
         </div>
       </header>
+
+      <div className="mb-4">
+        <DailyQuote />
+      </div>
 
       <div className="km-dashboard-grid grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Weather card — tappable */}
