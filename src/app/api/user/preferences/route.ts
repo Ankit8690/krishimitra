@@ -10,6 +10,7 @@ const CHAT_LANG_CODES = CHAT_LANGUAGES.map((l) => l.code) as [string, ...string[
 const Body = z.object({
   readAloud: z.enum(["ask", "always", "never"]).optional(),
   chatLanguage: z.enum(CHAT_LANG_CODES).optional(),
+  preferredLanguage: z.enum(["en", "hi", "pa"]).optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -25,6 +26,7 @@ export async function PATCH(req: Request) {
   const $set: Record<string, unknown> = {};
   if (parsed.data.readAloud) $set["chatPrefs.readAloud"] = parsed.data.readAloud;
   if (parsed.data.chatLanguage) $set["chatPrefs.chatLanguage"] = parsed.data.chatLanguage;
+  if (parsed.data.preferredLanguage) $set.preferredLanguage = parsed.data.preferredLanguage;
   if (Object.keys($set).length === 0) {
     return NextResponse.json({ ok: true });
   }

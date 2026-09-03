@@ -204,10 +204,12 @@ export default function DashboardHome() {
               </ul>
             ) : prices ? (
               <p className="mt-3 text-sm text-brand-mute">
-                No price data for your crops today. Try adding more crops in profile.
+                {t("dashboard.no_prices")}
               </p>
             ) : pricesError ? (
-              <p className="mt-3 text-sm text-brand-mute">{pricesError}</p>
+              <p className="mt-3 text-sm text-brand-mute">
+                {t("dashboard.prices_unavailable")}
+              </p>
             ) : (
               <div className="mt-3 space-y-2">
                 <div className="h-8 rounded bg-brand-line/40 animate-pulse" />
@@ -224,13 +226,13 @@ export default function DashboardHome() {
             <div className="flex items-center justify-between">
               <CardTitle>
                 <span className="inline-flex items-center gap-2">
-                  <Landmark className="w-4 h-4" /> Govt schemes for you
+                  <Landmark className="w-4 h-4" /> {t("dashboard.govt_schemes")}
                 </span>
               </CardTitle>
               <ChevronRight className="w-4 h-4 text-brand-mute" />
             </div>
             <p className="mt-3 text-brand-ink">
-              Personalized list of schemes you can apply to today.
+              {t("dashboard.govt_schemes_body")}
             </p>
           </Card>
         </Link>
@@ -240,18 +242,18 @@ export default function DashboardHome() {
           <Link href="/dashboard/recommend" className="block">
             <Card className="h-full active:scale-[0.99] transition">
               <Sprout className="w-6 h-6 text-brand-primary" />
-              <p className="font-semibold mt-2">Best crop</p>
+              <p className="font-semibold mt-2">{t("dashboard.best_crop")}</p>
               <p className="text-xs text-brand-mute">
-                AI picks the most profitable crop for your soil.
+                {t("dashboard.best_crop_body")}
               </p>
             </Card>
           </Link>
           <Link href="/dashboard/fertilizer" className="block">
             <Card className="h-full active:scale-[0.99] transition">
               <FlaskConical className="w-6 h-6 text-brand-primary" />
-              <p className="font-semibold mt-2">Fertilizer</p>
+              <p className="font-semibold mt-2">{t("dashboard.fertilizer")}</p>
               <p className="text-xs text-brand-mute">
-                Exact bags and doses for your crop.
+                {t("dashboard.fertilizer_body")}
               </p>
             </Card>
           </Link>
@@ -260,9 +262,9 @@ export default function DashboardHome() {
               <div className="flex items-center gap-3">
                 <ScanLine className="w-8 h-8 text-brand-primary shrink-0" />
                 <div>
-                  <p className="font-semibold">Scan a diseased leaf</p>
+                  <p className="font-semibold">{t("dashboard.scan_leaf")}</p>
                   <p className="text-xs text-brand-mute mt-0.5">
-                    Take a photo → get treatment steps in your language.
+                    {t("dashboard.scan_leaf_body")}
                   </p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-brand-mute ml-auto shrink-0" />
@@ -283,7 +285,7 @@ export default function DashboardHome() {
               href="/dashboard/profile#sowing"
               className="text-xs text-brand-primary font-semibold"
             >
-              Set dates
+              {t("dashboard.set_dates")}
             </Link>
           </div>
           {tasks && tasks.length > 0 ? (
@@ -293,7 +295,7 @@ export default function DashboardHome() {
                   <p className="font-semibold text-brand-primary">
                     {task.crop}
                     <span className="ml-2 text-xs text-brand-mute font-normal">
-                      Day {task.daysSince}
+                      {t("dashboard.day_x", { n: task.daysSince })}
                     </span>
                   </p>
                   <p className="text-brand-ink mt-0.5">{task.text}</p>
@@ -302,8 +304,7 @@ export default function DashboardHome() {
             </ul>
           ) : tasks ? (
             <p className="mt-3 text-sm text-brand-mute">
-              Add sowing dates for your crops on the Profile page to see today&apos;s
-              tasks personalised to each crop&apos;s stage.
+              {t("dashboard.add_sowing_hint")}
             </p>
           ) : (
             <div className="mt-3 h-14 rounded-lg bg-brand-line/40 animate-pulse" />
@@ -316,13 +317,13 @@ export default function DashboardHome() {
             <div className="flex items-center justify-between">
               <CardTitle>
                 <span className="inline-flex items-center gap-2">
-                  <Users className="w-4 h-4" /> Community board
+                  <Users className="w-4 h-4" /> {t("dashboard.community_card")}
                 </span>
               </CardTitle>
               <ChevronRight className="w-4 h-4 text-brand-mute" />
             </div>
             <p className="mt-3 text-sm text-brand-mute">
-              Rent equipment, exchange seeds, hire labour, sell produce.
+              {t("dashboard.community_body")}
             </p>
           </Card>
         </Link>

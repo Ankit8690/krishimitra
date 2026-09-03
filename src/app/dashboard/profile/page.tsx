@@ -2,17 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useI18n } from "@/i18n/I18nProvider";
+import { useI18n, type Locale } from "@/i18n/I18nProvider";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Input, Label } from "@/components/ui/Input";
-import { LogOut, Calendar } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { LogOut, Calendar, Check } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 type Me = {
   name: string;
   email: string;
   phone?: string;
-  preferredLanguage: string;
+  preferredLanguage: Locale;
   location?: { district?: string; state?: string };
   farm?: {
     landSizeAcres?: number;
@@ -23,12 +24,19 @@ type Me = {
   };
 };
 
+const LANGS: { code: Locale; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "pa", label: "ਪੰਜਾਬੀ" },
+];
+
 export default function ProfilePage() {
-  const { t } = useI18n();
+  const { t, setLocale } = useI18n();
   const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
   const [dates, setDates] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<string | null>(null);
+  const [savingLang, setSavingLang] = useState<Locale | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -74,6 +82,24 @@ export default function ProfilePage() {
     }
   }
 
+  async function changeLanguage(code: Locale) {
+    if (!me || me.preferredLanguage === code) return;
+    setSavingLang(code);
+    try {
+      const r = await fetch("/api/user/preferences", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preferredLanguage: code }),
+      });
+      if (r.ok) {
+        setMe({ ...me, preferredLanguage: code });
+        setLocale(code); // updates the whole app's UI immediately
+      }
+    } finally {
+      setSavingLang(null);
+    }
+  }
+
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
@@ -83,16 +109,17 @@ export default function ProfilePage() {
     return <div className="p-6 text-brand-mute">{t("dashboard.loading")}</div>;
 
   return (
-    <div className="max-w-md mx-auto px-5 pt-6 space-y-4">
-      <h1 className="text-xl font-bold">Profile</h1>
+    <div className="max-w-md mx-auto px-5 pt-6 pb-6 space-y-4">
+      <h1 className="text-xl font-bold">{t("profile.title")}</h1>
+
       <Card>
-        <p className="text-brand-mute text-sm">Name</p>
+        <p className="text-brand-mute text-sm">{t("profile.name")}</p>
         <p className="font-semibold text-lg">{me.name}</p>
-        <p className="text-brand-mute text-sm mt-3">Email</p>
+        <p className="text-brand-mute text-sm mt-3">{t("profile.email")}</p>
         <p>{me.email}</p>
         {me.phone && (
           <>
-            <p className="text-brand-mute text-sm mt-3">Phone</p>
+            <p className="text-brand-mute text-sm mt-3">{t("profile.phone")}</p>
             <p>{me.phone}</p>
           </>
         )}
@@ -100,7 +127,7 @@ export default function ProfilePage() {
 
       {me.farm && (
         <Card>
-          <p className="text-brand-mute text-sm">Farm</p>
+          <p className="text-brand-mute text-sm">{t("profile.farm")}</p>
           <p className="font-semibold">
             {me.farm.landSizeAcres} acres · {me.farm.soilType} soil ·{" "}
             {me.farm.irrigation}
@@ -120,17 +147,46 @@ export default function ProfilePage() {
         </Card>
       )}
 
+      {/* Language selector — real, working, persists to server */}
+      <Card>
+        <CardTitle>{t("profile.language")}</CardTitle>
+        <p className="text-xs text-brand-mute mt-1 mb-3">
+          {t("profile.language_hint")}
+        </p>
+        <div className="grid grid-cols-3 gap-2">
+          {LANGS.map((l) => {
+            const active = me.preferredLanguage === l.code;
+            const busy = savingLang === l.code;
+            return (
+              <button
+                key={l.code}
+                onClick={() => changeLanguage(l.code)}
+                disabled={busy}
+                className={cn(
+                  "h-12 rounded-xl text-sm border transition inline-flex items-center justify-center gap-1.5",
+                  active
+                    ? "bg-brand-primary text-white border-brand-primary font-semibold"
+                    : "bg-white border-brand-line text-brand-ink hover:bg-brand-line/40",
+                  busy && "opacity-60"
+                )}
+              >
+                {active && <Check className="w-4 h-4" />}
+                {l.label}
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+
       {me.farm?.primaryCrops && me.farm.primaryCrops.length > 0 && (
         <Card id="sowing">
           <CardTitle>
             <span className="inline-flex items-center gap-2">
-              <Calendar className="w-4 h-4" /> Sowing dates
+              <Calendar className="w-4 h-4" /> {t("profile.sowing_dates")}
             </span>
           </CardTitle>
           <p className="text-xs text-brand-mute mt-1 mb-3">
-            Set the sowing date for each crop to unlock personalised daily tasks
-            on the home screen (wheat, rice, cotton, potato, mustard, maize
-            currently supported).
+            {t("profile.sowing_hint")}
           </p>
           <ul className="space-y-2">
             {me.farm.primaryCrops.map((crop) => (
@@ -150,7 +206,7 @@ export default function ProfilePage() {
                     onClick={() => clearSowing(crop)}
                     disabled={saving === crop}
                     className="text-xs text-brand-mute hover:text-brand-danger p-1"
-                    aria-label="Clear"
+                    aria-label={t("common.delete")}
                   >
                     ✕
                   </button>
@@ -160,16 +216,6 @@ export default function ProfilePage() {
           </ul>
         </Card>
       )}
-
-      <Card>
-        <div className="flex justify-between items-center">
-          <div>
-            <p className="text-brand-mute text-sm">Language</p>
-            <p className="font-semibold">{me.preferredLanguage}</p>
-          </div>
-          <Label htmlFor="lang">Change</Label>
-        </div>
-      </Card>
 
       <Button variant="danger" className="w-full" onClick={logout}>
         <LogOut className="w-5 h-5" /> {t("common.logout")}

@@ -65,7 +65,65 @@
     "prices_card": "Best mandi prices today",
     "task_card": "Today's farm task",
     "ask_placeholder": "Ask anything about your farm...",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "govt_schemes": "Govt schemes for you",
+    "govt_schemes_body": "Personalized list of schemes you can apply to today.",
+    "no_prices": "No price data for your crops today. Try adding more crops in profile.",
+    "prices_unavailable": "Prices unavailable",
+    "weather_unavailable": "Weather unavailable",
+    "set_dates": "Set dates",
+    "add_sowing_hint": "Add sowing dates for your crops on the Profile page to see today's tasks personalised to each crop's stage.",
+    "day_x": "Day {n}",
+    "community_card": "Community board",
+    "community_body": "Rent equipment, exchange seeds, hire labour, sell produce.",
+    "best_crop": "Best crop",
+    "best_crop_body": "AI picks the most profitable crop for your soil.",
+    "fertilizer": "Fertilizer",
+    "fertilizer_body": "Exact bags and doses for your crop.",
+    "scan_leaf": "Scan a diseased leaf",
+    "scan_leaf_body": "Take a photo → get treatment steps in your language."
+  },
+  "weather": {
+    "title": "Weather",
+    "next_24h": "Next 24 hours — rain probability",
+    "seven_day": "7-day forecast",
+    "today": "Today",
+    "source": "Data: Open-Meteo · refreshed every 30 min"
+  },
+  "prices": {
+    "title": "Mandi prices",
+    "all_commodities": "All commodities",
+    "no_matching": "No matching crop",
+    "no_records": "No records for this filter today.",
+    "crop": "Crop",
+    "mandi": "Mandi",
+    "price": "Price",
+    "showing_top": "Showing top {n} of {total} rows",
+    "rows": "{n} rows",
+    "updated": "updated {date}",
+    "source": "source: data.gov.in / Agmarknet"
+  },
+  "schemes": {
+    "title": "Govt schemes",
+    "how_to_apply": "How to apply",
+    "official_site": "Official site",
+    "footer": "✓ = you likely qualify based on your farm profile · always confirm on the official site"
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "farm": "Farm",
+    "language": "App language",
+    "language_hint": "This changes menus and page labels. Chat language is separate — set that from the chat screen.",
+    "sowing_dates": "Sowing dates",
+    "sowing_hint": "Set the sowing date for each crop to unlock personalised daily tasks on the home screen (wheat, rice, cotton, potato, mustard, maize currently supported).",
+    "supported_langs": {
+      "en": "English",
+      "hi": "हिन्दी (Hindi)",
+      "pa": "ਪੰਜਾਬੀ (Punjabi)"
+    }
   },
   "soil": {
     "black": "Black",
@@ -87,6 +145,9 @@
   "common": {
     "logout": "Log out",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "back": "Back",
+    "delete": "Delete",
+    "close": "Close"
   }
 }

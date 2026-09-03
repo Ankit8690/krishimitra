@@ -7,8 +7,10 @@ import { ArrowLeft, CloudRain, Droplets, Wind } from "lucide-react";
 import type { WeatherReport } from "@/lib/weather";
 import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { dayShort, hourShort } from "@/lib/format";
+import { useI18n } from "@/i18n/I18nProvider";
 
 export default function WeatherPage() {
+  const { t } = useI18n();
   const [wx, setWx] = useState<WeatherReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +27,7 @@ export default function WeatherPage() {
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-xl font-bold">Weather</h1>
+        <h1 className="text-xl font-bold">{t("weather.title")}</h1>
       </div>
 
       {!wx && !error && (
@@ -80,13 +82,13 @@ export default function WeatherPage() {
 
           {/* Hourly rain chart (SVG) */}
           <Card>
-            <CardTitle>Next 24 hours — rain probability</CardTitle>
+            <CardTitle>{t("weather.next_24h")}</CardTitle>
             <HourlyRainChart hourly={wx.hourly} />
           </Card>
 
           {/* 7-day forecast */}
           <Card>
-            <CardTitle>7-day forecast</CardTitle>
+            <CardTitle>{t("weather.seven_day")}</CardTitle>
             <ul className="mt-3 divide-y divide-brand-line">
               {wx.daily.map((d, i) => (
                 <li
@@ -94,7 +96,7 @@ export default function WeatherPage() {
                   className="py-2.5 grid grid-cols-[3.5rem_2rem_1fr_5rem] items-center gap-2 text-sm"
                 >
                   <span className="font-semibold">
-                    {i === 0 ? "Today" : dayShort(d.date)}
+                    {i === 0 ? t("weather.today") : dayShort(d.date)}
                   </span>
                   <span className="text-xl text-center">
                     {weatherEmoji(d.weatherCode)}
@@ -115,7 +117,7 @@ export default function WeatherPage() {
           </Card>
 
           <p className="text-center text-xs text-brand-mute">
-            Data: Open-Meteo · refreshed every 30 min
+            {t("weather.source")}
           </p>
         </div>
       )}

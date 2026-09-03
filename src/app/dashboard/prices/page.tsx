@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardTitle } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Combobox } from "@/components/ui/Combobox";
 import { ArrowUpDown, TrendingUp } from "lucide-react";
 import { inr, fmtShortDate } from "@/lib/format";
+import { useI18n } from "@/i18n/I18nProvider";
 
 type Record = {
   state: string;
@@ -21,6 +22,7 @@ type Record = {
 type SortKey = "modalPrice" | "commodity" | "market";
 
 export default function PricesPage() {
+  const { t } = useI18n();
   const [records, setRecords] = useState<Record[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [commodity, setCommodity] = useState<string>("");
@@ -65,7 +67,7 @@ export default function PricesPage() {
     <div className="max-w-md mx-auto px-5 pt-4 pb-6">
       <div className="flex items-center gap-2 mb-4">
         <TrendingUp className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">Mandi prices</h1>
+        <h1 className="text-xl font-bold">{t("prices.title")}</h1>
       </div>
 
       {!records && !error && (
@@ -85,8 +87,8 @@ export default function PricesPage() {
               options={["", ...commodities]}
               value={commodity}
               onChange={setCommodity}
-              placeholder="All commodities"
-              emptyLabel="No matching crop"
+              placeholder={t("prices.all_commodities")}
+              emptyLabel={t("prices.no_matching")}
             />
           </div>
 
@@ -96,25 +98,25 @@ export default function PricesPage() {
                 onClick={() => toggleSort("commodity")}
                 className="text-left inline-flex items-center gap-1"
               >
-                Crop <ArrowUpDown className="w-3 h-3" />
+                {t("prices.crop")} <ArrowUpDown className="w-3 h-3" />
               </button>
               <button
                 onClick={() => toggleSort("market")}
                 className="text-left inline-flex items-center gap-1"
               >
-                Mandi <ArrowUpDown className="w-3 h-3" />
+                {t("prices.mandi")} <ArrowUpDown className="w-3 h-3" />
               </button>
               <button
                 onClick={() => toggleSort("modalPrice")}
                 className="text-right inline-flex items-center justify-end gap-1"
               >
-                Price <ArrowUpDown className="w-3 h-3" />
+                {t("prices.price")} <ArrowUpDown className="w-3 h-3" />
               </button>
             </div>
             <ul className="divide-y divide-brand-line max-h-[65vh] overflow-y-auto">
               {filtered.length === 0 && (
                 <li className="px-3 py-6 text-center text-sm text-brand-mute">
-                  No records for this filter today.
+                  {t("prices.no_records")}
                 </li>
               )}
               {filtered.slice(0, 200).map((r, i) => (
@@ -145,10 +147,12 @@ export default function PricesPage() {
 
           <p className="text-center text-xs text-brand-mute mt-3">
             {filtered.length > 200
-              ? `Showing top 200 of ${filtered.length} rows · `
-              : `${filtered.length} rows · `}
-            {records[0] && `updated ${fmtShortDate(records[0].arrivalDate)}`}
-            {" · "}source: data.gov.in / Agmarknet
+              ? `${t("prices.showing_top", { n: 200, total: filtered.length })} · `
+              : `${t("prices.rows", { n: filtered.length })} · `}
+            {records[0] &&
+              `${t("prices.updated", { date: fmtShortDate(records[0].arrivalDate) })}`}
+            {" · "}
+            {t("prices.source")}
           </p>
         </>
       )}

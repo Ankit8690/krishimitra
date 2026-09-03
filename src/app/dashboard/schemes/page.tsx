@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { ArrowLeft, ExternalLink, Check, X, Landmark } from "lucide-react";
+import { useI18n } from "@/i18n/I18nProvider";
 
 type Scheme = {
   id: string;
@@ -18,6 +19,7 @@ type Scheme = {
 };
 
 export default function SchemesPage() {
+  const { t } = useI18n();
   const [schemes, setSchemes] = useState<Scheme[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -36,7 +38,7 @@ export default function SchemesPage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <Landmark className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">Govt schemes</h1>
+        <h1 className="text-xl font-bold">{t("schemes.title")}</h1>
       </div>
 
       {!schemes && !error && (
@@ -88,7 +90,7 @@ export default function SchemesPage() {
 
                 {open && (
                   <div className="border-t border-brand-line p-4 bg-brand-bg/60">
-                    <CardTitle className="mb-2">How to apply</CardTitle>
+                    <CardTitle className="mb-2">{t("schemes.how_to_apply")}</CardTitle>
                     <ol className="space-y-1.5 text-sm text-brand-ink list-decimal pl-5">
                       {s.howToApply.map((step, i) => (
                         <li key={i}>{step}</li>
@@ -102,7 +104,7 @@ export default function SchemesPage() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-brand-primary font-semibold"
                       >
-                        Official site <ExternalLink className="w-3 h-3" />
+                        {t("schemes.official_site")} <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
                   </div>
@@ -111,7 +113,7 @@ export default function SchemesPage() {
             );
           })}
           <p className="text-center text-xs text-brand-mute pt-2">
-            ✓ = you likely qualify based on your farm profile · always confirm on the official site
+            {t("schemes.footer")}
           </p>
         </div>
       )}
