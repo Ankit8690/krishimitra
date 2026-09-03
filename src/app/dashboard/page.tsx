@@ -106,7 +106,7 @@ export default function DashboardHome() {
   }
 
   return (
-    <div className="km-page-wrapper max-w-md lg:max-w-6xl mx-auto px-5 lg:px-8 pt-4 lg:pt-6">
+    <div className="km-page-wrapper km-wide">
       <header className="flex items-center justify-between mb-6 lg:mb-8">
         <div>
           <p className="text-sm text-brand-mute lg:hidden">{t("brand")}</p>

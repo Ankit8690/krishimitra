@@ -53,8 +53,24 @@ body {
  *   .km-sidebar           the left rail (visible only on lg+ by default)
  *   .km-bottom-nav        the bottom tab bar (visible only below lg by default)
  *   .km-dashboard-grid    the home dashboard's card grid
- *   .km-page-wrapper      the wide max-width wrapper on inner pages
+ *   .km-page-wrapper      per-page outer container (owns max-width + padding)
+ *
+ * IMPORTANT: .km-page-wrapper is the SOLE source of width — don't pair it with
+ * Tailwind max-w-* utilities, they interfere with the force overrides.
  */
+.km-page-wrapper {
+  max-width: 28rem;
+  margin-inline: auto;
+  padding: 1rem 1.25rem 1.5rem;
+}
+@media (min-width: 1024px) {
+  .km-page-wrapper {
+    max-width: 56rem;
+    padding: 1.5rem 2rem 2rem;
+  }
+  .km-page-wrapper.km-wide { max-width: 72rem; }
+  .km-page-wrapper.km-narrow { max-width: 42rem; }
+}
 
 /* FORCE MOBILE — collapse everything to the phone card */
 .force-mobile .km-sidebar { display: none !important; }
@@ -72,11 +88,11 @@ body {
 }
 .force-mobile main { padding-bottom: 5.5rem !important; }
 .force-mobile .km-dashboard-grid { grid-template-columns: 1fr !important; }
-.force-mobile .km-page-wrapper {
+.force-mobile .km-page-wrapper,
+.force-mobile .km-page-wrapper.km-wide,
+.force-mobile .km-page-wrapper.km-narrow {
   max-width: 28rem !important;
-  padding-left: 1.25rem !important;
-  padding-right: 1.25rem !important;
-  padding-top: 3.5rem !important;
+  padding: 3.5rem 1.25rem 1.5rem !important;
 }
 .force-mobile .km-nav-desktop { display: none !important; }
 .force-mobile .km-nav-mobile { display: flex !important; }
@@ -88,10 +104,10 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 .force-desktop .km-page-wrapper {
-  max-width: 72rem !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
-  padding-top: 1.5rem !important;
+  max-width: 56rem !important;
+  padding: 1.5rem 2rem 2rem !important;
 }
+.force-desktop .km-page-wrapper.km-wide { max-width: 72rem !important; }
+.force-desktop .km-page-wrapper.km-narrow { max-width: 42rem !important; }
 .force-desktop .km-nav-mobile { display: none !important; }
 .force-desktop .km-nav-desktop { display: flex !important; }

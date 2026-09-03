@@ -64,7 +64,7 @@ export default function FertilizerPage() {
   }
 
   return (
-    <div className="km-page-wrapper max-w-md lg:max-w-3xl mx-auto px-5 lg:px-8 pt-4 lg:pt-6 pb-6">
+    <div className="km-page-wrapper km-narrow">
       <div className="flex items-center gap-2 mb-4">
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
