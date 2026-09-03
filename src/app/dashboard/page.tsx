@@ -23,6 +23,7 @@ import { inr } from "@/lib/format";
 import type { WeatherReport } from "@/lib/weather";
 import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { tCommodity, tWeather } from "@/lib/dictionaries";
+import { ViewModeToggle } from "@/components/ViewModeToggle";
 
 type Me = {
   id: string;
@@ -105,25 +106,28 @@ export default function DashboardHome() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-5 pt-4">
-      <header className="flex items-center justify-between mb-6">
+    <div className="max-w-md lg:max-w-6xl mx-auto px-5 lg:px-0 pt-4 lg:pt-0">
+      <header className="flex items-center justify-between mb-6 lg:mb-8">
         <div>
-          <p className="text-sm text-brand-mute">{t("brand")}</p>
-          <h1 className="text-xl font-bold">
+          <p className="text-sm text-brand-mute lg:hidden">{t("brand")}</p>
+          <h1 className="text-xl lg:text-3xl font-bold">
             {t("dashboard.greeting", { name: me?.name?.split(" ")[0] || "" })}
           </h1>
           {me?.location?.district && (
-            <p className="text-xs text-brand-mute inline-flex items-center gap-1 mt-1">
+            <p className="text-xs lg:text-sm text-brand-mute inline-flex items-center gap-1 mt-1">
               <MapPin className="w-3 h-3" />
               {me.location.district}
               {me.location.state && `, ${me.location.state}`}
             </p>
           )}
         </div>
-        <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <ViewModeToggle compact />
+          <LanguageSwitcher />
+        </div>
       </header>
 
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Weather card — tappable */}
         <Link href="/dashboard/weather" className="block">
           <Card className="bg-gradient-to-br from-sky-50 to-white active:scale-[0.99] transition">

@@ -95,7 +95,7 @@ export default function ScanPage() {
     locale === "hi" ? prediction?.hiTreatment : prediction?.treatment;
 
   return (
-    <div className="max-w-md mx-auto px-5 pt-4 pb-6">
+    <div className="max-w-md lg:max-w-2xl mx-auto px-5 lg:px-0 pt-4 lg:pt-0 pb-6">
       <div className="flex items-center gap-2 mb-4">
         <ScanLine className="w-5 h-5 text-brand-primary" />
         <h1 className="text-xl font-bold">{t("scan.title")}</h1>

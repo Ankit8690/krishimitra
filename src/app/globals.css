@@ -43,3 +43,16 @@ body {
 .pb-safe {
   padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
 }
+
+/* --- Dual view mode: auto (media query), forced mobile, or forced desktop --- */
+/*
+ * .force-mobile — cap the app at mobile width and hide desktop-only chrome
+ * .force-desktop — override mobile-first layouts even on small screens
+ */
+.force-mobile .desktop-only { display: none !important; }
+.force-mobile .mobile-only { display: initial !important; }
+.force-mobile .km-content { max-width: 28rem !important; margin-inline: auto !important; }
+
+.force-desktop .mobile-only { display: none !important; }
+.force-desktop .desktop-only { display: initial !important; }
+.force-desktop .km-content { max-width: 80rem !important; margin-inline: auto !important; }

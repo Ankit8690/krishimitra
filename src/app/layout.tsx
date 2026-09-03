@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { ViewModeProvider } from "@/components/ViewMode";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -45,7 +46,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${notoDev.variable} notranslate h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-brand-bg text-brand-ink">
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider>
+          <ViewModeProvider>{children}</ViewModeProvider>
+        </I18nProvider>
         <ServiceWorkerRegister />
       </body>
     </html>
