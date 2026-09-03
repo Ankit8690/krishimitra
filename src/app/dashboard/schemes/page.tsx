@@ -6,6 +6,8 @@ import { Card, CardTitle } from "@/components/ui/Card";
 import { ArrowLeft, ExternalLink, Check, X, Landmark } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { tSchemeName, tSchemeBenefit } from "@/lib/dictionaries";
+import { PageHeaderBanner } from "@/components/PageHeaderBanner";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 type Scheme = {
   id: string;
@@ -34,13 +36,18 @@ export default function SchemesPage() {
 
   return (
     <div className="km-page-wrapper">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <Landmark className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">{t("schemes.title")}</h1>
       </div>
+      <PageHeaderBanner
+        title={t("schemes.title")}
+        subtitle={t("dashboard.govt_schemes_body")}
+        imageUrl={HERO_IMAGES.schemes}
+        imageAlt="Rural landscape"
+        icon={<Landmark className="w-6 h-6" />}
+      />
 
       {!schemes && !error && (
         <div className="space-y-3">

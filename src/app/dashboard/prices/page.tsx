@@ -8,6 +8,8 @@ import { inr, fmtShortDate } from "@/lib/format";
 import { useI18n } from "@/i18n/I18nProvider";
 import { tCommodity } from "@/lib/dictionaries";
 import { commodityIcon } from "@/lib/commodityIcons";
+import { PageHeaderBanner } from "@/components/PageHeaderBanner";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 type Record = {
   state: string;
@@ -67,10 +69,13 @@ export default function PricesPage() {
 
   return (
     <div className="km-page-wrapper km-wide">
-      <div className="flex items-center gap-2 mb-4">
-        <TrendingUp className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">{t("prices.title")}</h1>
-      </div>
+      <PageHeaderBanner
+        title={t("prices.title")}
+        subtitle={t("landing.f2_body")}
+        imageUrl={HERO_IMAGES.prices}
+        imageAlt="Grain market with sacks"
+        icon={<TrendingUp className="w-6 h-6" />}
+      />
 
       {!records && !error && (
         <div className="space-y-2">

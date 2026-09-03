@@ -9,6 +9,8 @@ import { Input, Label } from "@/components/ui/Input";
 import { inr } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { useI18n } from "@/i18n/I18nProvider";
+import { PageHeaderBanner } from "@/components/PageHeaderBanner";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 type Rec = {
   cropName: string;
@@ -75,9 +77,14 @@ export default function RecommendPage() {
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <Sprout className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">{t("recommend.title")}</h1>
       </div>
+      <PageHeaderBanner
+        title={t("recommend.title")}
+        subtitle={t("dashboard.best_crop_body")}
+        imageUrl={HERO_IMAGES.recommend}
+        imageAlt="Green wheat crop"
+        icon={<Sprout className="w-6 h-6" />}
+      />
 
       <Card>
         <form onSubmit={submit} className="space-y-4">

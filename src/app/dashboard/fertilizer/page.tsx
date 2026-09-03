@@ -10,6 +10,8 @@ import { Input, Label } from "@/components/ui/Input";
 import { cn } from "@/lib/cn";
 import CROPS from "@/data/crops.json";
 import { useI18n } from "@/i18n/I18nProvider";
+import { PageHeaderBanner } from "@/components/PageHeaderBanner";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 const CROP_NAMES = (CROPS as { name: string }[]).map((c) => c.name).sort();
 
@@ -69,9 +71,14 @@ export default function FertilizerPage() {
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <FlaskConical className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">{t("fertilizer.title")}</h1>
       </div>
+      <PageHeaderBanner
+        title={t("fertilizer.title")}
+        subtitle={t("dashboard.fertilizer_body")}
+        imageUrl={HERO_IMAGES.fertilizer}
+        imageAlt="Hands holding soil and fertilizer"
+        icon={<FlaskConical className="w-6 h-6" />}
+      />
 
       <Card>
         <form onSubmit={submit} className="space-y-4">

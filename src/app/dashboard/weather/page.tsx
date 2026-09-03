@@ -9,6 +9,8 @@ import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { dayShort, hourShort } from "@/lib/format";
 import { useI18n } from "@/i18n/I18nProvider";
 import { tWeather, tSprayReason } from "@/lib/dictionaries";
+import { PageHeaderBanner } from "@/components/PageHeaderBanner";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 export default function WeatherPage() {
   const { t, locale } = useI18n();
@@ -24,12 +26,18 @@ export default function WeatherPage() {
 
   return (
     <div className="km-page-wrapper">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-xl font-bold">{t("weather.title")}</h1>
       </div>
+      <PageHeaderBanner
+        title={t("weather.title")}
+        subtitle={t("landing.f1_body")}
+        imageUrl={HERO_IMAGES.weather}
+        imageAlt="Clouds over open farmland"
+        icon={<CloudRain className="w-6 h-6" />}
+      />
 
       {!wx && !error && (
         <div className="space-y-3">

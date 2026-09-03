@@ -16,6 +16,8 @@ import {
 import { cn } from "@/lib/cn";
 import { inr } from "@/lib/format";
 import { useI18n } from "@/i18n/I18nProvider";
+import { PageHeaderBanner } from "@/components/PageHeaderBanner";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 const TYPE_KEYS = ["equipment", "seed", "labour", "produce", "other"] as const;
 type PostType = (typeof TYPE_KEYS)[number];
@@ -100,20 +102,25 @@ export default function CommunityPage() {
 
   return (
     <div className="km-page-wrapper km-wide">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         <Link href="/dashboard" className="p-2 -ml-2 rounded-full hover:bg-brand-line/40">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <Users className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">{t("community.title")}</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="ml-auto w-9 h-9 rounded-full bg-brand-primary text-white grid place-items-center hover:bg-brand-primary-hover"
+          className="ml-auto w-9 h-9 rounded-full bg-brand-primary text-white grid place-items-center hover:bg-brand-primary-hover shadow-md"
           aria-label={t("community.new_post")}
         >
           <Plus className="w-5 h-5" />
         </button>
       </div>
+      <PageHeaderBanner
+        title={t("community.title")}
+        subtitle={t("dashboard.community_body")}
+        imageUrl={HERO_IMAGES.community}
+        imageAlt="Farmers gathered together"
+        icon={<Users className="w-6 h-6" />}
+      />
 
       <div className="mb-3 flex gap-1.5 flex-wrap">
         <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
