@@ -109,7 +109,7 @@ export default function ProfilePage() {
     return <div className="p-6 text-brand-mute">{t("dashboard.loading")}</div>;
 
   return (
-    <div className="max-w-md lg:max-w-3xl mx-auto px-5 lg:px-0 pt-6 lg:pt-0 pb-6 space-y-4">
+    <div className="km-page-wrapper max-w-md lg:max-w-3xl mx-auto px-5 lg:px-8 pt-6 lg:pt-6 pb-6 space-y-4">
       <h1 className="text-xl font-bold">{t("profile.title")}</h1>
 
       <Card>

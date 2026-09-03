@@ -76,7 +76,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-brand-surface border-r border-brand-line">
+    <aside className="km-sidebar hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-brand-surface border-r border-brand-line">
       <div className="px-5 py-5 flex items-center gap-2 border-b border-brand-line">
         <div className="w-9 h-9 rounded-xl bg-brand-primary text-white grid place-items-center font-bold text-lg">
           🌾

@@ -46,13 +46,40 @@ body {
 
 /* --- Dual view mode: auto (media query), forced mobile, or forced desktop --- */
 /*
- * .force-mobile — cap the app at mobile width and hide desktop-only chrome
- * .force-desktop — override mobile-first layouts even on small screens
+ * .force-mobile — collapse the app to the mobile card even on a wide monitor
+ * .force-desktop — expand the app to the desktop layout even on a phone
+ *
+ * Class markers used on the actual DOM:
+ *   .km-sidebar           the left rail (visible only on lg+ by default)
+ *   .km-bottom-nav        the bottom tab bar (visible only below lg by default)
+ *   .km-dashboard-grid    the home dashboard's card grid
+ *   .km-page-wrapper      the wide max-width wrapper on inner pages
  */
-.force-mobile .desktop-only { display: none !important; }
-.force-mobile .mobile-only { display: initial !important; }
-.force-mobile .km-content { max-width: 28rem !important; margin-inline: auto !important; }
 
-.force-desktop .mobile-only { display: none !important; }
-.force-desktop .desktop-only { display: initial !important; }
-.force-desktop .km-content { max-width: 80rem !important; margin-inline: auto !important; }
+/* FORCE MOBILE — collapse everything to the phone card */
+.force-mobile .km-sidebar { display: none !important; }
+.force-mobile .km-bottom-nav { display: block !important; }
+.force-mobile .km-dashboard-grid { grid-template-columns: 1fr !important; }
+.force-mobile .km-page-wrapper {
+  max-width: 28rem !important;
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
+  padding-top: 1rem !important;
+}
+.force-mobile .km-nav-desktop { display: none !important; }
+.force-mobile .km-nav-mobile { display: flex !important; }
+
+/* FORCE DESKTOP — surface the sidebar + wide layout on a narrow screen */
+.force-desktop .km-sidebar { display: flex !important; }
+.force-desktop .km-bottom-nav { display: none !important; }
+.force-desktop .km-dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+.force-desktop .km-page-wrapper {
+  max-width: 72rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  padding-top: 1.5rem !important;
+}
+.force-desktop .km-nav-mobile { display: none !important; }
+.force-desktop .km-nav-desktop { display: flex !important; }

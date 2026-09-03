@@ -106,7 +106,7 @@ export default function DashboardHome() {
   }
 
   return (
-    <div className="max-w-md lg:max-w-6xl mx-auto px-5 lg:px-0 pt-4 lg:pt-0">
+    <div className="km-page-wrapper max-w-md lg:max-w-6xl mx-auto px-5 lg:px-8 pt-4 lg:pt-6">
       <header className="flex items-center justify-between mb-6 lg:mb-8">
         <div>
           <p className="text-sm text-brand-mute lg:hidden">{t("brand")}</p>
@@ -127,7 +127,7 @@ export default function DashboardHome() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="km-dashboard-grid grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Weather card — tappable */}
         <Link href="/dashboard/weather" className="block">
           <Card className="bg-gradient-to-br from-sky-50 to-white active:scale-[0.99] transition">
