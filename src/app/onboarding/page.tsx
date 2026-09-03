@@ -187,7 +187,7 @@ export default function OnboardingPage() {
                     }}
                     className="max-w-[8rem] text-right font-semibold"
                   />
-                  <span className="text-sm text-brand-mute">acres</span>
+                  <span className="text-sm text-brand-mute">{t("onboarding.land_unit")}</span>
                 </div>
                 <input
                   type="range"
@@ -204,7 +204,7 @@ export default function OnboardingPage() {
                   className="w-full accent-brand-primary mt-2"
                 />
                 <p className="text-xs text-brand-mute mt-1">
-                  Slider up to 50; type any larger value manually.
+                  {t("onboarding.land_hint")}
                 </p>
               </div>
               <div>

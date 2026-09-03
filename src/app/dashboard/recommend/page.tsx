@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
 import { inr } from "@/lib/format";
 import { cn } from "@/lib/cn";
+import { useI18n } from "@/i18n/I18nProvider";
 
 type Rec = {
   cropName: string;
@@ -37,6 +38,7 @@ const DEFAULTS = {
 };
 
 export default function RecommendPage() {
+  const { t } = useI18n();
   const [form, setForm] = useState(DEFAULTS);
   const [results, setResults] = useState<Rec[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -74,23 +76,23 @@ export default function RecommendPage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <Sprout className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">Best crop for my land</h1>
+        <h1 className="text-xl font-bold">{t("recommend.title")}</h1>
       </div>
 
       <Card>
         <form onSubmit={submit} className="space-y-4">
           <p className="text-xs text-brand-mute inline-flex items-center gap-1">
-            <Info className="w-3 h-3" /> From your soil health card or a rough estimate
+            <Info className="w-3 h-3" /> {t("recommend.input_hint")}
           </p>
 
           <div className="grid grid-cols-3 gap-3">
             {[
-              { key: "n", label: "N (kg/ha)" },
-              { key: "p", label: "P (kg/ha)" },
-              { key: "k", label: "K (kg/ha)" },
-            ].map(({ key, label }) => (
+              { key: "n", labelKey: "n_kg" },
+              { key: "p", labelKey: "p_kg" },
+              { key: "k", labelKey: "k_kg" },
+            ].map(({ key, labelKey }) => (
               <div key={key}>
-                <Label>{label}</Label>
+                <Label>{t(`recommend.${labelKey}`)}</Label>
                 <Input
                   type="number"
                   inputMode="decimal"
@@ -106,7 +108,7 @@ export default function RecommendPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Temperature (°C)</Label>
+              <Label>{t("recommend.temp_c")}</Label>
               <Input
                 type="number"
                 step={0.1}
@@ -117,7 +119,7 @@ export default function RecommendPage() {
               />
             </div>
             <div>
-              <Label>Humidity (%)</Label>
+              <Label>{t("recommend.humidity_pct")}</Label>
               <Input
                 type="number"
                 value={form.humidityPct}
@@ -127,7 +129,7 @@ export default function RecommendPage() {
               />
             </div>
             <div>
-              <Label>pH</Label>
+              <Label>{t("recommend.ph")}</Label>
               <Input
                 type="number"
                 step={0.1}
@@ -136,7 +138,7 @@ export default function RecommendPage() {
               />
             </div>
             <div>
-              <Label>Rainfall (mm)</Label>
+              <Label>{t("recommend.rainfall_mm")}</Label>
               <Input
                 type="number"
                 value={form.rainfallMm}
@@ -148,7 +150,7 @@ export default function RecommendPage() {
           </div>
 
           <Button size="lg" className="w-full" disabled={loading}>
-            {loading ? "Calculating…" : "Recommend crops"}
+            {loading ? t("recommend.calculating") : t("recommend.submit")}
           </Button>
           {error && (
             <p className="text-sm text-brand-danger bg-brand-danger/10 rounded-lg px-3 py-2">
@@ -160,14 +162,12 @@ export default function RecommendPage() {
 
       {results && (
         <div className="mt-5 space-y-3">
-          <h2 className="text-lg font-semibold px-1">Top picks for your land</h2>
+          <h2 className="text-lg font-semibold px-1">{t("recommend.top_picks")}</h2>
           {results.map((r, i) => (
-            <ResultCard key={r.cropName} rec={r} rank={i + 1} />
+            <ResultCard key={r.cropName} rec={r} rank={i + 1} tt={t} />
           ))}
           <p className="text-center text-xs text-brand-mute pt-1">
-            Profit uses today&apos;s modal price at mandis in{" "}
-            {priceState || "your state"}. Yield estimates are averages — actual
-            results vary by farm management.
+            {t("recommend.footer", { state: priceState || "your state" })}
           </p>
         </div>
       )}
@@ -175,7 +175,15 @@ export default function RecommendPage() {
   );
 }
 
-function ResultCard({ rec, rank }: { rec: Rec; rank: number }) {
+function ResultCard({
+  rec,
+  rank,
+  tt,
+}: {
+  rec: Rec;
+  rank: number;
+  tt: (k: string, v?: Record<string, string | number>) => string;
+}) {
   const pct = Math.round(rec.matchScore * 100);
   const profitColor =
     rec.profitPerAcre == null
@@ -202,27 +210,32 @@ function ResultCard({ rec, rank }: { rec: Rec; rank: number }) {
                     : "bg-brand-line text-brand-mute"
               )}
             >
-              {pct}% match
+              {pct}% {tt("recommend.match")}
             </span>
           </div>
           <p className="text-xs text-brand-mute mt-0.5">
-            {rec.hi} · {rec.season} · {rec.waterNeed} water · {rec.durationDays}d
+            {rec.hi} · {rec.season} ·{" "}
+            {tt(
+              `recommend.water_${rec.waterNeed as "low" | "medium" | "high"}`
+            )}{" "}
+            · {rec.durationDays}
+            {tt("recommend.days_short")}
           </p>
         </div>
       </div>
       <div className="border-t border-brand-line grid grid-cols-3 divide-x divide-brand-line text-center text-xs">
         <div className="py-2.5 px-1">
-          <p className="text-brand-mute">Yield</p>
+          <p className="text-brand-mute">{tt("recommend.yield")}</p>
           <p className="font-semibold text-sm">{rec.yieldQtlPerAcre} qtl/ac</p>
         </div>
         <div className="py-2.5 px-1">
-          <p className="text-brand-mute">Price</p>
+          <p className="text-brand-mute">{tt("recommend.price")}</p>
           <p className="font-semibold text-sm">
             {rec.modalPricePerQtl ? inr(rec.modalPricePerQtl) : "—"}
           </p>
         </div>
         <div className="py-2.5 px-1">
-          <p className="text-brand-mute">Profit / acre</p>
+          <p className="text-brand-mute">{tt("recommend.profit_per_acre")}</p>
           <p className={cn("font-bold text-sm", profitColor)}>
             {rec.profitPerAcre != null ? inr(rec.profitPerAcre) : "—"}
           </p>

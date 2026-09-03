@@ -38,7 +38,7 @@ const SUPPORTED_CROPS = [
 ];
 
 export default function ScanPage() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [prediction, setPrediction] = useState<Prediction | null>(null);
@@ -56,7 +56,7 @@ export default function ScanPage() {
     setError(null);
     setPrediction(null);
     if (file.size > 5 * 1024 * 1024) {
-      setError("Photo is too large — max 5 MB");
+      setError(t("scan.intro"));
       return;
     }
     setPreview(URL.createObjectURL(file));
@@ -98,7 +98,7 @@ export default function ScanPage() {
     <div className="max-w-md mx-auto px-5 pt-4 pb-6">
       <div className="flex items-center gap-2 mb-4">
         <ScanLine className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">Disease scan</h1>
+        <h1 className="text-xl font-bold">{t("scan.title")}</h1>
       </div>
 
       {!preview && (
@@ -106,12 +106,11 @@ export default function ScanPage() {
           <Card className="text-center py-10">
             <ScanLine className="w-16 h-16 mx-auto text-brand-primary/60" />
             <p className="mt-3 text-brand-mute px-4 text-sm">
-              Take a close-up of the affected leaf in daylight. AI will identify
-              the disease and suggest treatment in your language.
+              {t("scan.intro")}
             </p>
             <div className="mt-6 grid grid-cols-2 gap-3 px-4">
               <Button size="lg" onClick={() => inputRef.current?.click()}>
-                <Camera className="w-5 h-5" /> Camera
+                <Camera className="w-5 h-5" /> {t("scan.camera")}
               </Button>
               <Button
                 size="lg"
@@ -123,7 +122,7 @@ export default function ScanPage() {
                   }
                 }}
               >
-                <Upload className="w-5 h-5" /> Upload
+                <Upload className="w-5 h-5" /> {t("scan.upload")}
               </Button>
             </div>
             <input
@@ -138,7 +137,7 @@ export default function ScanPage() {
               }}
             />
           </Card>
-          <SupportedCropsNote />
+          <SupportedCropsNote tt={t} />
         </>
       )}
 
@@ -158,7 +157,7 @@ export default function ScanPage() {
           {loading && (
             <Card className="text-center py-6 text-brand-mute">
               <RefreshCw className="w-5 h-5 mx-auto animate-spin" />
-              <p className="mt-2 text-sm">Analyzing leaf…</p>
+              <p className="mt-2 text-sm">{t("scan.analyzing")}</p>
             </Card>
           )}
 
@@ -174,17 +173,16 @@ export default function ScanPage() {
                     </p>
                     <h2 className="text-lg font-bold mt-0.5 flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-brand-primary" />
-                      Analyzing this crop
+                      {t("scan.analyzing_crop")}
                     </h2>
                     <p className="text-sm text-brand-mute mt-2 leading-relaxed">
-                      The AI isn&apos;t sure enough to name a specific disease.
-                      This often happens with crops it hasn&apos;t seen yet.
+                      {t("scan.not_sure")}
                     </p>
                   </div>
                   {prediction.alternatives.length > 0 && (
                     <div className="border-t border-brand-line px-4 py-3 bg-brand-bg/60">
                       <p className="text-xs uppercase tracking-wide text-brand-mute mb-2">
-                        Closest matches
+                        {t("scan.closest")}
                       </p>
                       <ul className="space-y-1.5">
                         {prediction.alternatives.map((a, i) => (
@@ -208,17 +206,19 @@ export default function ScanPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-xs text-brand-mute uppercase tracking-wide">
-                          Result
+                          {t("scan.result")}
                         </p>
                         <h2 className="text-lg font-bold mt-0.5">
                           {localizedName}
                         </h2>
                         <p className="text-xs text-brand-mute mt-1">
-                          Confidence: {Math.round(prediction.confidence * 100)}%
-                          {prediction.source === "demo" && " · demo model"}
+                          {t("scan.confidence", {
+                            n: Math.round(prediction.confidence * 100),
+                          })}
+                          {prediction.source === "demo" && ` · ${t("scan.demo_model")}`}
                         </p>
                       </div>
-                      <SeverityBadge severity={prediction.severity} />
+                      <SeverityBadge severity={prediction.severity} tt={t} />
                     </div>
                     <button
                       onClick={() =>
@@ -228,11 +228,11 @@ export default function ScanPage() {
                       }
                       className="mt-3 inline-flex items-center gap-1 text-xs text-brand-primary font-semibold"
                     >
-                      <Volume2 className="w-4 h-4" /> Speak treatment
+                      <Volume2 className="w-4 h-4" /> {t("scan.speak_treatment")}
                     </button>
                   </div>
                   <div className="border-t border-brand-line px-4 py-3 bg-brand-bg/60">
-                    <CardTitle className="mb-2">Treatment</CardTitle>
+                    <CardTitle className="mb-2">{t("scan.treatment")}</CardTitle>
                     <ol className="space-y-1.5 text-sm list-decimal pl-5">
                       {(localizedTreatment || []).map((s, i) => (
                         <li key={i}>{s}</li>
@@ -241,7 +241,8 @@ export default function ScanPage() {
                   </div>
                   {prediction.alternatives.length > 1 && (
                     <div className="border-t border-brand-line px-4 py-2 text-xs text-brand-mute">
-                      Also considered: {prediction.alternatives
+                      {t("scan.also_considered")}{" "}
+                      {prediction.alternatives
                         .slice(1, 3)
                         .map(
                           (a) =>
@@ -256,34 +257,31 @@ export default function ScanPage() {
           )}
 
           <Button variant="secondary" className="w-full" onClick={reset}>
-            <RefreshCw className="w-4 h-4" /> Scan another leaf
+            <RefreshCw className="w-4 h-4" /> {t("scan.scan_another")}
           </Button>
 
           {prediction?.source === "demo" && (
             <p className="text-center text-xs text-brand-mute">
-              Add <code>HUGGINGFACE_API_TOKEN</code> to <code>.env.local</code>{" "}
-              for real detection.
+              {t("scan.add_token_hint")}
             </p>
           )}
 
-          {prediction?.uncertain && <SupportedCropsNote />}
+          {prediction?.uncertain && <SupportedCropsNote tt={t} />}
         </div>
       )}
     </div>
   );
 }
 
-function SupportedCropsNote() {
+function SupportedCropsNote({ tt }: { tt: (k: string, v?: Record<string, string|number>) => string }) {
   return (
     <Card className="mt-4 bg-brand-primary/5">
       <div className="flex items-start gap-2">
         <Info className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-semibold">Supported crops right now</p>
+          <p className="text-sm font-semibold">{tt("scan.supported_title")}</p>
           <p className="text-xs text-brand-mute mt-1">
-            The AI is trained on these {SUPPORTED_CROPS.length} crops. Others
-            (okra, wheat, rice, cotton, mustard, etc.) will be added as we grow
-            the training data.
+            {tt("scan.supported_hint", { n: SUPPORTED_CROPS.length })}
           </p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {SUPPORTED_CROPS.map((c) => (
@@ -301,25 +299,28 @@ function SupportedCropsNote() {
   );
 }
 
-function SeverityBadge({ severity }: { severity: string }) {
-  const map: Record<string, { label: string; className: string }> = {
-    none: { label: "Healthy", className: "bg-brand-primary/15 text-brand-primary" },
-    moderate: {
-      label: "Moderate",
-      className: "bg-brand-accent/15 text-brand-accent",
-    },
-    high: { label: "Severe", className: "bg-brand-danger/15 text-brand-danger" },
-    unknown: { label: "Unknown", className: "bg-brand-line text-brand-mute" },
+function SeverityBadge({
+  severity,
+  tt,
+}: {
+  severity: string;
+  tt: (k: string, v?: Record<string, string | number>) => string;
+}) {
+  const styles: Record<string, string> = {
+    none: "bg-brand-primary/15 text-brand-primary",
+    moderate: "bg-brand-accent/15 text-brand-accent",
+    high: "bg-brand-danger/15 text-brand-danger",
+    unknown: "bg-brand-line text-brand-mute",
   };
-  const s = map[severity] ?? map.unknown;
+  const key = styles[severity] ? severity : "unknown";
   return (
     <span
       className={cn(
         "text-xs font-semibold px-2.5 py-1 rounded-full shrink-0",
-        s.className
+        styles[key]
       )}
     >
-      {s.label}
+      {tt(`scan.severity.${key}`)}
     </span>
   );
 }

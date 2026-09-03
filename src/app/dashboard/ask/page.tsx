@@ -671,13 +671,13 @@ export default function AskPage() {
           <button
             onClick={() => setShowSessions(true)}
             className="text-brand-mute hover:text-brand-ink p-1.5 -ml-1.5 rounded-full"
-            aria-label="Chat history"
-            title="Past chats"
+            aria-label={t("ask.chat_history")}
+            title={t("ask.past_chats")}
           >
             <MessageSquare className="w-5 h-5" />
           </button>
           <Sparkles className="w-5 h-5 text-brand-primary" />
-          <h1 className="text-xl font-bold">Ask KrishiMitra</h1>
+          <h1 className="text-xl font-bold">{t("ask.title")}</h1>
         </div>
         <div className="flex items-center gap-1">
           {messages.length > 0 && (
@@ -685,8 +685,8 @@ export default function AskPage() {
               onClick={exportChat}
               disabled={exporting}
               className="text-brand-mute hover:text-brand-primary p-1.5 rounded-full disabled:opacity-50"
-              aria-label="Export chat as PDF"
-              title="Export chat as PDF"
+              aria-label={t("ask.save_pdf")}
+              title={t("ask.save_pdf")}
             >
               {exporting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -698,15 +698,15 @@ export default function AskPage() {
           <button
             onClick={startNewSession}
             className="text-brand-mute hover:text-brand-primary p-1.5 rounded-full"
-            aria-label="New chat"
-            title="New chat"
+            aria-label={t("ask.new_chat")}
+            title={t("ask.new_chat")}
           >
             <Plus className="w-5 h-5" />
           </button>
           <button
             onClick={() => setShowSettings((s) => !s)}
             className="text-brand-mute hover:text-brand-ink p-1.5 rounded-full"
-            aria-label="Chat settings"
+            aria-label={t("ask.chat_settings")}
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -725,9 +725,9 @@ export default function AskPage() {
         {!currentVoiceOk && prefs.readAloud !== "never" && (
           <span
             className="text-[10px] text-brand-mute inline-flex items-center gap-1"
-            title="No TTS voice installed for this language"
+            title={t("ask.no_voice", { lang: currentLang.name })}
           >
-            🔇 no {currentLang.name} voice
+            🔇 {t("ask.no_voice", { lang: currentLang.name })}
           </span>
         )}
         {showLangs && (
@@ -746,7 +746,7 @@ export default function AskPage() {
         <div className="px-5 mb-3">
           <Card>
             <p className="text-xs uppercase tracking-wide text-brand-mute mb-2">
-              Read aloud
+              {t("ask.read_aloud")}
             </p>
             <div className="grid grid-cols-3 gap-2">
               {(["ask", "always", "never"] as ReadAloudMode[]).map((m) => (
@@ -754,22 +754,18 @@ export default function AskPage() {
                   key={m}
                   onClick={() => saveReadAloud(m)}
                   className={cn(
-                    "h-10 rounded-lg text-sm capitalize transition",
+                    "h-10 rounded-lg text-sm transition",
                     prefs.readAloud === m
                       ? "bg-brand-primary text-white font-semibold"
                       : "bg-brand-bg border border-brand-line text-brand-ink"
                   )}
                 >
-                  {m}
+                  {t(`ask.readAloud_${m}`)}
                 </button>
               ))}
             </div>
             <p className="text-xs text-brand-mute mt-2">
-              {prefs.readAloud === "ask" &&
-                "A speaker button appears under each reply."}
-              {prefs.readAloud === "always" &&
-                "Every reply is spoken automatically."}
-              {prefs.readAloud === "never" && "Replies stay silent."}
+              {t(`ask.readAloud_hint_${prefs.readAloud}`)}
             </p>
           </Card>
         </div>
@@ -782,9 +778,9 @@ export default function AskPage() {
         {messages.length === 0 && (
           <Card className="text-center py-8">
             <Sparkles className="w-10 h-10 mx-auto text-brand-primary/70" />
-            <p className="mt-3 font-semibold">Ask anything about your farm</p>
+            <p className="mt-3 font-semibold">{t("ask.empty_title")}</p>
             <p className="text-xs text-brand-mute mt-1">
-              Weather, prices, schemes, crop advice — in your language.
+              {t("ask.empty_hint")}
             </p>
             <div className="mt-5 grid gap-2">
               {suggestions.map((s) => (
@@ -970,11 +966,11 @@ export default function AskPage() {
             >
               {exporting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Creating PDF…
+                  <Loader2 className="w-4 h-4 animate-spin" /> {t("ask.creating_pdf")}
                 </>
               ) : (
                 <>
-                  <FileDown className="w-4 h-4" /> Save complete chat as PDF
+                  <FileDown className="w-4 h-4" /> {t("ask.save_pdf")}
                 </>
               )}
             </button>
@@ -1088,9 +1084,9 @@ export default function AskPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             recording
-              ? "Recording…"
+              ? t("ask.recording")
               : transcribing
-                ? "Transcribing…"
+                ? t("ask.transcribing")
                 : t("dashboard.ask_placeholder")
           }
           disabled={recording || transcribing || sending}

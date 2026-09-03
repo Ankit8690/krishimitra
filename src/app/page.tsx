@@ -76,7 +76,7 @@ export default function Landing() {
       </section>
 
       <footer className="text-center text-brand-mute text-sm py-6">
-        <p>{t("tagline")} · Made for 🇮🇳 farmers</p>
+        <p>{t("tagline")} · {t("landing.footer")}</p>
       </footer>
     </div>
   );

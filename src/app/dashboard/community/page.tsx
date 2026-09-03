@@ -2,29 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card, CardTitle } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
 import {
   ArrowLeft,
   Users,
   Plus,
-  Trash2,
   Phone,
   MapPin,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { inr } from "@/lib/format";
+import { useI18n } from "@/i18n/I18nProvider";
 
-const TYPES = [
-  { key: "equipment", label: "Equipment" },
-  { key: "seed", label: "Seed" },
-  { key: "labour", label: "Labour" },
-  { key: "produce", label: "Produce" },
-  { key: "other", label: "Other" },
-] as const;
-type PostType = (typeof TYPES)[number]["key"];
+const TYPE_KEYS = ["equipment", "seed", "labour", "produce", "other"] as const;
+type PostType = (typeof TYPE_KEYS)[number];
 
 type Post = {
   id: string;
@@ -41,6 +35,7 @@ type Post = {
 };
 
 export default function CommunityPage() {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [filter, setFilter] = useState<PostType | "all">("all");
   const [showForm, setShowForm] = useState(false);
@@ -98,7 +93,7 @@ export default function CommunityPage() {
   }
 
   async function del(id: string) {
-    if (!confirm("Delete this post?")) return;
+    if (!confirm(t("community.confirm_delete"))) return;
     await fetch(`/api/community/${id}`, { method: "DELETE" });
     setPosts((p) => p?.filter((x) => x.id !== id) ?? null);
   }
@@ -110,11 +105,11 @@ export default function CommunityPage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <Users className="w-5 h-5 text-brand-primary" />
-        <h1 className="text-xl font-bold">Community board</h1>
+        <h1 className="text-xl font-bold">{t("community.title")}</h1>
         <button
           onClick={() => setShowForm(true)}
           className="ml-auto w-9 h-9 rounded-full bg-brand-primary text-white grid place-items-center hover:bg-brand-primary-hover"
-          aria-label="New post"
+          aria-label={t("community.new_post")}
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -122,15 +117,15 @@ export default function CommunityPage() {
 
       <div className="mb-3 flex gap-1.5 flex-wrap">
         <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
-          All
+          {t("community.all")}
         </FilterChip>
-        {TYPES.map((t) => (
+        {TYPE_KEYS.map((k) => (
           <FilterChip
-            key={t.key}
-            active={filter === t.key}
-            onClick={() => setFilter(t.key)}
+            key={k}
+            active={filter === k}
+            onClick={() => setFilter(k)}
           >
-            {t.label}
+            {t(`community.types.${k}`)}
           </FilterChip>
         ))}
       </div>
@@ -146,8 +141,8 @@ export default function CommunityPage() {
       {posts && posts.length === 0 && (
         <Card className="text-center text-brand-mute py-10">
           <Users className="w-10 h-10 mx-auto text-brand-primary/50" />
-          <p className="mt-3">No posts yet in this category.</p>
-          <p className="text-xs mt-1">Be the first — tap ➕ above.</p>
+          <p className="mt-3">{t("community.empty_title")}</p>
+          <p className="text-xs mt-1">{t("community.empty_hint")}</p>
         </Card>
       )}
 
@@ -162,7 +157,7 @@ export default function CommunityPage() {
                     typeStyle(p.type)
                   )}
                 >
-                  {TYPES.find((t) => t.key === p.type)?.label ?? p.type}
+                  {t(`community.types.${p.type}`)}
                 </span>
                 {p.priceInr != null && (
                   <span className="font-bold text-brand-primary">
@@ -175,7 +170,7 @@ export default function CommunityPage() {
                 {p.body}
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-mute">
-                <span>By {p.author}</span>
+                <span>{t("community.by_author", { name: p.author })}</span>
                 {p.district && (
                   <span className="inline-flex items-center gap-0.5">
                     <MapPin className="w-3 h-3" />
@@ -199,7 +194,7 @@ export default function CommunityPage() {
                 onClick={() => del(p.id)}
                 className="w-full py-2 text-xs text-brand-danger border-t border-brand-line hover:bg-brand-danger/5"
               >
-                Delete my post
+                {t("community.delete_mine")}
               </button>
             )}
           </Card>
@@ -214,10 +209,10 @@ export default function CommunityPage() {
           />
           <div className="fixed inset-x-0 bottom-0 z-40 max-w-md mx-auto bg-brand-surface rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto pb-safe">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-bold text-lg">New post</h2>
+              <h2 className="font-bold text-lg">{t("community.new_post")}</h2>
               <button
                 onClick={() => setShowForm(false)}
-                aria-label="Close"
+                aria-label={t("common.close")}
                 className="p-1.5 rounded-full hover:bg-brand-line/40"
               >
                 <X className="w-4 h-4" />
@@ -225,41 +220,41 @@ export default function CommunityPage() {
             </div>
             <form onSubmit={submit} className="space-y-3">
               <div>
-                <Label>Category</Label>
+                <Label>{t("community.form.category")}</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {TYPES.map((t) => (
+                  {TYPE_KEYS.map((k) => (
                     <button
                       type="button"
-                      key={t.key}
-                      onClick={() => setForm({ ...form, type: t.key })}
+                      key={k}
+                      onClick={() => setForm({ ...form, type: k })}
                       className={cn(
                         "h-10 rounded-lg text-sm border",
-                        form.type === t.key
+                        form.type === k
                           ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold"
                           : "border-brand-line bg-white"
                       )}
                     >
-                      {t.label}
+                      {t(`community.types.${k}`)}
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <Label>Title</Label>
+                <Label>{t("community.form.title")}</Label>
                 <Input
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="e.g. Tractor for rent, ₹800/day"
+                  placeholder={t("community.form.title_ph")}
                   required
                   minLength={3}
                 />
               </div>
               <div>
-                <Label>Details</Label>
+                <Label>{t("community.form.details")}</Label>
                 <textarea
                   value={form.body}
                   onChange={(e) => setForm({ ...form, body: e.target.value })}
-                  placeholder="Describe what you're offering / asking for"
+                  placeholder={t("community.form.details_ph")}
                   required
                   minLength={3}
                   rows={4}
@@ -268,7 +263,7 @@ export default function CommunityPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label>Price ₹ (optional)</Label>
+                  <Label>{t("community.form.price")}</Label>
                   <Input
                     type="number"
                     value={form.priceInr}
@@ -276,12 +271,12 @@ export default function CommunityPage() {
                   />
                 </div>
                 <div>
-                  <Label>Contact (phone)</Label>
+                  <Label>{t("community.form.contact")}</Label>
                   <Input
                     type="tel"
                     value={form.contact}
                     onChange={(e) => setForm({ ...form, contact: e.target.value })}
-                    placeholder="Uses your saved number if empty"
+                    placeholder={t("community.form.contact_ph")}
                   />
                 </div>
               </div>
@@ -291,7 +286,7 @@ export default function CommunityPage() {
                 </p>
               )}
               <Button size="lg" className="w-full" disabled={posting}>
-                {posting ? "Posting…" : "Post to community"}
+                {posting ? t("community.form.submitting") : t("community.form.submit")}
               </Button>
             </form>
           </div>
