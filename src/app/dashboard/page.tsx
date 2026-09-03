@@ -122,7 +122,6 @@ export default function DashboardHome() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <ViewModeToggle compact />
           <LanguageSwitcher />
         </div>
       </header>

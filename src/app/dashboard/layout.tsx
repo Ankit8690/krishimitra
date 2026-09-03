@@ -1,5 +1,6 @@
 import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/Sidebar";
+import { FloatingModeToggle } from "@/components/FloatingModeToggle";
 
 export default function DashboardLayout({ children }: LayoutProps<"/dashboard">) {
   return (
@@ -11,6 +12,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
           <BottomNav />
         </div>
       </div>
+      <FloatingModeToggle />
     </div>
   );
 }
