@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
+import { HeroPanel } from "@/components/HeroPanel";
 
 export default function SignupPage() {
   const { t, locale, setLocale } = useI18n();
@@ -47,12 +48,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="max-w-5xl w-full mx-auto flex items-center justify-between px-5 py-4">
-        <Link href="/" className="font-semibold">
+    <div className="min-h-screen flex bg-brand-bg">
+      <HeroPanel />
+      <div className="flex-1 flex flex-col min-h-screen">
+      <header className="w-full flex items-center justify-between px-5 py-4">
+        <Link href="/" className="font-semibold lg:hidden">
           🌾 {t("brand")}
         </Link>
-        <LanguageSwitcher />
+        <div className="ml-auto">
+          <LanguageSwitcher />
+        </div>
       </header>
       <main className="flex-1 grid place-items-center px-5 py-6">
         <Card className="w-full max-w-md">
@@ -130,6 +135,7 @@ export default function SignupPage() {
           </p>
         </Card>
       </main>
+      </div>
     </div>
   );
 }

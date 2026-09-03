@@ -123,6 +123,17 @@ export function Sidebar() {
         ))}
       </nav>
 
+      {/* Decorative slogan card */}
+      <div className="mx-3 mb-3 rounded-2xl bg-gradient-to-br from-brand-primary via-emerald-600 to-emerald-700 text-white p-3 text-center relative overflow-hidden">
+        <div className="text-2xl">🌾</div>
+        <p className="text-[11px] font-semibold leading-snug mt-1">
+          जय जवान, जय किसान
+        </p>
+        <p className="text-[9px] text-white/70 mt-0.5">
+          Lal Bahadur Shastri
+        </p>
+      </div>
+
       <div className="p-3 border-t border-brand-line">
         {name && (
           <div className="px-3 py-2 flex items-center gap-2 min-w-0">

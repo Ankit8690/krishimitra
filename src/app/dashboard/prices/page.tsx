@@ -7,6 +7,7 @@ import { ArrowUpDown, TrendingUp } from "lucide-react";
 import { inr, fmtShortDate } from "@/lib/format";
 import { useI18n } from "@/i18n/I18nProvider";
 import { tCommodity } from "@/lib/dictionaries";
+import { commodityIcon } from "@/lib/commodityIcons";
 
 type Record = {
   state: string;
@@ -125,11 +126,14 @@ export default function PricesPage() {
                   key={`${r.commodity}-${r.market}-${r.variety}-${i}`}
                   className="grid grid-cols-[1fr_1fr_5rem] px-3 py-2.5 text-sm items-center"
                 >
-                  <div>
-                    <p className="font-semibold">{tCommodity(r.commodity, locale)}</p>
-                    {r.variety && (
-                      <p className="text-xs text-brand-mute">{r.variety}</p>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{commodityIcon(r.commodity)}</span>
+                    <div>
+                      <p className="font-semibold">{tCommodity(r.commodity, locale)}</p>
+                      {r.variety && (
+                        <p className="text-xs text-brand-mute">{r.variety}</p>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <p>{r.market}</p>

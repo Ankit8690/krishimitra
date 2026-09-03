@@ -24,6 +24,7 @@ import type { WeatherReport } from "@/lib/weather";
 import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { tCommodity, tWeather } from "@/lib/dictionaries";
 import { DailyQuote } from "@/components/DailyQuote";
+import { commodityIcon } from "@/lib/commodityIcons";
 
 type Me = {
   id: string;
@@ -133,7 +134,10 @@ export default function DashboardHome() {
       <div className="km-dashboard-grid grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Weather card — tappable */}
         <Link href="/dashboard/weather" className="block">
-          <Card className="bg-gradient-to-br from-sky-50 to-white active:scale-[0.99] transition">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-sky-100 via-sky-50 to-white active:scale-[0.99] transition">
+            <div className="absolute top-0 right-0 text-8xl opacity-10 pointer-events-none select-none">
+              ☁️
+            </div>
             <div className="flex items-center justify-between">
               <CardTitle>
                 <span className="inline-flex items-center gap-2">
@@ -179,7 +183,10 @@ export default function DashboardHome() {
 
         {/* Prices card — tappable */}
         <Link href="/dashboard/prices" className="block">
-          <Card className="active:scale-[0.99] transition">
+          <Card className="relative overflow-hidden active:scale-[0.99] transition">
+            <div className="absolute top-0 right-0 text-8xl opacity-10 pointer-events-none select-none">
+              💰
+            </div>
             <div className="flex items-center justify-between">
               <CardTitle>
                 <span className="inline-flex items-center gap-2">
@@ -195,11 +202,14 @@ export default function DashboardHome() {
                     key={r.commodity + r.market}
                     className="py-2 flex items-center justify-between"
                   >
-                    <div>
-                      <p className="font-semibold">{tCommodity(r.commodity, locale)}</p>
-                      <p className="text-xs text-brand-mute">
-                        {r.market}, {r.state}
-                      </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{commodityIcon(r.commodity)}</span>
+                      <div>
+                        <p className="font-semibold">{tCommodity(r.commodity, locale)}</p>
+                        <p className="text-xs text-brand-mute">
+                          {r.market}, {r.state}
+                        </p>
+                      </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold">{inr(r.modalPrice)}/qtl</p>
@@ -230,7 +240,10 @@ export default function DashboardHome() {
 
         {/* Schemes card — tappable */}
         <Link href="/dashboard/schemes" className="block">
-          <Card className="bg-gradient-to-br from-brand-accent/10 to-white active:scale-[0.99] transition">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-brand-accent/15 to-white active:scale-[0.99] transition">
+            <div className="absolute top-0 right-0 text-8xl opacity-15 pointer-events-none select-none">
+              🏛️
+            </div>
             <div className="flex items-center justify-between">
               <CardTitle>
                 <span className="inline-flex items-center gap-2">

@@ -139,10 +139,17 @@ export default function CommunityPage() {
       )}
 
       {posts && posts.length === 0 && (
-        <Card className="text-center text-brand-mute py-10">
-          <Users className="w-10 h-10 mx-auto text-brand-primary/50" />
-          <p className="mt-3">{t("community.empty_title")}</p>
-          <p className="text-xs mt-1">{t("community.empty_hint")}</p>
+        <Card className="relative overflow-hidden text-center py-10 bg-gradient-to-br from-brand-accent/10 via-white to-brand-primary/5">
+          <div className="absolute -top-6 -right-6 text-9xl opacity-10 pointer-events-none select-none">
+            🤝
+          </div>
+          <div className="relative">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-brand-accent to-orange-500 grid place-items-center shadow-md">
+              <Users className="w-8 h-8 text-white" />
+            </div>
+            <p className="mt-4 font-bold text-lg">{t("community.empty_title")}</p>
+            <p className="text-sm text-brand-mute mt-1">{t("community.empty_hint")}</p>
+          </div>
         </Card>
       )}
 

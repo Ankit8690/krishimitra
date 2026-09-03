@@ -103,11 +103,18 @@ export default function ScanPage() {
 
       {!preview && (
         <>
-          <Card className="text-center py-10">
-            <ScanLine className="w-16 h-16 mx-auto text-brand-primary/60" />
-            <p className="mt-3 text-brand-mute px-4 text-sm">
-              {t("scan.intro")}
-            </p>
+          <Card className="relative overflow-hidden text-center py-10 bg-gradient-to-br from-brand-primary/5 via-white to-brand-accent/10">
+            <div className="absolute -top-6 -right-6 text-9xl opacity-10 pointer-events-none select-none">
+              🍃
+            </div>
+            <div className="relative">
+              <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500 to-brand-primary grid place-items-center shadow-xl">
+                <ScanLine className="w-10 h-10 text-white" />
+              </div>
+              <p className="mt-4 text-base font-semibold text-brand-ink px-4">
+                {t("scan.intro")}
+              </p>
+            </div>
             <div className="mt-6 grid grid-cols-2 gap-3 px-4">
               <Button size="lg" onClick={() => inputRef.current?.click()}>
                 <Camera className="w-5 h-5" /> {t("scan.camera")}

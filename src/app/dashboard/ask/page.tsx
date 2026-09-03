@@ -776,22 +776,30 @@ export default function AskPage() {
         className="flex-1 overflow-y-auto px-5 space-y-3 pb-4"
       >
         {messages.length === 0 && (
-          <Card className="text-center py-8">
-            <Sparkles className="w-10 h-10 mx-auto text-brand-primary/70" />
-            <p className="mt-3 font-semibold">{t("ask.empty_title")}</p>
-            <p className="text-xs text-brand-mute mt-1">
-              {t("ask.empty_hint")}
-            </p>
-            <div className="mt-5 grid gap-2">
-              {suggestions.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => send(s)}
-                  className="text-left text-sm px-3 py-2 rounded-xl border border-brand-line bg-brand-bg hover:bg-brand-line/40 transition"
-                >
-                  {s}
-                </button>
-              ))}
+          <Card className="text-center py-8 relative overflow-hidden bg-gradient-to-br from-brand-primary/10 via-white to-brand-accent/5">
+            <div className="absolute -top-4 -right-4 text-9xl opacity-10 pointer-events-none select-none">
+              🌾
+            </div>
+            <div className="relative">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-emerald-700 grid place-items-center mx-auto shadow-lg">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <p className="mt-4 font-bold text-lg">{t("ask.empty_title")}</p>
+              <p className="text-sm text-brand-mute mt-1">
+                {t("ask.empty_hint")}
+              </p>
+              <div className="mt-6 grid gap-2 text-left">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => send(s)}
+                    className="text-left text-sm px-3.5 py-2.5 rounded-xl border border-brand-line bg-white hover:border-brand-primary/50 hover:shadow-sm transition inline-flex items-center gap-2"
+                  >
+                    <span className="text-brand-primary">💬</span>
+                    <span>{s}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </Card>
         )}
