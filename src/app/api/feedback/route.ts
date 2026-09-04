@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
 import { User } from "@/models/User";
 import { Feedback } from "@/models/Feedback";
+import { logActivity } from "@/lib/activity";
 
 const CATEGORIES = ["bug", "suggestion", "praise", "feature", "other"] as const;
 
@@ -37,6 +38,11 @@ export async function POST(req: Request) {
     category: parsed.data.category,
     rating: parsed.data.rating,
     message: parsed.data.message,
+  });
+
+  logActivity(session.sub, "feedback.submitted", {
+    category: parsed.data.category,
+    rating: parsed.data.rating,
   });
 
   return NextResponse.json({ id: doc._id.toString() });

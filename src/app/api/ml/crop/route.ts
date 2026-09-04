@@ -5,6 +5,7 @@ import { scoreCrops, withProfit } from "@/lib/cropRec";
 import { fetchMandi } from "@/lib/mandi";
 import { dbConnect } from "@/lib/db";
 import { User } from "@/models/User";
+import { logActivity } from "@/lib/activity";
 
 const Body = z.object({
   n: z.number().min(0).max(400),
@@ -65,6 +66,11 @@ export async function POST(req: Request) {
     const bp = b.profitPerAcre ?? -1;
     if (ap === bp) return b.matchScore - a.matchScore;
     return bp - ap;
+  });
+
+  logActivity(session.sub, "ml.crop_recommend", {
+    input: parsed.data,
+    top: recommendations.slice(0, 3).map((r) => r.cropName),
   });
 
   return NextResponse.json({ recommendations, priceStateUsed: state ?? null });

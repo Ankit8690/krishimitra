@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { detectDisease } from "@/lib/disease";
+import { logActivity } from "@/lib/activity";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,9 @@ export async function POST(req: Request) {
   const buf = await file.arrayBuffer();
   try {
     const prediction = await detectDisease(buf);
+    logActivity(session.sub, "scan.disease", {
+      top: (prediction as { label?: string; disease?: string })?.label ?? (prediction as { disease?: string })?.disease ?? "unknown",
+    });
     return NextResponse.json({ prediction });
   } catch (err) {
     console.error("[ml/disease] error", err);

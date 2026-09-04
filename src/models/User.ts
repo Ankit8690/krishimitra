@@ -67,11 +67,23 @@ const UserSchema = new Schema(
     farm: { type: FarmSchema, default: () => ({}) },
     onboardingCompleted: { type: Boolean, default: false },
     chatPrefs: { type: ChatPrefsSchema, default: () => ({}) },
+    emailVerified: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false, index: true },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
 
-export type UserDoc = InferSchemaType<typeof UserSchema> & { _id: mongoose.Types.ObjectId };
+export type UserDoc = InferSchemaType<typeof UserSchema> & {
+  _id: mongoose.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+  emailVerified?: boolean;
+  disabled?: boolean;
+};
+
+if (process.env.NODE_ENV !== "production" && mongoose.models.User) {
+  delete (mongoose.models as Record<string, unknown>).User;
+}
 
 export const User: Model<UserDoc> =
   (mongoose.models.User as Model<UserDoc>) ||

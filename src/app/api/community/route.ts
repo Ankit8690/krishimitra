@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
 import { User } from "@/models/User";
 import { Post } from "@/models/Post";
+import { logActivity } from "@/lib/activity";
 
 const TYPES = ["equipment", "seed", "labour", "produce", "other"] as const;
 
@@ -65,5 +66,10 @@ export async function POST(req: Request) {
     state: user.location?.state,
     district: user.location?.district,
   });
+  logActivity(session.sub, "community.post_created", {
+    type: parsed.data.type,
+    title: parsed.data.title.slice(0, 60),
+  });
+
   return NextResponse.json({ id: post._id.toString() });
 }

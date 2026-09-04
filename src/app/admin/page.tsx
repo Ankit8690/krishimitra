@@ -1,15 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
-  ShieldCheck,
-  LogOut,
   Star,
   Trash2,
   MessageSquare,
   Search,
-  RefreshCw,
   Save,
   X,
   Bug,
@@ -80,8 +76,6 @@ const STATUS_COLOR: Record<Status, string> = {
 };
 
 export default function AdminPage() {
-  const router = useRouter();
-  const [adminEmail, setAdminEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -94,16 +88,7 @@ export default function AdminPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      const me = await fetch("/api/admin/me").then((r) => r.json());
-      if (!me?.admin) {
-        router.replace("/admin/login");
-        return;
-      }
-      setAdminEmail(me.admin.email);
-      await load();
-      setLoading(false);
-    })();
+    load().finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -135,11 +120,6 @@ export default function AdminPage() {
     );
   }, [items, q]);
 
-  async function logout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.replace("/admin/login");
-  }
-
   async function patchItem(id: string, patch: Partial<Pick<Item, "status" | "starred" | "adminNote">>) {
     setSavingId(id);
     setItems((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
@@ -169,33 +149,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg">
-      {/* Top bar */}
-      <header className="sticky top-0 z-20 bg-white border-b border-brand-line shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 grid place-items-center shadow">
-            <ShieldCheck className="w-5 h-5 text-white" />
-          </div>
-          <div className="min-w-0">
-            <p className="font-bold text-brand-ink leading-none">Admin Portal</p>
-            <p className="text-[11px] text-brand-mute mt-0.5 truncate">{adminEmail}</p>
-          </div>
-          <button
-            onClick={load}
-            className="ml-auto p-2 rounded-lg hover:bg-brand-line/40"
-            aria-label="Refresh"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-          <button
-            onClick={logout}
-            className="text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-line/60 hover:bg-brand-line font-semibold"
-          >
-            <LogOut className="w-4 h-4" /> Logout
-          </button>
-        </div>
-      </header>
-
+    <>
       <main className="max-w-6xl mx-auto p-4 space-y-4">
         {/* Stats */}
         {stats && (
@@ -397,7 +351,7 @@ export default function AdminPage() {
           </div>
         )}
       </main>
-    </div>
+    </>
   );
 }
 

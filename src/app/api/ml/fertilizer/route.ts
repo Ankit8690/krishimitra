@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
 import { advise } from "@/lib/fertilizer";
+import { logActivity } from "@/lib/activity";
 
 const Body = z.object({
   cropName: z.string().min(2),
@@ -20,5 +21,6 @@ export async function POST(req: Request) {
   }
   const result = advise(parsed.data);
   if (!result) return NextResponse.json({ error: "Unknown crop" }, { status: 404 });
+  logActivity(session.sub, "ml.fertilizer_advise", { crop: parsed.data.cropName });
   return NextResponse.json({ advice: result });
 }

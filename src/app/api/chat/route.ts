@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
 import { dbConnect } from "@/lib/db";
 import { ChatMessage } from "@/models/ChatMessage";
 import { ChatSession } from "@/models/ChatSession";
@@ -68,6 +69,12 @@ export async function POST(req: Request) {
   }
 
   const { message, language, sessionId, imageDataUrl } = parsed.data;
+
+  logActivity(session.sub, "chat.message", {
+    language,
+    preview: message.slice(0, 120),
+    hasImage: !!imageDataUrl,
+  });
 
   await dbConnect();
 
