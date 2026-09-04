@@ -8,9 +8,29 @@
 import { Redis } from "@upstash/redis";
 
 const KEY_PREFIX = "km:";
-const url = process.env.UPSTASH_REDIS_REST_URL;
-const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-const redis = url && token ? new Redis({ url, token }) : null;
+
+// Defensive init — a malformed UPSTASH_REDIS_REST_URL (missing https://,
+// trailing whitespace, quoted string, etc.) makes `new Redis(...)` throw
+// synchronously, which would crash Vercel's build during page-data
+// collection. Swallow the error and log — we fall back to the in-memory
+// cache and log the mode so it's obvious in the admin health chip.
+function initRedis(): Redis | null {
+  const raw = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!raw || !token) return null;
+  const url = raw.trim().replace(/^["']|["']$/g, "");
+  if (!/^https?:\/\//i.test(url)) {
+    console.warn(`[cache] UPSTASH_REDIS_REST_URL is missing https:// prefix — falling back to memory cache. Got: ${url.slice(0, 40)}…`);
+    return null;
+  }
+  try {
+    return new Redis({ url, token: token.trim() });
+  } catch (err) {
+    console.warn("[cache] Redis init failed — falling back to memory cache:", err);
+    return null;
+  }
+}
+const redis = initRedis();
 
 type Entry<T> = { value: T; expiresAt: number };
 const globalCache = global as unknown as { _kmCache?: Map<string, Entry<unknown>> };
