@@ -25,6 +25,7 @@ import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { tCommodity, tWeather } from "@/lib/dictionaries";
 import { DailyQuote } from "@/components/DailyQuote";
 import { commodityIcon } from "@/lib/commodityIcons";
+import { HERO_IMAGES } from "@/lib/heroImages";
 
 type Me = {
   id: string;
@@ -183,7 +184,7 @@ export default function DashboardHome() {
 
         {/* Prices card — tappable */}
         <Link href="/dashboard/prices" className="block">
-          <Card className="relative overflow-hidden active:scale-[0.99] transition">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-amber-100 via-yellow-50 to-white border-amber-200 active:scale-[0.99] transition">
             <div className="absolute top-0 right-0 text-8xl opacity-10 pointer-events-none select-none">
               💰
             </div>
@@ -260,92 +261,144 @@ export default function DashboardHome() {
 
         {/* ML tools row */}
         <div className="grid grid-cols-2 gap-3">
-          <Link href="/dashboard/recommend" className="block">
-            <Card className="h-full active:scale-[0.99] transition">
-              <Sprout className="w-6 h-6 text-brand-primary" />
-              <p className="font-semibold mt-2">{t("dashboard.best_crop")}</p>
-              <p className="text-xs text-brand-mute">
-                {t("dashboard.best_crop_body")}
-              </p>
-            </Card>
-          </Link>
-          <Link href="/dashboard/fertilizer" className="block">
-            <Card className="h-full active:scale-[0.99] transition">
-              <FlaskConical className="w-6 h-6 text-brand-primary" />
-              <p className="font-semibold mt-2">{t("dashboard.fertilizer")}</p>
-              <p className="text-xs text-brand-mute">
-                {t("dashboard.fertilizer_body")}
-              </p>
-            </Card>
-          </Link>
-          <Link href="/dashboard/scan" className="block col-span-2">
-            <Card className="bg-gradient-to-br from-brand-primary/10 to-white active:scale-[0.99] transition">
-              <div className="flex items-center gap-3">
-                <ScanLine className="w-8 h-8 text-brand-primary shrink-0" />
-                <div>
-                  <p className="font-semibold">{t("dashboard.scan_leaf")}</p>
-                  <p className="text-xs text-brand-mute mt-0.5">
-                    {t("dashboard.scan_leaf_body")}
-                  </p>
+          <Link href="/dashboard/recommend" className="block group">
+            <Card className="h-full relative overflow-hidden bg-gradient-to-br from-emerald-500/15 via-green-100 to-white border-emerald-200 active:scale-[0.98] group-hover:shadow-lg transition">
+              <div className="absolute -top-3 -right-3 text-7xl opacity-15 pointer-events-none select-none rotate-12">
+                🌾
+              </div>
+              <div className="relative">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 grid place-items-center shadow-md">
+                  <Sprout className="w-6 h-6 text-white" />
                 </div>
-                <ChevronRight className="w-4 h-4 text-brand-mute ml-auto shrink-0" />
+                <p className="font-bold mt-3 text-brand-ink">{t("dashboard.best_crop")}</p>
+                <p className="text-xs text-brand-mute mt-0.5 line-clamp-2">
+                  {t("dashboard.best_crop_body")}
+                </p>
+                <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  AI <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Card>
+          </Link>
+          <Link href="/dashboard/fertilizer" className="block group">
+            <Card className="h-full relative overflow-hidden bg-gradient-to-br from-amber-400/20 via-orange-100 to-white border-amber-200 active:scale-[0.98] group-hover:shadow-lg transition">
+              <div className="absolute -top-3 -right-3 text-7xl opacity-15 pointer-events-none select-none rotate-12">
+                🧪
+              </div>
+              <div className="relative">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 grid place-items-center shadow-md">
+                  <FlaskConical className="w-6 h-6 text-white" />
+                </div>
+                <p className="font-bold mt-3 text-brand-ink">{t("dashboard.fertilizer")}</p>
+                <p className="text-xs text-brand-mute mt-0.5 line-clamp-2">
+                  {t("dashboard.fertilizer_body")}
+                </p>
+                <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-full">
+                  NPK <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Card>
+          </Link>
+          <Link href="/dashboard/scan" className="block col-span-2 group">
+            <Card className="p-0 overflow-hidden active:scale-[0.99] group-hover:shadow-xl transition border-brand-primary/30">
+              <div
+                className="relative h-28 bg-cover bg-center"
+                style={{ backgroundImage: `url(${HERO_IMAGES.scan})` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/85 via-brand-primary/60 to-transparent" />
+                <div className="relative h-full flex items-center gap-4 px-5 text-white">
+                  <div className="w-14 h-14 rounded-2xl bg-white/25 backdrop-blur grid place-items-center shrink-0 ring-2 ring-white/40">
+                    <ScanLine className="w-8 h-8" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-lg leading-tight">{t("dashboard.scan_leaf")}</p>
+                    <p className="text-xs text-white/90 mt-1 line-clamp-2">
+                      {t("dashboard.scan_leaf_body")}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-6 h-6 shrink-0" />
+                </div>
               </div>
             </Card>
           </Link>
         </div>
 
         {/* Today's tasks — live from crop calendar */}
-        <Card className="bg-gradient-to-br from-brand-primary/5 to-white">
-          <div className="flex items-center justify-between">
-            <CardTitle>
-              <span className="inline-flex items-center gap-2">
-                <Calendar className="w-4 h-4" /> {t("dashboard.task_card")}
-              </span>
-            </CardTitle>
-            <Link
-              href="/dashboard/profile#sowing"
-              className="text-xs text-brand-primary font-semibold"
-            >
-              {t("dashboard.set_dates")}
-            </Link>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-lime-100 via-emerald-50 to-white border-emerald-200">
+          <div className="absolute -bottom-6 -right-4 text-8xl opacity-15 pointer-events-none select-none">
+            🌱
           </div>
-          {tasks && tasks.length > 0 ? (
-            <ul className="mt-3 space-y-2">
-              {tasks.slice(0, 3).map((task) => (
-                <li key={task.crop} className="text-sm">
-                  <p className="font-semibold text-brand-primary">
-                    {task.crop}
-                    <span className="ml-2 text-xs text-brand-mute font-normal">
-                      {t("dashboard.day_x", { n: task.daysSince })}
-                    </span>
-                  </p>
-                  <p className="text-brand-ink mt-0.5">{task.text}</p>
-                </li>
-              ))}
-            </ul>
-          ) : tasks ? (
-            <p className="mt-3 text-sm text-brand-mute">
-              {t("dashboard.add_sowing_hint")}
-            </p>
-          ) : (
-            <div className="mt-3 h-14 rounded-lg bg-brand-line/40 animate-pulse" />
-          )}
-        </Card>
-
-        {/* Community shortcut */}
-        <Link href="/dashboard/community" className="block">
-          <Card className="active:scale-[0.99] transition">
+          <div className="relative">
             <div className="flex items-center justify-between">
               <CardTitle>
                 <span className="inline-flex items-center gap-2">
-                  <Users className="w-4 h-4" /> {t("dashboard.community_card")}
+                  <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 grid place-items-center shadow-md">
+                    <Calendar className="w-4 h-4 text-white" />
+                  </span>
+                  <span className="text-base font-bold">{t("dashboard.task_card")}</span>
                 </span>
               </CardTitle>
-              <ChevronRight className="w-4 h-4 text-brand-mute" />
+              <Link
+                href="/dashboard/profile#sowing"
+                className="text-xs text-white bg-brand-primary hover:bg-brand-primary-hover font-semibold px-3 py-1.5 rounded-full shadow-sm"
+              >
+                {t("dashboard.set_dates")}
+              </Link>
             </div>
-            <p className="mt-3 text-sm text-brand-mute">
-              {t("dashboard.community_body")}
-            </p>
+            {tasks && tasks.length > 0 ? (
+              <ul className="mt-3 space-y-2">
+                {tasks.slice(0, 3).map((task) => (
+                  <li
+                    key={task.crop}
+                    className="text-sm bg-white/70 backdrop-blur rounded-xl px-3 py-2 border border-emerald-100"
+                  >
+                    <p className="font-bold text-emerald-800 flex items-center gap-2">
+                      <span className="text-lg">{commodityIcon(task.crop)}</span>
+                      {task.crop}
+                      <span className="ml-auto text-[10px] uppercase tracking-wide text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-semibold">
+                        {t("dashboard.day_x", { n: task.daysSince })}
+                      </span>
+                    </p>
+                    <p className="text-brand-ink mt-1 text-[13px] leading-snug">{task.text}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : tasks ? (
+              <p className="mt-3 text-sm text-brand-mute">
+                {t("dashboard.add_sowing_hint")}
+              </p>
+            ) : (
+              <div className="mt-3 h-14 rounded-lg bg-brand-line/40 animate-pulse" />
+            )}
+          </div>
+        </Card>
+
+        {/* Community shortcut */}
+        <Link href="/dashboard/community" className="block group">
+          <Card className="p-0 overflow-hidden active:scale-[0.99] group-hover:shadow-xl transition border-orange-200">
+            <div
+              className="relative h-40 bg-cover bg-center"
+              style={{ backgroundImage: `url(${HERO_IMAGES.community})` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent" />
+              <div className="absolute top-3 left-3 w-11 h-11 rounded-2xl bg-white/20 backdrop-blur grid place-items-center ring-2 ring-white/40">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider text-white bg-orange-500/90 px-2.5 py-1 rounded-full shadow-md">
+                🤝 {t("dashboard.community_card")}
+              </span>
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                <p className="font-bold text-lg leading-tight">
+                  {t("dashboard.community_card")}
+                </p>
+                <p className="text-xs text-white/90 mt-1 line-clamp-2">
+                  {t("dashboard.community_body")}
+                </p>
+                <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold bg-white text-orange-700 px-3 py-1 rounded-full shadow-sm">
+                  Open board <ChevronRight className="w-3 h-3" />
+                </div>
+              </div>
+            </div>
           </Card>
         </Link>
       </div>
