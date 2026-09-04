@@ -5,6 +5,7 @@ import { useI18n } from "@/i18n/I18nProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ViewModeToggle } from "@/components/ViewModeToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AuthorFooter } from "@/components/AuthorFooter";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { DailyQuote } from "@/components/DailyQuote";
@@ -355,12 +356,9 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="text-center text-brand-mute text-sm py-8 space-y-1">
-        <p className="font-semibold text-brand-ink">🌾 {t("brand")}</p>
-        <p>
-          {t("tagline")} · {t("landing.footer")}
-        </p>
-      </footer>
+      <div className="max-w-6xl mx-auto px-4 lg:px-6">
+        <AuthorFooter />
+      </div>
     </div>
   );
 }

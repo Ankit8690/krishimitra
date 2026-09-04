@@ -27,6 +27,7 @@ import { tCommodity, tWeather } from "@/lib/dictionaries";
 import { DailyQuote } from "@/components/DailyQuote";
 import { commodityIcon } from "@/lib/commodityIcons";
 import { DashboardBackdrop } from "@/components/DashboardBackdrop";
+import { AuthorFooter } from "@/components/AuthorFooter";
 
 type Me = {
   id: string;
@@ -426,6 +427,8 @@ export default function DashboardHome() {
           </Card>
         </Link>
       </div>
+
+      <AuthorFooter />
 
       <Link
         href="/dashboard/ask"
