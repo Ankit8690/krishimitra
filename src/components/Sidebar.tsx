@@ -15,6 +15,7 @@ import {
   Sprout,
   FlaskConical,
   LogOut,
+  MessageSquareHeart,
 } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { cn } from "@/lib/cn";
@@ -70,6 +71,7 @@ export function Sidebar() {
       label: "You",
       items: [
         { href: "/dashboard/community", icon: Users, label: t("community.title") },
+        { href: "/dashboard/feedback", icon: MessageSquareHeart, label: "Feedback" },
         { href: "/dashboard/profile", icon: UserIcon, label: t("profile.title") },
       ],
     },

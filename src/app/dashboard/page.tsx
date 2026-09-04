@@ -18,6 +18,7 @@ import {
   ScanLine,
   Users,
   Calendar,
+  MessageSquareHeart,
 } from "lucide-react";
 import { inr } from "@/lib/format";
 import type { WeatherReport } from "@/lib/weather";
@@ -370,6 +371,32 @@ export default function DashboardHome() {
             )}
           </div>
         </Card>
+
+        {/* Feedback shortcut */}
+        <Link href="/dashboard/feedback" className="block group">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-pink-100 via-rose-50 to-white border-pink-200 active:scale-[0.99] group-hover:shadow-lg transition">
+            <div className="absolute -top-3 -right-3 text-7xl opacity-15 pointer-events-none select-none rotate-12">
+              💬
+            </div>
+            <div className="relative flex items-start gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 grid place-items-center shrink-0 shadow-md">
+                <MessageSquareHeart className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-bold text-brand-ink">Share feedback</p>
+                  <ChevronRight className="w-4 h-4 text-brand-mute shrink-0" />
+                </div>
+                <p className="text-xs text-brand-mute mt-0.5 line-clamp-2">
+                  Tell us what to improve — bugs, ideas, or praise.
+                </p>
+                <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-pink-700 bg-pink-100 px-2.5 py-0.5 rounded-full">
+                  ★ Rate us <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </div>
+          </Card>
+        </Link>
 
         {/* Community shortcut */}
         <Link href="/dashboard/community" className="block group">
