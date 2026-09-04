@@ -165,6 +165,21 @@
 :root[data-theme="dark"] .text-violet-700  { color: rgb(196 181 253) !important; }
 :root[data-theme="dark"] .text-teal-700    { color: rgb(94 234 212) !important; }
 
+/* `to-*-50` end-stops (scan tile: to-lime-50; several tiles: to-emerald-50 etc.) */
+:root[data-theme="dark"] .to-emerald-50 { --tw-gradient-to: rgb(6 78 59 / 0.30) !important; }
+:root[data-theme="dark"] .to-emerald-100 { --tw-gradient-to: rgb(6 78 59 / 0.45) !important; }
+:root[data-theme="dark"] .to-lime-50    { --tw-gradient-to: rgb(63 98 18 / 0.30) !important; }
+:root[data-theme="dark"] .to-lime-100   { --tw-gradient-to: rgb(63 98 18 / 0.45) !important; }
+:root[data-theme="dark"] .to-teal-50    { --tw-gradient-to: rgb(19 78 74 / 0.30) !important; }
+:root[data-theme="dark"] .to-teal-100   { --tw-gradient-to: rgb(19 78 74 / 0.45) !important; }
+:root[data-theme="dark"] .to-sky-50     { --tw-gradient-to: rgb(12 74 110 / 0.30) !important; }
+:root[data-theme="dark"] .to-amber-50   { --tw-gradient-to: rgb(120 53 15 / 0.30) !important; }
+:root[data-theme="dark"] .to-orange-50  { --tw-gradient-to: rgb(124 45 18 / 0.30) !important; }
+:root[data-theme="dark"] .to-pink-50    { --tw-gradient-to: rgb(131 24 67 / 0.30) !important; }
+:root[data-theme="dark"] .to-rose-50    { --tw-gradient-to: rgb(159 18 57 / 0.30) !important; }
+:root[data-theme="dark"] .to-green-50   { --tw-gradient-to: rgb(20 83 45 / 0.30) !important; }
+:root[data-theme="dark"] .to-yellow-50  { --tw-gradient-to: rgb(113 63 18 / 0.30) !important; }
+
 /* Photo banner overlays already use pure black gradients — keep as-is */
 
 /* --- Dark-mode legibility ---------------------------------------------
