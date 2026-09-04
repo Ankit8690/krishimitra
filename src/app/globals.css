@@ -208,6 +208,16 @@
  * portalled image shows through. Sidebar + bottom-nav keep their own bg. */
 .km-has-backdrop body { background: transparent !important; }
 .km-has-backdrop .km-dashboard-shell { background: transparent !important; }
+/* In force-mobile, constrain the backdrop to the mobile column so the
+ * wheat-field image only shows inside the phone frame, not across the
+ * whole desktop viewport around it. */
+.force-mobile .km-has-backdrop [aria-hidden="true"].fixed.inset-0,
+.km-has-backdrop.force-mobile [aria-hidden="true"].fixed.inset-0,
+html.force-mobile.km-has-backdrop body > [aria-hidden="true"].fixed.inset-0 {
+  left: var(--frame-left) !important;
+  right: var(--frame-right) !important;
+  width: var(--frame-width) !important;
+}
 
 /* Home-dashboard cards float above the sunset backdrop, so give them a
  * fully opaque surface base under whatever gradient they carry, plus a
@@ -416,9 +426,32 @@ body {
 .force-mobile .km-nav-desktop { display: none !important; }
 .force-mobile .km-nav-mobile { display: flex !important; }
 /* Force-mobile emulation on a desktop: show the hamburger + hide sticky sidebar */
-.force-mobile .km-hamburger { display: grid !important; }
+.force-mobile .km-hamburger {
+  display: grid !important;
+  left: calc(var(--frame-left) + 0.75rem) !important;
+}
 .force-mobile .km-drawer,
 .force-mobile .km-drawer-backdrop { display: flex; }
+/* Pin the mobile drawer + its dim backdrop to the emulated frame edges
+ * so they don't stretch across the whole desktop viewport. */
+.force-mobile .km-drawer {
+  left: var(--frame-left) !important;
+  width: min(20rem, calc(var(--frame-width) - 2rem)) !important;
+  max-width: none !important;
+}
+.force-mobile .km-drawer-backdrop {
+  left: var(--frame-left) !important;
+  right: var(--frame-right) !important;
+}
+/* Bottom tab bar snaps to the frame too */
+.force-mobile .km-bottom-nav {
+  left: var(--frame-left) !important;
+  right: var(--frame-right) !important;
+}
+/* Floating mic FAB on the home page — pull it inside the frame */
+.force-mobile .km-page-wrapper > a[href="/dashboard/ask"] {
+  right: calc(var(--frame-right) + 1.25rem) !important;
+}
 /* The drawer's Close button lives inside a shared body — hidden by default,
  * shown inside the drawer only. */
 .km-drawer .km-drawer-close { display: grid !important; }
@@ -456,6 +489,13 @@ body {
    * NOTE: no clip-path / transform / filter here — those would trap
    * position:fixed descendants (the floating mode toggle) inside body. */
   box-shadow: 0 0 0 100vmax rgb(15 23 42 / 0.35);
+}
+/* Emulated phone frame edges — every position:fixed element uses these
+ * anchors instead of viewport 0/100% so it stays inside the mobile column. */
+.force-mobile {
+  --frame-left: calc(50vw - 13rem);
+  --frame-right: calc(50vw - 13rem);
+  --frame-width: 26rem;
 }
 /* Floating toggle must sit relative to the viewport, not the narrow body */
 .force-mobile .km-floating-toggle {
