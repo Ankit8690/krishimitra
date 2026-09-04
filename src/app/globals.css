@@ -169,14 +169,28 @@ body {
   right: 0.75rem !important;
   z-index: 60;
 }
-/* Undo lg: grid columns */
+/* Undo lg:/md:/sm: grid columns — collapse to 1 or 2 columns to fit the frame */
 .force-mobile [class~="lg:grid-cols-2"],
 .force-mobile [class~="lg:grid-cols-3"],
-.force-mobile [class~="lg:grid-cols-4"] {
+.force-mobile [class~="lg:grid-cols-4"],
+.force-mobile [class~="md:grid-cols-2"],
+.force-mobile [class~="md:grid-cols-3"],
+.force-mobile [class~="md:grid-cols-4"],
+.force-mobile [class~="sm:grid-cols-2"] {
   grid-template-columns: 1fr !important;
 }
-/* Rows meant to become side-by-side at lg → stack again */
-.force-mobile [class~="lg:flex-row"] { flex-direction: column !important; }
+/* Multi-column stat strips at the base level look cramped in 26rem — halve */
+.force-mobile [class~="grid-cols-4"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+/* Rows meant to become side-by-side at lg/sm → stack again */
+.force-mobile [class~="lg:flex-row"],
+.force-mobile [class~="sm:flex-row"],
+.force-mobile [class~="md:flex-row"] { flex-direction: column !important; }
+/* Buttons using `w-full sm:w-auto` end up too narrow → keep full width */
+.force-mobile [class~="sm:w-auto"],
+.force-mobile [class~="md:w-auto"],
+.force-mobile [class~="lg:w-auto"] { width: 100% !important; }
 /* Wide container caps → let mobile use full width */
 .force-mobile [class~="max-w-6xl"],
 .force-mobile [class~="max-w-5xl"],
@@ -199,11 +213,16 @@ body {
 .force-mobile [class~="lg:hidden"]:not([class~="hidden"]) {
   display: revert !important;
 }
-/* Tone down oversize lg: headings so they fit the narrow frame */
-.force-mobile [class~="lg:text-7xl"] { font-size: 2.75rem !important; line-height: 1.1 !important; }
-.force-mobile [class~="lg:text-6xl"] { font-size: 2.5rem !important; line-height: 1.1 !important; }
-.force-mobile [class~="lg:text-5xl"] { font-size: 2.25rem !important; line-height: 1.15 !important; }
-.force-mobile [class~="lg:text-4xl"] { font-size: 1.875rem !important; line-height: 1.2 !important; }
+/* Tone down oversize headings (lg:, sm:, and unprefixed) so they fit 26rem */
+.force-mobile [class~="lg:text-7xl"],
+.force-mobile [class~="sm:text-7xl"] { font-size: 2.75rem !important; line-height: 1.1 !important; }
+.force-mobile [class~="lg:text-6xl"],
+.force-mobile [class~="sm:text-6xl"] { font-size: 2.5rem !important; line-height: 1.1 !important; }
+.force-mobile [class~="lg:text-5xl"],
+.force-mobile [class~="sm:text-5xl"],
+.force-mobile [class~="text-5xl"] { font-size: 2rem !important; line-height: 1.15 !important; }
+.force-mobile [class~="lg:text-4xl"],
+.force-mobile [class~="sm:text-4xl"] { font-size: 1.75rem !important; line-height: 1.2 !important; }
 .force-mobile [class~="lg:text-3xl"] { font-size: 1.5rem !important; line-height: 1.25 !important; }
 /* Shrink lg-only padding blocks so the page doesn't feel airy */
 .force-mobile [class~="lg:py-24"],
