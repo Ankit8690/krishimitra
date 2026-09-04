@@ -356,9 +356,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-4 lg:px-6">
-        <AuthorFooter />
-      </div>
+      <AuthorFooter />
     </div>
   );
 }

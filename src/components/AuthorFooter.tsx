@@ -2,8 +2,6 @@
 
 import { Mail, Phone, MapPin } from "lucide-react";
 
-// Brand marks — lucide-react removed these in newer versions, so inline the
-// official 24×24 monochrome glyphs.
 function GithubIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
@@ -21,106 +19,106 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 /**
- * Signature block for the person who built KrishiMitra.
- * Rendered at the bottom of the landing page and the dashboard home so
- * anyone browsing the app (or an interview evaluator) can reach out.
+ * Signature block for the person who built KrishiMitra. Rendered as a
+ * full-width blue strip pinned at the very bottom of the landing and
+ * dashboard-home pages. Breaks out of any parent container using the
+ * classic `left-1/2 -translate-x-1/2 w-screen` viewport-width trick.
  */
 export function AuthorFooter() {
   return (
-    <footer className="mt-16 mb-6 pt-8 border-t border-brand-line">
-      {/* Personal quote — wrapped in a solid card so it stays readable over
-       * the dashboard backdrop image */}
-      <div className="max-w-3xl mx-auto mb-8 px-4">
-        <div className="relative rounded-2xl bg-brand-surface border border-brand-line shadow-md px-6 py-7 md:px-10 md:py-9 text-center">
+    <footer className="relative left-1/2 -translate-x-1/2 w-screen mt-16 bg-gradient-to-b from-sky-700 via-sky-800 to-sky-900 text-white shadow-2xl">
+      <div className="max-w-4xl mx-auto px-6 py-12 lg:py-16">
+        {/* Personal quote */}
+        <div className="relative text-center mb-10">
           <span
             aria-hidden
-            className="absolute top-2 left-3 text-6xl font-serif text-brand-primary/30 leading-none select-none"
+            className="absolute -top-2 left-0 md:left-4 text-7xl font-serif text-white/25 leading-none select-none"
           >
             &ldquo;
           </span>
           <span
             aria-hidden
-            className="absolute bottom-4 right-4 text-6xl font-serif text-brand-primary/30 leading-none select-none"
+            className="absolute -bottom-6 right-0 md:right-4 text-7xl font-serif text-white/25 leading-none select-none"
           >
             &rdquo;
           </span>
-          <p className="relative text-lg md:text-xl font-bold text-brand-ink leading-relaxed">
-            Technology serves best when it serves the hands that feed us. Every
-            farmer, in every village, deserves the same tools a Bengaluru
+          <p className="relative text-lg md:text-xl font-bold text-white leading-relaxed max-w-2xl mx-auto">
+            Technology serves best when it serves the hands that feed us.
+            Every farmer, in every village, deserves the same tools a Bengaluru
             startup takes for granted — KrishiMitra is my small step toward
             closing that gap.
           </p>
-          <div className="relative mt-4 flex items-center justify-center gap-2 pt-3 border-t border-brand-line/60">
-            <span className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-primary to-emerald-700 text-white grid place-items-center font-bold text-xs shadow-sm">
+          <div className="relative mt-5 flex items-center justify-center gap-2 pt-4 border-t border-white/20 max-w-md mx-auto">
+            <span className="w-9 h-9 rounded-full bg-white text-sky-800 grid place-items-center font-bold text-sm shadow-sm">
               AS
             </span>
-            <span className="font-bold text-brand-ink">Ankit Sharma</span>
-            <span className="text-brand-mute text-sm">· builder of KrishiMitra</span>
+            <span className="font-bold text-white">Ankit Sharma</span>
+            <span className="text-white/70 text-sm">· builder of KrishiMitra</span>
           </div>
         </div>
-      </div>
 
-      {/* Contact card */}
-      <div className="max-w-2xl mx-auto rounded-2xl bg-brand-surface border border-brand-line shadow-sm p-5">
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-emerald-700 grid place-items-center text-white text-xl font-bold shrink-0 shadow-md">
-            AS
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-brand-ink text-lg">Ankit Sharma</p>
-            <p className="text-xs text-brand-mute inline-flex items-center gap-1 mt-0.5">
-              <MapPin className="w-3 h-3" /> B.E. Computer Engineering · Thapar
-              Institute, Patiala
-            </p>
-            <div className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
-              <a
-                href="mailto:asharma18_be23@thapar.edu"
-                className="inline-flex items-center gap-2 text-brand-ink hover:text-brand-primary transition min-w-0"
-              >
-                <span className="w-8 h-8 rounded-lg bg-brand-primary/10 text-brand-primary grid place-items-center shrink-0">
-                  <Mail className="w-4 h-4" />
-                </span>
-                <span className="truncate">asharma18_be23@thapar.edu</span>
-              </a>
-              <a
-                href="tel:+918690554658"
-                className="inline-flex items-center gap-2 text-brand-ink hover:text-brand-primary transition"
-              >
-                <span className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 grid place-items-center shrink-0">
-                  <Phone className="w-4 h-4" />
-                </span>
-                <span>+91 86905 54658</span>
-              </a>
-              <a
-                href="https://github.com/Ankit8690"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-brand-ink hover:text-brand-primary transition"
-              >
-                <span className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 grid place-items-center shrink-0">
-                  <GithubIcon className="w-4 h-4" />
-                </span>
-                <span>github.com/Ankit8690</span>
-              </a>
-              <a
-                href="https://www.linkedin.com/in/ankit-sharma-52a1a728a"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-brand-ink hover:text-brand-primary transition"
-              >
-                <span className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 grid place-items-center shrink-0">
-                  <LinkedinIcon className="w-4 h-4" />
-                </span>
-                <span>LinkedIn profile</span>
-              </a>
+        {/* Contact card */}
+        <div className="max-w-2xl mx-auto rounded-2xl bg-white/10 backdrop-blur border border-white/20 p-5 shadow-lg">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white text-sky-800 grid place-items-center text-lg font-bold shrink-0 shadow-md">
+              AS
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-white text-lg">Ankit Sharma</p>
+              <p className="text-xs text-white/80 inline-flex items-center gap-1 mt-0.5">
+                <MapPin className="w-3 h-3" /> B.E. Computer Engineering · Thapar
+                Institute, Patiala
+              </p>
+              <div className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
+                <a
+                  href="mailto:asharma18_be23@thapar.edu"
+                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition min-w-0"
+                >
+                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
+                    <Mail className="w-4 h-4" />
+                  </span>
+                  <span className="truncate">asharma18_be23@thapar.edu</span>
+                </a>
+                <a
+                  href="tel:+918690554658"
+                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition"
+                >
+                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </span>
+                  <span>+91 86905 54658</span>
+                </a>
+                <a
+                  href="https://github.com/Ankit8690"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition"
+                >
+                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
+                    <GithubIcon className="w-4 h-4" />
+                  </span>
+                  <span>github.com/Ankit8690</span>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/ankit-sharma-52a1a728a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition"
+                >
+                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
+                    <LinkedinIcon className="w-4 h-4" />
+                  </span>
+                  <span>LinkedIn profile</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <p className="mt-6 text-center text-xs text-brand-mute">
-        © 2026 KrishiMitra · Made with 🌾 in Patiala, India
-      </p>
+        <p className="mt-8 text-center text-xs text-white/60">
+          © 2026 KrishiMitra · Made with 🌾 in Patiala, India
+        </p>
+      </div>
     </footer>
   );
 }
