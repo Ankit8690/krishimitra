@@ -1,13 +1,37 @@
-// In-memory TTL cache. Shared across route handlers within one server process.
-// Phase 2.5 swap-in: Upstash Redis with the same get/set/wrap interface.
+// Shared cache layer. Two backends behind one API:
+//   - Upstash Redis (when UPSTASH_REDIS_REST_URL + _TOKEN are set)
+//   - In-memory Map fallback (for local dev without Upstash creds)
+// Vercel serverless functions spin up fresh isolates on cold start, so an
+// in-memory cache misses across every invocation. Redis makes the cache
+// survive so the weather/mandi/geocode round-trips stay rare.
+
+import { Redis } from "@upstash/redis";
+
+const KEY_PREFIX = "km:";
+const url = process.env.UPSTASH_REDIS_REST_URL;
+const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+const redis = url && token ? new Redis({ url, token }) : null;
 
 type Entry<T> = { value: T; expiresAt: number };
-
 const globalCache = global as unknown as { _kmCache?: Map<string, Entry<unknown>> };
 const store: Map<string, Entry<unknown>> = globalCache._kmCache ?? new Map();
 globalCache._kmCache = store;
 
-export function cacheGet<T>(key: string): T | null {
+export function cacheMode(): "redis" | "memory" {
+  return redis ? "redis" : "memory";
+}
+
+export async function cacheGet<T>(key: string): Promise<T | null> {
+  if (redis) {
+    try {
+      const v = await redis.get<T>(KEY_PREFIX + key);
+      return v ?? null;
+    } catch (err) {
+      // Redis outage should never break the app — fall through to a fresh fetch
+      console.warn("[cache] redis get failed", err);
+      return null;
+    }
+  }
   const hit = store.get(key);
   if (!hit) return null;
   if (Date.now() > hit.expiresAt) {
@@ -17,7 +41,15 @@ export function cacheGet<T>(key: string): T | null {
   return hit.value as T;
 }
 
-export function cacheSet<T>(key: string, value: T, ttlSeconds: number) {
+export async function cacheSet<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
+  if (redis) {
+    try {
+      await redis.set(KEY_PREFIX + key, value, { ex: ttlSeconds });
+    } catch (err) {
+      console.warn("[cache] redis set failed", err);
+    }
+    return;
+  }
   store.set(key, { value, expiresAt: Date.now() + ttlSeconds * 1000 });
 }
 
@@ -26,9 +58,9 @@ export async function cacheWrap<T>(
   ttlSeconds: number,
   fetcher: () => Promise<T>
 ): Promise<T> {
-  const hit = cacheGet<T>(key);
+  const hit = await cacheGet<T>(key);
   if (hit !== null) return hit;
   const value = await fetcher();
-  cacheSet(key, value, ttlSeconds);
+  await cacheSet(key, value, ttlSeconds);
   return value;
 }

@@ -15,6 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
+  const [system, setSystem] = useState<{ cache: string; smtpConfigured: boolean } | null>(null);
   const [checking, setChecking] = useState(true);
 
   const isLogin = pathname?.startsWith("/admin/login");
@@ -31,6 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           router.replace("/admin/login");
         } else {
           setEmail(d.admin.email);
+          setSystem(d.system ?? null);
           setChecking(false);
         }
       })
@@ -79,9 +81,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               );
             })}
           </nav>
+          {system && (
+            <div className="ml-auto hidden sm:flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold">
+              <span
+                className={cn(
+                  "px-2 py-0.5 rounded-full",
+                  system.cache === "redis"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-slate-200 text-slate-600"
+                )}
+                title={
+                  system.cache === "redis"
+                    ? "Cache backed by Upstash Redis (shared across serverless functions)"
+                    : "In-memory cache — dev/single-instance only"
+                }
+              >
+                cache: {system.cache}
+              </span>
+              <span
+                className={cn(
+                  "px-2 py-0.5 rounded-full",
+                  system.smtpConfigured
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-amber-100 text-amber-700"
+                )}
+                title={system.smtpConfigured ? "SMTP configured" : "SMTP not set — OTPs log to console"}
+              >
+                smtp: {system.smtpConfigured ? "on" : "off"}
+              </span>
+            </div>
+          )}
           <button
             onClick={() => window.location.reload()}
-            className="ml-auto p-2 rounded-lg hover:bg-brand-line/40"
+            className={cn("p-2 rounded-lg hover:bg-brand-line/40", !system && "ml-auto")}
             aria-label="Refresh"
           >
             <RefreshCw className="w-4 h-4" />
