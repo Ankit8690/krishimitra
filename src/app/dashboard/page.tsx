@@ -25,7 +25,6 @@ import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { tCommodity, tWeather } from "@/lib/dictionaries";
 import { DailyQuote } from "@/components/DailyQuote";
 import { commodityIcon } from "@/lib/commodityIcons";
-import { HERO_IMAGES } from "@/lib/heroImages";
 
 type Me = {
   id: string;
@@ -300,24 +299,23 @@ export default function DashboardHome() {
             </Card>
           </Link>
           <Link href="/dashboard/scan" className="block col-span-2 group">
-            <Card className="p-0 overflow-hidden active:scale-[0.99] group-hover:shadow-xl transition border-brand-primary/30">
-              <div
-                className="relative h-28 bg-cover bg-center"
-                style={{ backgroundImage: `url(${HERO_IMAGES.scan})` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/85 via-brand-primary/60 to-transparent" />
-                <div className="relative h-full flex items-center gap-4 px-5 text-white">
-                  <div className="w-14 h-14 rounded-2xl bg-white/25 backdrop-blur grid place-items-center shrink-0 ring-2 ring-white/40">
-                    <ScanLine className="w-8 h-8" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-bold text-lg leading-tight">{t("dashboard.scan_leaf")}</p>
-                    <p className="text-xs text-white/90 mt-1 line-clamp-2">
-                      {t("dashboard.scan_leaf_body")}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-6 h-6 shrink-0" />
+            <Card className="relative overflow-hidden bg-gradient-to-r from-teal-100 via-emerald-50 to-lime-50 border-teal-200 active:scale-[0.99] group-hover:shadow-lg transition">
+              <div className="absolute -bottom-4 -right-2 text-7xl opacity-15 pointer-events-none select-none rotate-12">
+                🍃
+              </div>
+              <div className="relative flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 grid place-items-center shrink-0 shadow-md">
+                  <ScanLine className="w-7 h-7 text-white" />
                 </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-lg leading-tight text-brand-ink">{t("dashboard.scan_leaf")}</p>
+                  <p className="text-xs text-brand-mute mt-0.5 line-clamp-2">
+                    {t("dashboard.scan_leaf_body")}
+                  </p>
+                </div>
+                <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-teal-700 bg-teal-100 px-2.5 py-1 rounded-full">
+                  Scan <ChevronRight className="w-3 h-3" />
+                </span>
               </div>
             </Card>
           </Link>
@@ -375,28 +373,25 @@ export default function DashboardHome() {
 
         {/* Community shortcut */}
         <Link href="/dashboard/community" className="block group">
-          <Card className="p-0 overflow-hidden active:scale-[0.99] group-hover:shadow-xl transition border-orange-200">
-            <div
-              className="relative h-40 bg-cover bg-center"
-              style={{ backgroundImage: `url(${HERO_IMAGES.community})` }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent" />
-              <div className="absolute top-3 left-3 w-11 h-11 rounded-2xl bg-white/20 backdrop-blur grid place-items-center ring-2 ring-white/40">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-orange-100 via-rose-50 to-white border-orange-200 active:scale-[0.99] group-hover:shadow-lg transition">
+            <div className="absolute -top-3 -right-3 text-7xl opacity-15 pointer-events-none select-none rotate-12">
+              🤝
+            </div>
+            <div className="relative flex items-start gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 grid place-items-center shrink-0 shadow-md">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider text-white bg-orange-500/90 px-2.5 py-1 rounded-full shadow-md">
-                🤝 {t("dashboard.community_card")}
-              </span>
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <p className="font-bold text-lg leading-tight">
-                  {t("dashboard.community_card")}
-                </p>
-                <p className="text-xs text-white/90 mt-1 line-clamp-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-bold text-brand-ink">{t("dashboard.community_card")}</p>
+                  <ChevronRight className="w-4 h-4 text-brand-mute shrink-0" />
+                </div>
+                <p className="text-xs text-brand-mute mt-0.5 line-clamp-2">
                   {t("dashboard.community_body")}
                 </p>
-                <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold bg-white text-orange-700 px-3 py-1 rounded-full shadow-sm">
+                <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-orange-700 bg-orange-100 px-2.5 py-0.5 rounded-full">
                   Open board <ChevronRight className="w-3 h-3" />
-                </div>
+                </span>
               </div>
             </div>
           </Card>
