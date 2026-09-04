@@ -180,9 +180,30 @@
 :root[data-theme="dark"] .text-\[10px\] {
   font-weight: 600 !important;
 }
-/* Make brand-mute text one shade brighter in dark mode so 500-weight small
- * caps still read comfortably. */
-:root[data-theme="dark"] .text-brand-mute { color: #b8c3b1 !important; }
+/* Make brand-mute text much brighter in dark mode — the previous #b8c3b1
+ * was still washing out against the dark card gradients on the dashboard. */
+:root[data-theme="dark"] .text-brand-mute { color: #d4dcca !important; }
+/* CardTitle uppercase tracked labels ("TODAY'S WEATHER", "BEST MANDI PRICES
+ * TODAY", section headings) — bump from semibold to bold in dark mode so
+ * they stand out on tinted card gradients. */
+:root[data-theme="dark"] h3.uppercase,
+:root[data-theme="dark"] .uppercase.tracking-wide {
+  font-weight: 700 !important;
+  color: #e8eee0 !important;
+  letter-spacing: 0.08em !important;
+}
+/* Card body copy (paragraphs inside .bg-brand-surface / gradient tiles)
+ * needs medium-bold minimum to survive the pastel-dark backgrounds. */
+:root[data-theme="dark"] .rounded-2xl p,
+:root[data-theme="dark"] .rounded-xl p {
+  font-weight: 500;
+}
+:root[data-theme="dark"] .rounded-2xl p.font-semibold,
+:root[data-theme="dark"] .rounded-2xl p.font-bold,
+:root[data-theme="dark"] .rounded-xl p.font-semibold,
+:root[data-theme="dark"] .rounded-xl p.font-bold {
+  font-weight: 700 !important;
+}
 /* Body ink slightly brighter for maximum contrast on dark surfaces */
 :root[data-theme="dark"] { --brand-ink: #f5f8ef; }
 /* Buttons in ghost/secondary variants need heavier weight in dark */
