@@ -48,6 +48,13 @@ export async function GET(req: Request) {
     return NextResponse.json({ records, mode });
   } catch (err) {
     console.error("[mandi] error", err);
-    return NextResponse.json({ error: "Mandi service failed" }, { status: 502 });
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      {
+        error: "Mandi prices are temporarily unavailable. Please try again in a minute.",
+        detail: msg,
+      },
+      { status: 502 }
+    );
   }
 }
