@@ -203,6 +203,12 @@
 
 /* Photo banner overlays already use pure black gradients — keep as-is */
 
+/* Dashboard-home backdrop: when the ambient farm image is mounted, drop
+ * the opaque bg from body and the dashboard layout's flex wrapper so the
+ * portalled image shows through. Sidebar + bottom-nav keep their own bg. */
+.km-has-backdrop body { background: transparent !important; }
+.km-has-backdrop .km-dashboard-shell { background: transparent !important; }
+
 /* --- Dark-mode legibility ---------------------------------------------
  * Thin fonts feel washed out on dark surfaces. Bump the weight one step
  * across common text-*, and give tiny "mute" text a heavier default so
