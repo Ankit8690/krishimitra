@@ -94,17 +94,23 @@ export type ProfitEstimate = {
   pa: string;
 };
 
-// Merge scores with live mandi prices to compute profit per acre.
+// Merge scores with live mandi prices to compute profit per acre. When a
+// per-crop `yieldOverrides` map is supplied (from the ML yield regressor),
+// those values replace the static `avgYieldQtlPerAcre` — the rest of the
+// pipeline is identical, so profit + revenue automatically become
+// personalised without any downstream code change.
 export function withProfit(
   scores: CropScore[],
-  priceByCommodity: Map<string, number>
+  priceByCommodity: Map<string, number>,
+  yieldOverrides?: Map<string, number> | null
 ): ProfitEstimate[] {
   return scores.map((s) => {
     const modal =
       priceByCommodity.get(s.crop.name.toLowerCase()) ??
       priceByCommodity.get(s.crop.name.split(" ")[0].toLowerCase()) ??
       null;
-    const revenue = modal != null ? Math.round(modal * s.crop.avgYieldQtlPerAcre) : null;
+    const yield_ = yieldOverrides?.get(s.crop.name) ?? s.crop.avgYieldQtlPerAcre;
+    const revenue = modal != null ? Math.round(modal * yield_) : null;
     const profit = revenue != null ? revenue - s.crop.avgInputCostPerAcre : null;
     return {
       cropName: s.crop.name,
@@ -113,7 +119,7 @@ export function withProfit(
       matchScore: s.matchScore,
       fitReasons: s.fitReasons,
       misfitReasons: s.misfitReasons,
-      yieldQtlPerAcre: s.crop.avgYieldQtlPerAcre,
+      yieldQtlPerAcre: Math.round(yield_ * 10) / 10,
       modalPricePerQtl: modal,
       revenuePerAcre: revenue,
       costPerAcre: s.crop.avgInputCostPerAcre,

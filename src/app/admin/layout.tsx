@@ -15,7 +15,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
-  const [system, setSystem] = useState<{ cache: string; smtpConfigured: boolean } | null>(null);
+  const [system, setSystem] = useState<{
+    cache: string;
+    smtpConfigured: boolean;
+    cropML?: { scoreEngine: string; yieldEngine: string };
+  } | null>(null);
   const [checking, setChecking] = useState(true);
 
   const isLogin = pathname?.startsWith("/admin/login");
@@ -109,6 +113,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               >
                 smtp: {system.smtpConfigured ? "on" : "off"}
               </span>
+              {system.cropML && (
+                <span
+                  className={cn(
+                    "px-2 py-0.5 rounded-full",
+                    system.cropML.scoreEngine === "ml" || system.cropML.yieldEngine === "ml"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-slate-200 text-slate-600"
+                  )}
+                  title={`Crop rec — score: ${system.cropML.scoreEngine}, yield: ${system.cropML.yieldEngine}`}
+                >
+                  crop: {system.cropML.scoreEngine}/{system.cropML.yieldEngine}
+                </span>
+              )}
             </div>
           )}
           <button
