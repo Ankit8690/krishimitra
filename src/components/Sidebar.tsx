@@ -103,31 +103,32 @@ export function Sidebar() {
   ];
 
   // Shared inner navigation body — rendered inside both the desktop aside and
-  // the mobile off-canvas drawer.
+  // the mobile off-canvas drawer. Uses flex-column with flex-1 nav so the
+  // list scrolls internally on any viewport size; header + footer stay pinned.
   const body = (
     <>
-      <div className="px-5 py-5 flex items-center gap-2 border-b border-brand-line">
-        <div className="w-9 h-9 rounded-xl bg-brand-primary text-white grid place-items-center font-bold text-lg">
+      <div className="px-4 py-4 flex items-center gap-2.5 border-b border-brand-line shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-brand-primary text-white grid place-items-center font-bold text-xl shadow-sm">
           🌾
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-bold leading-tight truncate">{t("brand")}</p>
-          <p className="text-[10px] text-brand-mute leading-tight truncate">{t("tagline")}</p>
+          <p className="text-[11px] text-brand-mute leading-tight truncate">{t("tagline")}</p>
         </div>
         {/* Close button — only visible in the mobile drawer */}
         <button
           onClick={() => setDrawerOpen(false)}
-          className="km-drawer-close hidden p-1.5 rounded-lg hover:bg-brand-line/40"
+          className="km-drawer-close hidden w-9 h-9 rounded-full bg-brand-line/60 hover:bg-brand-line grid place-items-center"
           aria-label={t("common.close")}
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+      <nav className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 py-3 space-y-4">
         {groups.map((g) => (
           <div key={g.label}>
-            <p className="px-3 mb-1 text-[10px] uppercase tracking-wider text-brand-mute font-semibold">
+            <p className="px-3 mb-1 text-[10px] uppercase tracking-wider text-brand-mute font-bold">
               {g.label}
             </p>
             <ul className="space-y-0.5">
@@ -142,13 +143,13 @@ export function Sidebar() {
                       href={href}
                       onClick={() => setDrawerOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition",
+                        "flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition min-h-[44px]",
                         active
-                          ? "bg-brand-primary/10 text-brand-primary font-semibold"
-                          : "text-brand-ink hover:bg-brand-line/40"
+                          ? "bg-brand-primary/12 text-brand-primary font-bold shadow-sm"
+                          : "text-brand-ink hover:bg-brand-line/40 font-medium"
                       )}
                     >
-                      <Icon className={cn("w-4 h-4 shrink-0", active && "stroke-[2.5]")} />
+                      <Icon className={cn("w-5 h-5 shrink-0", active && "stroke-[2.5]")} />
                       <span className="truncate">{label}</span>
                     </Link>
                   </li>
@@ -159,27 +160,27 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-brand-line">
+      <div className="p-3 border-t border-brand-line shrink-0">
         {name && (
-          <div className="px-3 py-2 flex items-center gap-2 min-w-0">
+          <div className="px-2 py-2 flex items-center gap-2 min-w-0">
             <Link
               href="/dashboard/profile"
               onClick={() => setDrawerOpen(false)}
-              className="flex items-center gap-2 min-w-0 flex-1 rounded-lg hover:bg-brand-line/40 p-1 -m-1"
+              className="flex items-center gap-2.5 min-w-0 flex-1 rounded-xl hover:bg-brand-line/40 p-1.5"
               aria-label={t("profile.title")}
             >
-              <div className="w-8 h-8 rounded-full bg-brand-primary/15 text-brand-primary grid place-items-center font-bold text-sm shrink-0">
+              <div className="w-9 h-9 rounded-full bg-brand-primary/15 text-brand-primary grid place-items-center font-bold shrink-0">
                 {name.charAt(0)}
               </div>
               <p className="text-sm font-semibold truncate">{name}</p>
             </Link>
             <button
               onClick={() => setConfirmOpen(true)}
-              className="p-1.5 rounded-lg text-brand-mute hover:bg-brand-danger/10 hover:text-brand-danger transition"
+              className="w-9 h-9 rounded-full text-brand-mute hover:bg-brand-danger/10 hover:text-brand-danger transition grid place-items-center"
               aria-label={t("common.logout")}
               title={t("common.logout")}
             >
-              <LogOutIcon className="w-4 h-4" />
+              <LogOutIcon className="w-5 h-5" />
             </button>
           </div>
         )}

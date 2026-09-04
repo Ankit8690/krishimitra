@@ -433,10 +433,12 @@ body {
 .force-mobile .km-drawer,
 .force-mobile .km-drawer-backdrop { display: flex; }
 /* Pin the mobile drawer + its dim backdrop to the emulated frame edges
- * so they don't stretch across the whole desktop viewport. */
+ * so they don't stretch across the whole desktop viewport. Drawer takes
+ * ~85% of the phone-column width, leaving a thin dim strip that closes
+ * the sheet — same pattern as Instagram / WhatsApp mobile menus. */
 .force-mobile .km-drawer {
   left: var(--frame-left) !important;
-  width: min(20rem, calc(var(--frame-width) - 2rem)) !important;
+  width: calc(var(--frame-width) * 0.85) !important;
   max-width: none !important;
 }
 .force-mobile .km-drawer-backdrop {
