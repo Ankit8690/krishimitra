@@ -50,17 +50,17 @@ export function DashboardBackdrop() {
         loading="eager"
         fetchPriority="high"
       />
-      {/* Lighter wash — image is now the star, cards stay readable because
-       * they are opaque bg-brand-surface. Top of the page is barely tinted
-       * so the sunset really shines; wash strengthens toward bottom where
-       * more cards sit. */}
+      {/* Warm/dark overlay — instead of a washed-out off-white gradient
+       * that bleached the image, we use a rich amber-brown tint that
+       * strengthens the sunset feel AND gives white cards on top huge
+       * contrast to sit against. */}
       <div
         className="absolute inset-0"
         style={{
           background:
             resolved === "dark"
-              ? "linear-gradient(180deg, rgba(16,21,17,0.30) 0%, rgba(16,21,17,0.55) 60%, rgba(16,21,17,0.70) 100%)"
-              : "linear-gradient(180deg, rgba(251,247,236,0.20) 0%, rgba(251,247,236,0.40) 60%, rgba(251,247,236,0.55) 100%)",
+              ? "linear-gradient(180deg, rgba(10,14,10,0.55) 0%, rgba(10,14,10,0.70) 60%, rgba(10,14,10,0.80) 100%)"
+              : "linear-gradient(180deg, rgba(58,36,18,0.35) 0%, rgba(58,36,18,0.50) 60%, rgba(58,36,18,0.62) 100%)",
         }}
       />
     </div>,

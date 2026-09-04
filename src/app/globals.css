@@ -209,6 +209,31 @@
 .km-has-backdrop body { background: transparent !important; }
 .km-has-backdrop .km-dashboard-shell { background: transparent !important; }
 
+/* Home-dashboard cards float above the sunset backdrop, so give them a
+ * fully opaque surface base under whatever gradient they carry, plus a
+ * stronger drop shadow so they read as elevated tiles instead of blending
+ * into the warm background. Only targets direct children of the card grid
+ * so nested elements (chips, banners) don't get double-boosted. */
+.km-has-backdrop .km-dashboard-grid > a > .rounded-2xl,
+.km-has-backdrop .km-dashboard-grid > .rounded-2xl,
+.km-has-backdrop .km-dashboard-grid > div > a > .rounded-2xl,
+.km-has-backdrop .km-dashboard-grid > div > .rounded-2xl,
+.km-has-backdrop .km-page-wrapper > .rounded-2xl {
+  background-color: var(--brand-surface) !important;
+  box-shadow:
+    0 8px 24px -8px rgba(0, 0, 0, 0.35),
+    0 2px 6px -2px rgba(0, 0, 0, 0.20) !important;
+}
+:root[data-theme="dark"].km-has-backdrop .km-dashboard-grid > a > .rounded-2xl,
+:root[data-theme="dark"].km-has-backdrop .km-dashboard-grid > .rounded-2xl,
+:root[data-theme="dark"].km-has-backdrop .km-dashboard-grid > div > a > .rounded-2xl,
+:root[data-theme="dark"].km-has-backdrop .km-dashboard-grid > div > .rounded-2xl,
+:root[data-theme="dark"].km-has-backdrop .km-page-wrapper > .rounded-2xl {
+  box-shadow:
+    0 8px 24px -8px rgba(0, 0, 0, 0.65),
+    0 2px 6px -2px rgba(0, 0, 0, 0.45) !important;
+}
+
 /* --- Dark-mode legibility ---------------------------------------------
  * Thin fonts feel washed out on dark surfaces. Bump the weight one step
  * across common text-*, and give tiny "mute" text a heavier default so
