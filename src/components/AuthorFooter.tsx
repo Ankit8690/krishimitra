@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -19,105 +19,72 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 /**
- * Signature block for the person who built KrishiMitra. Rendered as a
- * full-width blue strip pinned at the very bottom of the landing and
- * dashboard-home pages. Breaks out of any parent container using the
- * classic `left-1/2 -translate-x-1/2 w-screen` viewport-width trick.
+ * Slim signature strip at the very bottom of the landing + dashboard-home
+ * pages. One row on desktop, wraps to two on mobile. Uses the light-blue
+ * palette the user asked for.
  */
 export function AuthorFooter() {
   return (
-    <footer className="mt-16 rounded-3xl overflow-hidden bg-gradient-to-b from-sky-700 via-sky-800 to-sky-900 text-white shadow-2xl">
-      <div className="max-w-4xl mx-auto px-6 py-12 lg:py-16">
-        {/* Personal quote */}
-        <div className="relative text-center mb-10">
-          <span
-            aria-hidden
-            className="absolute -top-2 left-0 md:left-4 text-7xl font-serif text-white/25 leading-none select-none"
-          >
-            &ldquo;
+    <footer className="mt-14 rounded-2xl bg-gradient-to-r from-sky-600 to-sky-800 text-white shadow-lg">
+      <div className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5 text-sm">
+        {/* Left: identity */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <span className="w-8 h-8 rounded-full bg-white text-sky-800 grid place-items-center font-bold text-xs shadow-sm">
+            AS
           </span>
-          <span
-            aria-hidden
-            className="absolute -bottom-6 right-0 md:right-4 text-7xl font-serif text-white/25 leading-none select-none"
-          >
-            &rdquo;
-          </span>
-          <p className="relative text-lg md:text-xl font-bold text-white leading-relaxed max-w-2xl mx-auto">
-            Technology serves best when it serves the hands that feed us.
-            Every farmer, in every village, deserves the same tools a Bengaluru
-            startup takes for granted — KrishiMitra is my small step toward
-            closing that gap.
-          </p>
-          <div className="relative mt-5 flex items-center justify-center gap-2 pt-4 border-t border-white/20 max-w-md mx-auto">
-            <span className="w-9 h-9 rounded-full bg-white text-sky-800 grid place-items-center font-bold text-sm shadow-sm">
-              AS
-            </span>
-            <span className="font-bold text-white">Ankit Sharma</span>
-            <span className="text-white/70 text-sm">· builder of KrishiMitra</span>
+          <div className="leading-tight">
+            <p className="font-bold">Ankit Sharma</p>
+            <p className="text-[11px] text-white/75">Builder · KrishiMitra</p>
           </div>
         </div>
 
-        {/* Contact card */}
-        <div className="max-w-2xl mx-auto rounded-2xl bg-white/10 backdrop-blur border border-white/20 p-5 shadow-lg">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-white text-sky-800 grid place-items-center text-lg font-bold shrink-0 shadow-md">
-              AS
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-white text-lg">Ankit Sharma</p>
-              <p className="text-xs text-white/80 inline-flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3" /> B.E. Computer Engineering · Thapar
-                Institute, Patiala
-              </p>
-              <div className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
-                <a
-                  href="mailto:asharma18_be23@thapar.edu"
-                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition min-w-0"
-                >
-                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
-                    <Mail className="w-4 h-4" />
-                  </span>
-                  <span className="truncate">asharma18_be23@thapar.edu</span>
-                </a>
-                <a
-                  href="tel:+918690554658"
-                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition"
-                >
-                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </span>
-                  <span>+91 86905 54658</span>
-                </a>
-                <a
-                  href="https://github.com/Ankit8690"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition"
-                >
-                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
-                    <GithubIcon className="w-4 h-4" />
-                  </span>
-                  <span>github.com/Ankit8690</span>
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/ankit-sharma-52a1a728a"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-white hover:text-white/70 transition"
-                >
-                  <span className="w-8 h-8 rounded-lg bg-white/15 grid place-items-center shrink-0">
-                    <LinkedinIcon className="w-4 h-4" />
-                  </span>
-                  <span>LinkedIn profile</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <p className="mt-8 text-center text-xs text-white/60">
-          © 2026 KrishiMitra · Made with 🌾 in Patiala, India
+        {/* Middle: quote */}
+        <p className="italic text-white/95 text-[13px] leading-snug flex-1 min-w-0">
+          &ldquo;Technology serves best when it serves the hands that feed us.&rdquo;
         </p>
+
+        {/* Right: contact icons */}
+        <div className="flex items-center gap-1 shrink-0">
+          <a
+            href="mailto:asharma18_be23@thapar.edu"
+            aria-label="Email"
+            title="asharma18_be23@thapar.edu"
+            className="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 grid place-items-center transition"
+          >
+            <Mail className="w-4 h-4" />
+          </a>
+          <a
+            href="tel:+918690554658"
+            aria-label="Phone"
+            title="+91 86905 54658"
+            className="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 grid place-items-center transition"
+          >
+            <Phone className="w-4 h-4" />
+          </a>
+          <a
+            href="https://github.com/Ankit8690"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            title="github.com/Ankit8690"
+            className="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 grid place-items-center transition"
+          >
+            <GithubIcon className="w-4 h-4" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/ankit-sharma-52a1a728a"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            title="LinkedIn"
+            className="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 grid place-items-center transition"
+          >
+            <LinkedinIcon className="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+      <div className="border-t border-white/15 px-5 py-2 text-center text-[11px] text-white/70">
+        © 2026 KrishiMitra · Made with 🌾 in Patiala, India
       </div>
     </footer>
   );
