@@ -30,11 +30,11 @@ export function DashboardBackdrop() {
 
   if (!mounted) return null;
 
-  const light =
-    "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=2400&q=80&auto=format&fit=crop";
-  const dark =
-    "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=2400&q=80&auto=format&fit=crop";
-  const src = resolved === "dark" ? dark : light;
+  // Option 1 — Golden wheat at sunset. Same photo in both themes: it's
+  // warm enough for light and dramatic enough for dark; we only change the
+  // overlay tint below.
+  const src =
+    "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=2400&q=85&auto=format&fit=crop";
 
   return createPortal(
     <div
@@ -50,14 +50,17 @@ export function DashboardBackdrop() {
         loading="eager"
         fetchPriority="high"
       />
-      {/* Theme-aware wash — soft enough to let the imagery breathe */}
+      {/* Lighter wash — image is now the star, cards stay readable because
+       * they are opaque bg-brand-surface. Top of the page is barely tinted
+       * so the sunset really shines; wash strengthens toward bottom where
+       * more cards sit. */}
       <div
         className="absolute inset-0"
         style={{
           background:
             resolved === "dark"
-              ? "linear-gradient(180deg, rgba(16,21,17,0.62) 0%, rgba(16,21,17,0.78) 60%, rgba(16,21,17,0.88) 100%)"
-              : "linear-gradient(180deg, rgba(251,247,236,0.55) 0%, rgba(251,247,236,0.70) 60%, rgba(251,247,236,0.85) 100%)",
+              ? "linear-gradient(180deg, rgba(16,21,17,0.30) 0%, rgba(16,21,17,0.55) 60%, rgba(16,21,17,0.70) 100%)"
+              : "linear-gradient(180deg, rgba(251,247,236,0.20) 0%, rgba(251,247,236,0.40) 60%, rgba(251,247,236,0.55) 100%)",
         }}
       />
     </div>,
