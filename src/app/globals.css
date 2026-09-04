@@ -145,3 +145,79 @@ body {
 .force-desktop .km-page-wrapper.km-narrow { max-width: 42rem !important; }
 .force-desktop .km-nav-mobile { display: none !important; }
 .force-desktop .km-nav-desktop { display: flex !important; }
+
+/* ---------------------------------------------------------------------------
+ * GLOBAL mobile-emulator overrides — kick in on landing / signup / login /
+ * onboarding, which use Tailwind's lg: viewport-based classes that a class on
+ * <html> can't otherwise disable at 1920px. These undo the most common lg:
+ * patterns so the site looks phone-shaped even on a wide monitor.
+ * ------------------------------------------------------------------------- */
+.force-mobile body {
+  max-width: 26rem !important;
+  margin-inline: auto !important;
+  overflow-x: hidden !important;
+  min-height: 100vh;
+  /* Phone-frame illusion: dim everything outside the narrow body.
+   * NOTE: no clip-path / transform / filter here — those would trap
+   * position:fixed descendants (the floating mode toggle) inside body. */
+  box-shadow: 0 0 0 100vmax rgb(15 23 42 / 0.35);
+}
+/* Floating toggle must sit relative to the viewport, not the narrow body */
+.force-mobile .km-floating-toggle {
+  position: fixed !important;
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+  z-index: 60;
+}
+/* Undo lg: grid columns */
+.force-mobile [class~="lg:grid-cols-2"],
+.force-mobile [class~="lg:grid-cols-3"],
+.force-mobile [class~="lg:grid-cols-4"] {
+  grid-template-columns: 1fr !important;
+}
+/* Rows meant to become side-by-side at lg → stack again */
+.force-mobile [class~="lg:flex-row"] { flex-direction: column !important; }
+/* Wide container caps → let mobile use full width */
+.force-mobile [class~="max-w-6xl"],
+.force-mobile [class~="max-w-5xl"],
+.force-mobile [class~="max-w-4xl"],
+.force-mobile [class~="max-w-3xl"] {
+  max-width: 100% !important;
+}
+/* Elements shown only on desktop (`hidden lg:block/flex/grid/inline-*`)
+ * should stay hidden in the mobile emulator */
+.force-mobile [class~="hidden"][class~="lg:block"],
+.force-mobile [class~="hidden"][class~="lg:flex"],
+.force-mobile [class~="hidden"][class~="lg:grid"],
+.force-mobile [class~="hidden"][class~="lg:inline-block"],
+.force-mobile [class~="hidden"][class~="lg:inline-flex"],
+.force-mobile [class~="hidden"][class~="md:block"],
+.force-mobile [class~="hidden"][class~="md:flex"] {
+  display: none !important;
+}
+/* Elements hidden only on desktop (`lg:hidden`) should show in mobile emu */
+.force-mobile [class~="lg:hidden"]:not([class~="hidden"]) {
+  display: revert !important;
+}
+/* Tone down oversize lg: headings so they fit the narrow frame */
+.force-mobile [class~="lg:text-7xl"] { font-size: 2.75rem !important; line-height: 1.1 !important; }
+.force-mobile [class~="lg:text-6xl"] { font-size: 2.5rem !important; line-height: 1.1 !important; }
+.force-mobile [class~="lg:text-5xl"] { font-size: 2.25rem !important; line-height: 1.15 !important; }
+.force-mobile [class~="lg:text-4xl"] { font-size: 1.875rem !important; line-height: 1.2 !important; }
+.force-mobile [class~="lg:text-3xl"] { font-size: 1.5rem !important; line-height: 1.25 !important; }
+/* Shrink lg-only padding blocks so the page doesn't feel airy */
+.force-mobile [class~="lg:py-24"],
+.force-mobile [class~="lg:py-28"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+.force-mobile [class~="lg:pt-24"],
+.force-mobile [class~="lg:pt-28"] { padding-top: 2rem !important; }
+.force-mobile [class~="lg:pb-24"],
+.force-mobile [class~="lg:pb-28"] { padding-bottom: 3rem !important; }
+/* Landing page uses min-h-screen on split panes → keep, but constrain flex */
+.force-mobile [class~="min-h-screen"][class~="flex"] { min-height: 100vh; }
+
+/* --- FORCE DESKTOP on a phone: undo the above emulator constraints too --- */
+.force-desktop body {
+  max-width: none !important;
+  overflow-x: auto;
+  box-shadow: none !important;
+}

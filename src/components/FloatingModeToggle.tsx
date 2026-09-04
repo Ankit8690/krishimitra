@@ -8,7 +8,7 @@ import { ViewModeToggle } from "@/components/ViewModeToggle";
  */
 export function FloatingModeToggle() {
   return (
-    <div className="fixed top-3 right-3 z-50 lg:top-4 lg:right-4 shadow-sm rounded-full bg-white/90 backdrop-blur">
+    <div className="km-floating-toggle fixed top-3 right-3 z-50 lg:top-4 lg:right-4 shadow-sm rounded-full bg-white/90 backdrop-blur">
       <ViewModeToggle compact />
     </div>
   );
