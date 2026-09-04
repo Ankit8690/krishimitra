@@ -12,6 +12,63 @@
   --brand-surface: #ffffff;
 }
 
+/* Dark theme — activated by `data-theme="dark"` on <html>. Every semantic
+ * token is redefined here so the whole app switches with zero component
+ * churn. Photo overlays keep their contrast because we only invert the
+ * surface/ink pair; brand-primary/accent/danger stay the same brand hue. */
+:root[data-theme="dark"] {
+  --brand-primary: #4ea354;
+  --brand-primary-hover: #62b569;
+  --brand-accent: #f5b263;
+  --brand-danger: #ef5350;
+  --brand-ink: #eef1e8;
+  --brand-mute: #99a494;
+  --brand-line: #2f3a2c;
+  --brand-bg: #101511;
+  --brand-surface: #1a221c;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Dark theme: map common Tailwind hardcoded utilities to our surface tokens
+ * so old code that used bg-white / text-slate-* still looks correct without a
+ * refactor. Only the neutral utilities are remapped — brand colors stay. */
+:root[data-theme="dark"] .bg-white {
+  background-color: var(--brand-surface) !important;
+}
+:root[data-theme="dark"] .text-brand-ink,
+:root[data-theme="dark"] .text-slate-900,
+:root[data-theme="dark"] .text-slate-800,
+:root[data-theme="dark"] .text-slate-700 {
+  color: var(--brand-ink) !important;
+}
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-400 {
+  color: var(--brand-mute) !important;
+}
+:root[data-theme="dark"] .border-brand-line,
+:root[data-theme="dark"] .border-slate-200,
+:root[data-theme="dark"] .border-slate-100 {
+  border-color: var(--brand-line) !important;
+}
+:root[data-theme="dark"] .bg-slate-50,
+:root[data-theme="dark"] .bg-slate-100 {
+  background-color: var(--brand-line) !important;
+}
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select {
+  background-color: var(--brand-surface);
+  color: var(--brand-ink);
+  border-color: var(--brand-line);
+}
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+  color: var(--brand-mute);
+}
+
 @theme inline {
   --color-background: var(--brand-bg);
   --color-foreground: var(--brand-ink);

@@ -303,6 +303,9 @@
     "close": "Close",
     "loading": "Loading…",
     "confirm_logout": "Log out of your account?",
+    "confirm_logout_body": "You will need to log in again to continue farming with KrishiMitra.",
+    "yes_logout": "Yes, log out",
+    "no_cancel": "No, cancel",
     "other_custom": "Other — write yourself",
     "custom_placeholder": "Type your own…",
     "add": "Add"

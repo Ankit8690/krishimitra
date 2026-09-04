@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { cn } from "@/lib/cn";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { LogOut as LogOutIcon } from "lucide-react";
 
 type Group = {
   label: string;
@@ -30,6 +32,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [name, setName] = useState<string>("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -38,8 +41,8 @@ export function Sidebar() {
       .catch(() => {});
   }, []);
 
-  async function logout() {
-    if (!confirm(t("common.confirm_logout"))) return;
+  async function doLogout() {
+    setConfirmOpen(false);
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
   }
@@ -129,21 +132,38 @@ export function Sidebar() {
       <div className="p-3 border-t border-brand-line">
         {name && (
           <div className="px-3 py-2 flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-brand-primary/15 text-brand-primary grid place-items-center font-bold text-sm shrink-0">
-              {name.charAt(0)}
-            </div>
-            <div className="min-w-0">
+            <Link
+              href="/dashboard/profile"
+              className="flex items-center gap-2 min-w-0 flex-1 rounded-lg hover:bg-brand-line/40 p-1 -m-1"
+              aria-label={t("profile.title")}
+            >
+              <div className="w-8 h-8 rounded-full bg-brand-primary/15 text-brand-primary grid place-items-center font-bold text-sm shrink-0">
+                {name.charAt(0)}
+              </div>
               <p className="text-sm font-semibold truncate">{name}</p>
-              <button
-                onClick={logout}
-                className="text-[10px] text-brand-mute hover:text-brand-danger inline-flex items-center gap-1"
-              >
-                <LogOut className="w-3 h-3" /> {t("common.logout")}
-              </button>
-            </div>
+            </Link>
+            <button
+              onClick={() => setConfirmOpen(true)}
+              className="p-1.5 rounded-lg text-brand-mute hover:bg-brand-danger/10 hover:text-brand-danger transition"
+              aria-label={t("common.logout")}
+              title={t("common.logout")}
+            >
+              <LogOutIcon className="w-4 h-4" />
+            </button>
           </div>
         )}
       </div>
+      <ConfirmDialog
+        open={confirmOpen}
+        title={t("common.confirm_logout")}
+        message={t("common.confirm_logout_body")}
+        confirmLabel={t("common.yes_logout")}
+        cancelLabel={t("common.no_cancel")}
+        variant="danger"
+        icon={<LogOutIcon className="w-5 h-5" />}
+        onConfirm={doLogout}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </aside>
   );
 }

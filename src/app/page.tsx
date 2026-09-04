@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useI18n } from "@/i18n/I18nProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ViewModeToggle } from "@/components/ViewModeToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { DailyQuote } from "@/components/DailyQuote";
@@ -70,6 +71,7 @@ export default function Landing() {
           </div>
           <div className="hidden md:flex items-center gap-3">
             <ViewModeToggle />
+            <ThemeToggle compact />
             <LanguageSwitcher />
             <Link href="/login">
               <Button variant="secondary" size="sm">

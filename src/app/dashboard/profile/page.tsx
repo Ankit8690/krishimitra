@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { LogOut, Calendar, Check } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Me = {
   name: string;
@@ -100,8 +102,9 @@ export default function ProfilePage() {
     }
   }
 
-  async function logout() {
-    if (!confirm(t("common.confirm_logout"))) return;
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  async function doLogout() {
+    setLogoutOpen(false);
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
   }
@@ -147,6 +150,15 @@ export default function ProfilePage() {
           )}
         </Card>
       )}
+
+      {/* Appearance — theme is per-device (localStorage), not per-account */}
+      <Card>
+        <CardTitle>Appearance</CardTitle>
+        <p className="text-xs text-brand-mute mt-1 mb-3">
+          Choose light, dark, or match your device.
+        </p>
+        <ThemeToggle />
+      </Card>
 
       {/* Language selector — real, working, persists to server */}
       <Card>
@@ -218,9 +230,20 @@ export default function ProfilePage() {
         </Card>
       )}
 
-      <Button variant="danger" className="w-full" onClick={logout}>
+      <Button variant="danger" className="w-full" onClick={() => setLogoutOpen(true)}>
         <LogOut className="w-5 h-5" /> {t("common.logout")}
       </Button>
+      <ConfirmDialog
+        open={logoutOpen}
+        title={t("common.confirm_logout")}
+        message={t("common.confirm_logout_body")}
+        confirmLabel={t("common.yes_logout")}
+        cancelLabel={t("common.no_cancel")}
+        variant="danger"
+        icon={<LogOut className="w-5 h-5" />}
+        onConfirm={doLogout}
+        onCancel={() => setLogoutOpen(false)}
+      />
     </div>
   );
 }

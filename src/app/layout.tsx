@@ -5,6 +5,7 @@ import { I18nProvider } from "@/i18n/I18nProvider";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { ViewModeProvider } from "@/components/ViewMode";
 import { GlobalFloatingModeToggle } from "@/components/GlobalFloatingModeToggle";
+import { ThemeProvider } from "@/components/Theme";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -48,10 +49,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-brand-bg text-brand-ink">
         <I18nProvider>
-          <ViewModeProvider>
-            {children}
-            <GlobalFloatingModeToggle />
-          </ViewModeProvider>
+          <ThemeProvider>
+            <ViewModeProvider>
+              {children}
+              <GlobalFloatingModeToggle />
+            </ViewModeProvider>
+          </ThemeProvider>
         </I18nProvider>
         <ServiceWorkerRegister />
       </body>
