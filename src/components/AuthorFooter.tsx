@@ -26,7 +26,7 @@ function LinkedinIcon({ className }: { className?: string }) {
  */
 export function AuthorFooter() {
   return (
-    <footer className="relative left-1/2 -translate-x-1/2 w-screen mt-16 bg-gradient-to-b from-sky-700 via-sky-800 to-sky-900 text-white shadow-2xl">
+    <footer className="mt-16 rounded-3xl overflow-hidden bg-gradient-to-b from-sky-700 via-sky-800 to-sky-900 text-white shadow-2xl">
       <div className="max-w-4xl mx-auto px-6 py-12 lg:py-16">
         {/* Personal quote */}
         <div className="relative text-center mb-10">
