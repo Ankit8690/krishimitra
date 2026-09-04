@@ -176,9 +176,15 @@ body {
 .force-mobile [class~="md:grid-cols-2"],
 .force-mobile [class~="md:grid-cols-3"],
 .force-mobile [class~="md:grid-cols-4"],
-.force-mobile [class~="sm:grid-cols-2"] {
-  grid-template-columns: 1fr !important;
+.force-mobile [class~="sm:grid-cols-2"],
+.force-mobile [class~="sm:grid-cols-3"],
+.force-mobile [class~="sm:grid-cols-4"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
+/* Prevent grid children from overflowing their tracks (long labels like
+ * "Suggestion" were spilling into neighbouring cells) */
+.force-mobile [class~="grid"] > * { min-width: 0 !important; }
+.force-mobile button, .force-mobile a { overflow-wrap: anywhere; }
 /* Multi-column stat strips at the base level look cramped in 26rem — halve */
 .force-mobile [class~="grid-cols-4"] {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
