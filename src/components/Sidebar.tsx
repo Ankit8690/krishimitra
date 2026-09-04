@@ -17,6 +17,8 @@ import {
   LogOut,
   MessageSquareHeart,
   Settings,
+  Menu,
+  X,
 } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { cn } from "@/lib/cn";
@@ -34,6 +36,7 @@ export function Sidebar() {
   const router = useRouter();
   const [name, setName] = useState<string>("");
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -41,6 +44,24 @@ export function Sidebar() {
       .then((d) => setName(d.user?.name ?? ""))
       .catch(() => {});
   }, []);
+
+  // Auto-close the mobile drawer when the route changes
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll while drawer is open + ESC to close
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setDrawerOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [drawerOpen]);
 
   async function doLogout() {
     setConfirmOpen(false);
@@ -51,9 +72,7 @@ export function Sidebar() {
   const groups: Group[] = [
     {
       label: t("nav.home"),
-      items: [
-        { href: "/dashboard", icon: Home, label: t("nav.home") },
-      ],
+      items: [{ href: "/dashboard", icon: Home, label: t("nav.home") }],
     },
     {
       label: "Data",
@@ -83,18 +102,26 @@ export function Sidebar() {
     },
   ];
 
-  return (
-    <aside className="km-sidebar hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-brand-surface border-r border-brand-line">
+  // Shared inner navigation body — rendered inside both the desktop aside and
+  // the mobile off-canvas drawer.
+  const body = (
+    <>
       <div className="px-5 py-5 flex items-center gap-2 border-b border-brand-line">
         <div className="w-9 h-9 rounded-xl bg-brand-primary text-white grid place-items-center font-bold text-lg">
           🌾
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="font-bold leading-tight truncate">{t("brand")}</p>
-          <p className="text-[10px] text-brand-mute leading-tight truncate">
-            {t("tagline")}
-          </p>
+          <p className="text-[10px] text-brand-mute leading-tight truncate">{t("tagline")}</p>
         </div>
+        {/* Close button — only visible in the mobile drawer */}
+        <button
+          onClick={() => setDrawerOpen(false)}
+          className="km-drawer-close hidden p-1.5 rounded-lg hover:bg-brand-line/40"
+          aria-label={t("common.close")}
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
@@ -113,6 +140,7 @@ export function Sidebar() {
                   <li key={href}>
                     <Link
                       href={href}
+                      onClick={() => setDrawerOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition",
                         active
@@ -136,6 +164,7 @@ export function Sidebar() {
           <div className="px-3 py-2 flex items-center gap-2 min-w-0">
             <Link
               href="/dashboard/profile"
+              onClick={() => setDrawerOpen(false)}
               className="flex items-center gap-2 min-w-0 flex-1 rounded-lg hover:bg-brand-line/40 p-1 -m-1"
               aria-label={t("profile.title")}
             >
@@ -155,6 +184,47 @@ export function Sidebar() {
           </div>
         )}
       </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* Hamburger — shown on mobile (real viewport) and force-mobile mode.
+       * Fixed to top-left, well above content. Hidden on lg+ where the
+       * desktop sidebar is visible. */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open menu"
+        className="km-hamburger lg:hidden fixed top-3 left-3 z-40 w-10 h-10 rounded-full bg-brand-surface border border-brand-line shadow-md grid place-items-center hover:bg-brand-line/40"
+      >
+        <Menu className="w-5 h-5 text-brand-ink" />
+      </button>
+
+      {/* Desktop sidebar — sticky aside, unchanged */}
+      <aside className="km-sidebar hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-brand-surface border-r border-brand-line">
+        {body}
+      </aside>
+
+      {/* Mobile drawer — off-canvas, slides in from the left */}
+      <div
+        className={cn(
+          "km-drawer-backdrop fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity",
+          drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => setDrawerOpen(false)}
+      />
+      <aside
+        className={cn(
+          "km-drawer fixed top-0 left-0 bottom-0 z-50 w-72 max-w-[85vw] bg-brand-surface border-r border-brand-line flex flex-col shadow-2xl lg:hidden transition-transform duration-200 ease-out",
+          drawerOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+      >
+        {body}
+      </aside>
+
       <ConfirmDialog
         open={confirmOpen}
         title={t("common.confirm_logout")}
@@ -166,6 +236,6 @@ export function Sidebar() {
         onConfirm={doLogout}
         onCancel={() => setConfirmOpen(false)}
       />
-    </aside>
+    </>
   );
 }

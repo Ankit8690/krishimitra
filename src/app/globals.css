@@ -415,6 +415,16 @@ body {
 }
 .force-mobile .km-nav-desktop { display: none !important; }
 .force-mobile .km-nav-mobile { display: flex !important; }
+/* Force-mobile emulation on a desktop: show the hamburger + hide sticky sidebar */
+.force-mobile .km-hamburger { display: grid !important; }
+.force-mobile .km-drawer,
+.force-mobile .km-drawer-backdrop { display: flex; }
+/* The drawer's Close button lives inside a shared body — hidden by default,
+ * shown inside the drawer only. */
+.km-drawer .km-drawer-close { display: grid !important; }
+/* Extra top-padding when the hamburger is visible so page content isn't
+ * covered by the floating button. */
+.force-mobile .km-page-wrapper { padding-top: 3.5rem !important; }
 
 /* FORCE DESKTOP — surface the sidebar + wide layout on a narrow screen */
 .force-desktop .km-sidebar { display: flex !important; }
