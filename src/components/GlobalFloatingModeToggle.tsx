@@ -12,5 +12,8 @@ export function GlobalFloatingModeToggle() {
   const pathname = usePathname() || "";
   if (pathname.startsWith("/admin")) return null;
   if (pathname === "/") return null;
+  // Dashboard has its own Settings page + sidebar — keeping a floating chip
+  // there clutters the top-right and collided with page CTAs (community "+").
+  if (pathname.startsWith("/dashboard")) return null;
   return <FloatingModeToggle />;
 }

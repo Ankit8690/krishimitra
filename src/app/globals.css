@@ -69,6 +69,75 @@
   color: var(--brand-mute);
 }
 
+/* Pastel-gradient card tiles use `from-<color>-50/100 … to-white` in light
+ * mode. In dark mode we swap in dark-equivalents so text stays readable and
+ * the tile still reads as the branded color. Also unifies `to-white` to
+ * blend into the surface. Uses --tw-gradient-from / -to overrides. */
+:root[data-theme="dark"] .to-white { --tw-gradient-to: var(--brand-surface) !important; }
+:root[data-theme="dark"] .via-white { --tw-gradient-via: var(--brand-surface) !important; }
+:root[data-theme="dark"] .from-white { --tw-gradient-from: var(--brand-surface) !important; }
+
+:root[data-theme="dark"] .from-sky-100    { --tw-gradient-from: rgb(12 74 110 / 0.55) !important; }
+:root[data-theme="dark"] .from-sky-50     { --tw-gradient-from: rgb(7 89 133 / 0.30) !important; }
+:root[data-theme="dark"] .via-sky-50      { --tw-gradient-via:  rgb(7 89 133 / 0.30) !important; }
+
+:root[data-theme="dark"] .from-emerald-100 { --tw-gradient-from: rgb(6 78 59 / 0.55) !important; }
+:root[data-theme="dark"] .from-emerald-50  { --tw-gradient-from: rgb(6 78 59 / 0.30) !important; }
+:root[data-theme="dark"] .via-emerald-50   { --tw-gradient-via:  rgb(6 78 59 / 0.30) !important; }
+:root[data-theme="dark"] .from-lime-100    { --tw-gradient-from: rgb(63 98 18 / 0.55) !important; }
+:root[data-theme="dark"] .from-teal-100    { --tw-gradient-from: rgb(19 78 74 / 0.55) !important; }
+:root[data-theme="dark"] .from-teal-50     { --tw-gradient-from: rgb(19 78 74 / 0.30) !important; }
+:root[data-theme="dark"] .via-teal-50      { --tw-gradient-via:  rgb(19 78 74 / 0.30) !important; }
+:root[data-theme="dark"] .via-lime-50      { --tw-gradient-via:  rgb(63 98 18 / 0.30) !important; }
+
+:root[data-theme="dark"] .from-amber-100  { --tw-gradient-from: rgb(120 53 15 / 0.55) !important; }
+:root[data-theme="dark"] .from-amber-50   { --tw-gradient-from: rgb(120 53 15 / 0.30) !important; }
+:root[data-theme="dark"] .via-amber-50    { --tw-gradient-via:  rgb(120 53 15 / 0.30) !important; }
+:root[data-theme="dark"] .from-yellow-50  { --tw-gradient-from: rgb(113 63 18 / 0.30) !important; }
+:root[data-theme="dark"] .via-yellow-50   { --tw-gradient-via:  rgb(113 63 18 / 0.30) !important; }
+
+:root[data-theme="dark"] .from-orange-100 { --tw-gradient-from: rgb(124 45 18 / 0.55) !important; }
+:root[data-theme="dark"] .from-orange-50  { --tw-gradient-from: rgb(124 45 18 / 0.30) !important; }
+:root[data-theme="dark"] .via-orange-50   { --tw-gradient-via:  rgb(124 45 18 / 0.30) !important; }
+
+:root[data-theme="dark"] .from-pink-100   { --tw-gradient-from: rgb(131 24 67 / 0.55) !important; }
+:root[data-theme="dark"] .from-pink-50    { --tw-gradient-from: rgb(131 24 67 / 0.30) !important; }
+:root[data-theme="dark"] .via-pink-50     { --tw-gradient-via:  rgb(131 24 67 / 0.30) !important; }
+:root[data-theme="dark"] .from-rose-50    { --tw-gradient-from: rgb(159 18 57 / 0.30) !important; }
+:root[data-theme="dark"] .via-rose-50     { --tw-gradient-via:  rgb(159 18 57 / 0.30) !important; }
+
+/* Card borders: soften bright brand-* borders to keep the branded outline */
+:root[data-theme="dark"] .border-sky-200,
+:root[data-theme="dark"] .border-emerald-200,
+:root[data-theme="dark"] .border-teal-200,
+:root[data-theme="dark"] .border-amber-200,
+:root[data-theme="dark"] .border-orange-200,
+:root[data-theme="dark"] .border-pink-200,
+:root[data-theme="dark"] .border-rose-200 {
+  border-color: var(--brand-line) !important;
+}
+
+/* Small "pill" chips: light-100 backgrounds → keep the branded hue but move
+ * the text to a lighter shade so it reads on dark surface variants. */
+:root[data-theme="dark"] .bg-emerald-100 { background-color: rgb(6 78 59 / 0.60) !important; }
+:root[data-theme="dark"] .bg-sky-100     { background-color: rgb(12 74 110 / 0.60) !important; }
+:root[data-theme="dark"] .bg-amber-100   { background-color: rgb(120 53 15 / 0.60) !important; }
+:root[data-theme="dark"] .bg-orange-100  { background-color: rgb(124 45 18 / 0.60) !important; }
+:root[data-theme="dark"] .bg-pink-100    { background-color: rgb(131 24 67 / 0.60) !important; }
+:root[data-theme="dark"] .bg-rose-100    { background-color: rgb(159 18 57 / 0.60) !important; }
+:root[data-theme="dark"] .bg-violet-100  { background-color: rgb(76 29 149 / 0.60) !important; }
+:root[data-theme="dark"] .bg-teal-100    { background-color: rgb(19 78 74 / 0.60) !important; }
+:root[data-theme="dark"] .text-emerald-700 { color: rgb(110 231 183) !important; }
+:root[data-theme="dark"] .text-sky-700     { color: rgb(125 211 252) !important; }
+:root[data-theme="dark"] .text-amber-700   { color: rgb(252 211 77) !important; }
+:root[data-theme="dark"] .text-orange-700  { color: rgb(253 186 116) !important; }
+:root[data-theme="dark"] .text-pink-700    { color: rgb(249 168 212) !important; }
+:root[data-theme="dark"] .text-rose-700    { color: rgb(253 164 175) !important; }
+:root[data-theme="dark"] .text-violet-700  { color: rgb(196 181 253) !important; }
+:root[data-theme="dark"] .text-teal-700    { color: rgb(94 234 212) !important; }
+
+/* Photo banner overlays already use pure black gradients — keep as-is */
+
 @theme inline {
   --color-background: var(--brand-bg);
   --color-foreground: var(--brand-ink);
