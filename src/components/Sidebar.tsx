@@ -105,15 +105,17 @@ export function Sidebar() {
   // Shared inner navigation body — rendered inside both the desktop aside and
   // the mobile off-canvas drawer. Uses flex-column with flex-1 nav so the
   // list scrolls internally on any viewport size; header + footer stay pinned.
+  // Mobile-drawer sizes are set to `km-drawer *` overrides in globals.css so
+  // desktop sidebar keeps its comfortable spacing.
   const body = (
     <>
-      <div className="px-4 py-4 flex items-center gap-2.5 border-b border-brand-line shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-brand-primary text-white grid place-items-center font-bold text-xl shadow-sm">
+      <div className="km-nav-head px-4 py-4 flex items-center gap-2.5 border-b border-brand-line shrink-0">
+        <div className="km-nav-logo w-10 h-10 rounded-xl bg-brand-primary text-white grid place-items-center font-bold text-xl shadow-sm">
           🌾
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-bold leading-tight truncate">{t("brand")}</p>
-          <p className="text-[11px] text-brand-mute leading-tight truncate">{t("tagline")}</p>
+          <p className="km-nav-brand font-bold leading-tight truncate">{t("brand")}</p>
+          <p className="km-nav-tagline text-[11px] text-brand-mute leading-tight truncate">{t("tagline")}</p>
         </div>
         {/* Close button — only visible in the mobile drawer */}
         <button
@@ -125,10 +127,10 @@ export function Sidebar() {
         </button>
       </div>
 
-      <nav className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 py-3 space-y-4">
+      <nav className="km-nav-body flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 py-3 space-y-4">
         {groups.map((g) => (
           <div key={g.label}>
-            <p className="px-3 mb-1 text-[10px] uppercase tracking-wider text-brand-mute font-bold">
+            <p className="km-nav-section px-3 mb-1 text-[10px] uppercase tracking-wider text-brand-mute font-bold">
               {g.label}
             </p>
             <ul className="space-y-0.5">
@@ -143,13 +145,13 @@ export function Sidebar() {
                       href={href}
                       onClick={() => setDrawerOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition min-h-[44px]",
+                        "km-nav-item flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition min-h-[44px]",
                         active
                           ? "bg-brand-primary/12 text-brand-primary font-bold shadow-sm"
                           : "text-brand-ink hover:bg-brand-line/40 font-medium"
                       )}
                     >
-                      <Icon className={cn("w-5 h-5 shrink-0", active && "stroke-[2.5]")} />
+                      <Icon className={cn("km-nav-icon w-5 h-5 shrink-0", active && "stroke-[2.5]")} />
                       <span className="truncate">{label}</span>
                     </Link>
                   </li>
@@ -160,7 +162,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-brand-line shrink-0">
+      <div className="km-nav-foot p-3 border-t border-brand-line shrink-0">
         {name && (
           <div className="px-2 py-2 flex items-center gap-2 min-w-0">
             <Link

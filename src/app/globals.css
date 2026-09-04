@@ -457,6 +457,52 @@ body {
 /* The drawer's Close button lives inside a shared body — hidden by default,
  * shown inside the drawer only. */
 .km-drawer .km-drawer-close { display: grid !important; }
+
+/* --- Mobile drawer compact styling (also applies on real small viewports) ---
+ * Desktop sidebar keeps its comfortable spacing; the drawer uses tighter
+ * sizes so the whole nav fits and the whole thing feels like part of a phone
+ * screen, not a shrunken desktop rail. */
+.km-drawer .km-nav-head { padding: 0.65rem 0.75rem !important; gap: 0.5rem !important; }
+.km-drawer .km-nav-logo { width: 2rem !important; height: 2rem !important; font-size: 1rem !important; border-radius: 0.5rem !important; }
+.km-drawer .km-nav-brand { font-size: 0.85rem !important; }
+.km-drawer .km-nav-tagline { font-size: 10px !important; }
+.km-drawer .km-drawer-close { width: 2rem !important; height: 2rem !important; }
+.km-drawer .km-drawer-close svg { width: 1rem !important; height: 1rem !important; }
+
+.km-drawer .km-nav-body { padding: 0.5rem 0.5rem !important; row-gap: 0.5rem !important; }
+.km-drawer .km-nav-body > div { margin-bottom: 0.5rem; }
+.km-drawer .km-nav-section {
+  font-size: 9px !important;
+  padding-inline: 0.75rem !important;
+  margin-bottom: 0.15rem !important;
+}
+.km-drawer .km-nav-item {
+  min-height: 36px !important;
+  padding: 0.4rem 0.65rem !important;
+  font-size: 0.8rem !important;
+  gap: 0.6rem !important;
+  border-radius: 0.5rem !important;
+}
+.km-drawer .km-nav-icon { width: 1rem !important; height: 1rem !important; }
+
+.km-drawer .km-nav-foot { padding: 0.5rem !important; }
+.km-drawer .km-nav-foot > div { padding: 0.35rem !important; }
+.km-drawer .km-nav-foot .rounded-full { width: 2rem !important; height: 2rem !important; }
+.km-drawer .km-nav-foot .rounded-full svg { width: 1rem !important; height: 1rem !important; }
+.km-drawer .km-nav-foot p { font-size: 0.8rem !important; }
+
+/* Visible thin scrollbar on the mobile drawer's nav list so it's obvious the
+ * list is scrollable */
+.km-drawer .km-nav-body::-webkit-scrollbar { width: 4px; }
+.km-drawer .km-nav-body::-webkit-scrollbar-thumb {
+  background: var(--brand-line);
+  border-radius: 4px;
+}
+.km-drawer .km-nav-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand-line) transparent;
+  -webkit-overflow-scrolling: touch;
+}
 /* Extra top-padding when the hamburger is visible so page content isn't
  * covered by the floating button. */
 .force-mobile .km-page-wrapper { padding-top: 3.5rem !important; }
