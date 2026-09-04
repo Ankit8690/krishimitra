@@ -127,6 +127,21 @@
 :root[data-theme="dark"] .bg-rose-100    { background-color: rgb(159 18 57 / 0.60) !important; }
 :root[data-theme="dark"] .bg-violet-100  { background-color: rgb(76 29 149 / 0.60) !important; }
 :root[data-theme="dark"] .bg-teal-100    { background-color: rgb(19 78 74 / 0.60) !important; }
+/* Selected chip backgrounds (bg-*-50) — same darken treatment so the
+ * dark-mode text (light brand-ink) stays readable against them. */
+:root[data-theme="dark"] .bg-emerald-50 { background-color: rgb(6 78 59 / 0.45) !important; }
+:root[data-theme="dark"] .bg-sky-50     { background-color: rgb(12 74 110 / 0.45) !important; }
+:root[data-theme="dark"] .bg-amber-50   { background-color: rgb(120 53 15 / 0.45) !important; }
+:root[data-theme="dark"] .bg-orange-50  { background-color: rgb(124 45 18 / 0.45) !important; }
+:root[data-theme="dark"] .bg-pink-50    { background-color: rgb(131 24 67 / 0.45) !important; }
+:root[data-theme="dark"] .bg-rose-50    { background-color: rgb(159 18 57 / 0.45) !important; }
+:root[data-theme="dark"] .bg-violet-50  { background-color: rgb(76 29 149 / 0.45) !important; }
+:root[data-theme="dark"] .bg-teal-50    { background-color: rgb(19 78 74 / 0.45) !important; }
+:root[data-theme="dark"] .bg-lime-50    { background-color: rgb(63 98 18 / 0.45) !important; }
+:root[data-theme="dark"] .bg-yellow-50  { background-color: rgb(113 63 18 / 0.45) !important; }
+:root[data-theme="dark"] .bg-red-50     { background-color: rgb(127 29 29 / 0.45) !important; }
+:root[data-theme="dark"] .bg-slate-50,
+:root[data-theme="dark"] .bg-slate-100  { background-color: var(--brand-line) !important; }
 :root[data-theme="dark"] .text-emerald-700 { color: rgb(110 231 183) !important; }
 :root[data-theme="dark"] .text-sky-700     { color: rgb(125 211 252) !important; }
 :root[data-theme="dark"] .text-amber-700   { color: rgb(252 211 77) !important; }
