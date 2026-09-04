@@ -138,6 +138,48 @@
 
 /* Photo banner overlays already use pure black gradients — keep as-is */
 
+/* --- Dark-mode legibility ---------------------------------------------
+ * Thin fonts feel washed out on dark surfaces. Bump the weight one step
+ * across common text-*, and give tiny "mute" text a heavier default so
+ * "Water availability", "Change email", nav labels, hints, and small
+ * captions stay legible on a dark ground. */
+:root[data-theme="dark"] body {
+  font-weight: 450; /* between normal (400) and medium (500) */
+}
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] span,
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] a,
+:root[data-theme="dark"] li,
+:root[data-theme="dark"] td,
+:root[data-theme="dark"] th,
+:root[data-theme="dark"] button,
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select {
+  font-weight: 500;
+}
+:root[data-theme="dark"] .text-brand-mute,
+:root[data-theme="dark"] .text-xs,
+:root[data-theme="dark"] .text-\[11px\],
+:root[data-theme="dark"] .text-\[10px\] {
+  font-weight: 600 !important;
+}
+/* Make brand-mute text one shade brighter in dark mode so 500-weight small
+ * caps still read comfortably. */
+:root[data-theme="dark"] .text-brand-mute { color: #b8c3b1 !important; }
+/* Body ink slightly brighter for maximum contrast on dark surfaces */
+:root[data-theme="dark"] { --brand-ink: #f5f8ef; }
+/* Buttons in ghost/secondary variants need heavier weight in dark */
+:root[data-theme="dark"] button { font-weight: 600; }
+/* Section titles / card titles → semibold on dark */
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4 {
+  font-weight: 700;
+}
+
 @theme inline {
   --color-background: var(--brand-bg);
   --color-foreground: var(--brand-ink);
