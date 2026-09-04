@@ -45,6 +45,12 @@ export default function OnboardingPage() {
       primaryCrops: [],
     },
   });
+  // "Write yourself" free-text fallbacks — kept in local state alongside the
+  // structured selectors so the user can override any list with a custom value.
+  const [customLoc, setCustomLoc] = useState(false);
+  const [customSoil, setCustomSoil] = useState("");
+  const [customIrrig, setCustomIrrig] = useState("");
+  const [customCrop, setCustomCrop] = useState("");
 
   function useGPS() {
     if (!navigator.geolocation) return;
@@ -116,43 +122,83 @@ export default function OnboardingPage() {
               <Button variant="secondary" onClick={useGPS} className="w-full">
                 <MapPin className="w-5 h-5" /> {t("onboarding.use_gps")}
               </Button>
-              <div>
-                <Label>{t("onboarding.state")}</Label>
-                <Combobox
-                  options={STATES}
-                  value={data.location.state || ""}
-                  onChange={(v) =>
-                    setData({
-                      ...data,
-                      location: { ...data.location, state: v, district: "" },
-                    })
-                  }
-                  placeholder={t("onboarding.state")}
-                />
-              </div>
-              <div>
-                <Label>{t("onboarding.district")}</Label>
-                <Combobox
-                  options={
-                    data.location.state
-                      ? ((DISTRICTS as Record<string, string[]>)[data.location.state] ?? [])
-                      : []
-                  }
-                  value={data.location.district || ""}
-                  onChange={(v) =>
-                    setData({
-                      ...data,
-                      location: { ...data.location, district: v },
-                    })
-                  }
-                  placeholder={
-                    data.location.state
-                      ? t("onboarding.district")
-                      : t("onboarding.state")
-                  }
-                  disabled={!data.location.state}
-                />
-              </div>
+              {!customLoc ? (
+                <>
+                  <div>
+                    <Label>{t("onboarding.state")}</Label>
+                    <Combobox
+                      options={STATES}
+                      value={data.location.state || ""}
+                      onChange={(v) =>
+                        setData({
+                          ...data,
+                          location: { ...data.location, state: v, district: "" },
+                        })
+                      }
+                      placeholder={t("onboarding.state")}
+                    />
+                  </div>
+                  <div>
+                    <Label>{t("onboarding.district")}</Label>
+                    <Combobox
+                      options={
+                        data.location.state
+                          ? ((DISTRICTS as Record<string, string[]>)[data.location.state] ?? [])
+                          : []
+                      }
+                      value={data.location.district || ""}
+                      onChange={(v) =>
+                        setData({
+                          ...data,
+                          location: { ...data.location, district: v },
+                        })
+                      }
+                      placeholder={
+                        data.location.state
+                          ? t("onboarding.district")
+                          : t("onboarding.state")
+                      }
+                      disabled={!data.location.state}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <Label>{t("onboarding.state")}</Label>
+                    <Input
+                      value={data.location.state || ""}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          location: { ...data.location, state: e.target.value },
+                        })
+                      }
+                      placeholder={t("common.custom_placeholder")}
+                    />
+                  </div>
+                  <div>
+                    <Label>{t("onboarding.district")}</Label>
+                    <Input
+                      value={data.location.district || ""}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          location: { ...data.location, district: e.target.value },
+                        })
+                      }
+                      placeholder={t("common.custom_placeholder")}
+                    />
+                  </div>
+                </>
+              )}
+              <button
+                type="button"
+                onClick={() => setCustomLoc((v) => !v)}
+                className="text-xs text-brand-primary font-semibold underline"
+              >
+                {customLoc ? "← Use list of states" : t("common.other_custom")}
+              </button>
               {data.location.lat && (
                 <p className="text-xs text-brand-mute">
                   📍 {data.location.lat.toFixed(3)}, {data.location.lon?.toFixed(3)}
@@ -214,12 +260,13 @@ export default function OnboardingPage() {
                     <button
                       key={i}
                       type="button"
-                      onClick={() =>
-                        setData({ ...data, farm: { ...data.farm, irrigation: i } })
-                      }
+                      onClick={() => {
+                        setData({ ...data, farm: { ...data.farm, irrigation: i } });
+                        setCustomIrrig("");
+                      }}
                       className={cn(
                         "h-12 rounded-xl border text-sm transition",
-                        data.farm.irrigation === i
+                        data.farm.irrigation === i && !customIrrig
                           ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold"
                           : "border-brand-line bg-white text-brand-ink"
                       )}
@@ -227,6 +274,25 @@ export default function OnboardingPage() {
                       {t(`irrigation.${i}`)}
                     </button>
                   ))}
+                </div>
+                <div className="mt-2 flex gap-2">
+                  <Input
+                    value={customIrrig}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setCustomIrrig(v);
+                      // Persist custom string as irrigation value (schema is strict:false)
+                      setData({
+                        ...data,
+                        farm: {
+                          ...data.farm,
+                          irrigation: (v || "unknown") as (typeof IRRIG)[number],
+                        },
+                      });
+                    }}
+                    placeholder={t("common.other_custom")}
+                    className={cn(customIrrig && "border-brand-primary")}
+                  />
                 </div>
               </div>
             </section>
@@ -242,12 +308,13 @@ export default function OnboardingPage() {
                   <button
                     key={s}
                     type="button"
-                    onClick={() =>
-                      setData({ ...data, farm: { ...data.farm, soilType: s } })
-                    }
+                    onClick={() => {
+                      setData({ ...data, farm: { ...data.farm, soilType: s } });
+                      setCustomSoil("");
+                    }}
                     className={cn(
                       "h-16 rounded-xl border text-sm transition",
-                      data.farm.soilType === s
+                      data.farm.soilType === s && !customSoil
                         ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold"
                         : "border-brand-line bg-white text-brand-ink"
                     )}
@@ -256,6 +323,22 @@ export default function OnboardingPage() {
                   </button>
                 ))}
               </div>
+              <Input
+                value={customSoil}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setCustomSoil(v);
+                  setData({
+                    ...data,
+                    farm: {
+                      ...data.farm,
+                      soilType: (v || "unknown") as (typeof SOILS)[number],
+                    },
+                  });
+                }}
+                placeholder={t("common.other_custom")}
+                className={cn(customSoil && "border-brand-primary")}
+              />
             </section>
           )}
 
@@ -266,24 +349,56 @@ export default function OnboardingPage() {
               </h2>
               <p className="text-sm text-brand-mute">{t("onboarding.crops_hint")}</p>
               <div className="flex flex-wrap gap-2">
-                {CROPS.map((c) => {
-                  const on = data.farm.primaryCrops.includes(c);
-                  return (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => toggleCrop(c)}
-                      className={cn(
-                        "px-4 h-10 rounded-full border text-sm transition",
-                        on
-                          ? "border-brand-primary bg-brand-primary text-white"
-                          : "border-brand-line bg-white text-brand-ink"
-                      )}
-                    >
-                      {c}
-                    </button>
-                  );
-                })}
+                {[...CROPS, ...data.farm.primaryCrops.filter((c) => !CROPS.includes(c))].map(
+                  (c) => {
+                    const on = data.farm.primaryCrops.includes(c);
+                    const custom = !CROPS.includes(c);
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => toggleCrop(c)}
+                        className={cn(
+                          "px-4 h-10 rounded-full border text-sm transition",
+                          on
+                            ? "border-brand-primary bg-brand-primary text-white"
+                            : "border-brand-line bg-white text-brand-ink",
+                          custom && on && "bg-brand-accent border-brand-accent"
+                        )}
+                      >
+                        {c}
+                        {custom && <span className="ml-1 opacity-70">·custom</span>}
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Input
+                  value={customCrop}
+                  onChange={(e) => setCustomCrop(e.target.value)}
+                  placeholder={t("common.other_custom")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && customCrop.trim()) {
+                      e.preventDefault();
+                      const v = customCrop.trim();
+                      if (!data.farm.primaryCrops.includes(v)) toggleCrop(v);
+                      setCustomCrop("");
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    const v = customCrop.trim();
+                    if (!v) return;
+                    if (!data.farm.primaryCrops.includes(v)) toggleCrop(v);
+                    setCustomCrop("");
+                  }}
+                >
+                  {t("common.add")}
+                </Button>
               </div>
             </section>
           )}

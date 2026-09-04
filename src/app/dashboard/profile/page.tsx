@@ -101,6 +101,7 @@ export default function ProfilePage() {
   }
 
   async function logout() {
+    if (!confirm(t("common.confirm_logout"))) return;
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
   }

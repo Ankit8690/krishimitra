@@ -3,16 +3,12 @@ import mongoose, { Schema, InferSchemaType, Model } from "mongoose";
 const FarmSchema = new Schema(
   {
     landSizeAcres: { type: Number, default: 0 },
-    soilType: {
-      type: String,
-      enum: ["black", "red", "sandy", "loamy", "clay", "alluvial", "unknown"],
-      default: "unknown",
-    },
-    irrigation: {
-      type: String,
-      enum: ["borewell", "canal", "rainfed", "drip", "sprinkler", "unknown"],
-      default: "unknown",
-    },
+    // Recommended values: black | red | sandy | loamy | clay | alluvial | unknown.
+    // Free-form string to allow farmer's own soil description.
+    soilType: { type: String, default: "unknown", maxlength: 60 },
+    // Recommended values: borewell | canal | rainfed | drip | sprinkler | unknown.
+    // Free-form string to allow farmer's own irrigation description.
+    irrigation: { type: String, default: "unknown", maxlength: 60 },
     primaryCrops: { type: [String], default: [] },
     // Map crop name → ISO date string of sowing. Powers today's task card.
     sowingDates: { type: Map, of: String, default: () => ({}) },

@@ -301,6 +301,10 @@
     "back": "Back",
     "delete": "Delete",
     "close": "Close",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "confirm_logout": "Log out of your account?",
+    "other_custom": "Other — write yourself",
+    "custom_placeholder": "Type your own…",
+    "add": "Add"
   }
 }

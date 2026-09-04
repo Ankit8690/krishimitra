@@ -45,13 +45,14 @@ export async function sendMail(opts: {
     return { sent: false, via: "console" };
   }
   try {
-    await t.sendMail({
+    const info = await t.sendMail({
       from: process.env.SMTP_FROM || `KrishiMitra <${process.env.SMTP_USER}>`,
       to: opts.to,
       subject: opts.subject,
       text: opts.text,
       html: opts.html,
     });
+    console.log(`[mailer] ✔ sent to ${opts.to} (id ${info.messageId})`);
     return { sent: true, via: "smtp" };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

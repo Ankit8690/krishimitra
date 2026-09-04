@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getSession } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
 import { User } from "@/models/User";
+import { logActivity } from "@/lib/activity";
 
 const Body = z.object({
   location: z.object({
@@ -13,26 +14,13 @@ const Body = z.object({
   }),
   farm: z.object({
     landSizeAcres: z.number().min(0).max(10000),
-    soilType: z.enum([
-      "black",
-      "red",
-      "sandy",
-      "loamy",
-      "clay",
-      "alluvial",
-      "unknown",
-    ]),
-    irrigation: z.enum([
-      "borewell",
-      "canal",
-      "rainfed",
-      "drip",
-      "sprinkler",
-      "unknown",
-    ]),
-    primaryCrops: z.array(z.string()).max(20),
+    // Free-form: recommended values still work but farmer can type their own
+    soilType: z.string().min(1).max(60),
+    irrigation: z.string().min(1).max(60),
+    primaryCrops: z.array(z.string().min(1).max(60)).max(20),
   }),
 });
+
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -56,5 +44,10 @@ export async function POST(req: Request) {
     { new: true }
   ).exec();
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+  logActivity(session.sub, "onboarding.completed", {
+    state: parsed.data.location.state,
+    district: parsed.data.location.district,
+    crops: parsed.data.farm.primaryCrops,
+  });
   return NextResponse.json({ ok: true });
 }
