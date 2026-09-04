@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
 import { User } from "@/models/User";
-import { fetchMandi, bestMarketsByCommodity } from "@/lib/mandi";
+import { fetchMandi, fetchMandiWithSource, bestMarketsByCommodity } from "@/lib/mandi";
 
 export async function GET(req: Request) {
   const session = await getSession();
@@ -39,13 +39,18 @@ export async function GET(req: Request) {
       return NextResponse.json({ records: best, mode });
     }
 
-    const records = await fetchMandi({
+    const result = await fetchMandiWithSource({
       state: filterState,
       district,
       commodity,
       limit: 500,
     });
-    return NextResponse.json({ records, mode });
+    return NextResponse.json({
+      records: result.records,
+      mode,
+      source: result.source,
+      asOf: result.asOf ?? null,
+    });
   } catch (err) {
     console.error("[mandi] error", err);
     const msg = err instanceof Error ? err.message : String(err);

@@ -1,4 +1,5 @@
 import { cacheGet, cacheSet } from "./cache";
+import SEED from "@/data/mandi-seed.json";
 
 // data.gov.in resource: Current Daily Price of Various Commodities from Various Markets
 const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
@@ -9,7 +10,7 @@ const BASE = "https://api.data.gov.in/resource";
 // down we can serve last-good data instead of returning an error.
 const FRESH_TTL_S = 60 * 60 * 2;
 const STALE_TTL_S = 60 * 60 * 24;
-const FETCH_TIMEOUT_MS = 8000;
+const FETCH_TIMEOUT_MS = 5000;
 
 export type MandiRecord = {
   state: string;
@@ -59,6 +60,19 @@ export type MandiFilters = {
   limit?: number;
 };
 
+export type MandiSource = "live" | "stale-cache" | "seed";
+export type MandiResult = { records: MandiRecord[]; source: MandiSource; asOf?: string };
+
+function seedRecords(filters: MandiFilters): MandiRecord[] {
+  const all = (SEED as { records: MandiRecord[] }).records;
+  const s = filters.state?.toLowerCase();
+  const c = filters.commodity?.toLowerCase();
+  return all
+    .filter((r) => !s || r.state.toLowerCase() === s)
+    .filter((r) => !c || r.commodity.toLowerCase() === c)
+    .slice(0, filters.limit ?? 500);
+}
+
 async function fetchOnce(url: string, timeoutMs: number): Promise<RawRecord[]> {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), timeoutMs);
@@ -72,9 +86,12 @@ async function fetchOnce(url: string, timeoutMs: number): Promise<RawRecord[]> {
   }
 }
 
-export async function fetchMandi(filters: MandiFilters = {}): Promise<MandiRecord[]> {
+export async function fetchMandiWithSource(filters: MandiFilters = {}): Promise<MandiResult> {
   const apiKey = process.env.DATA_GOV_IN_API_KEY;
-  if (!apiKey) throw new Error("DATA_GOV_IN_API_KEY is not set");
+  if (!apiKey) {
+    const records = seedRecords(filters);
+    return { records, source: "seed", asOf: (SEED as { asOf: string }).asOf };
+  }
 
   const params = new URLSearchParams();
   params.set("api-key", apiKey);
@@ -90,33 +107,43 @@ export async function fetchMandi(filters: MandiFilters = {}): Promise<MandiRecor
 
   // 1. Serve fresh cache
   const fresh = await cacheGet<MandiRecord[]>(cacheKey);
-  if (fresh) return fresh;
+  if (fresh) return { records: fresh, source: "live" };
 
-  // 2. Fetch upstream — try twice with 8s each
-  let lastErr: unknown = null;
-  for (let attempt = 0; attempt < 2; attempt++) {
+  // 2. Circuit-breaker: if we marked upstream as down in the last 60s, skip
+  // the fetch entirely and go straight to stale/seed. Saves the user a 5s
+  // wait per navigation while the government API is down.
+  const downFlag = await cacheGet<number>("mandi:upstream_down");
+  if (!downFlag) {
     try {
       const raw = await fetchOnce(url, FETCH_TIMEOUT_MS);
       const records = raw.map(normalize);
       await cacheSet(cacheKey, records, FRESH_TTL_S);
       await cacheSet(staleKey, records, STALE_TTL_S);
-      return records;
-    } catch (err) {
-      lastErr = err;
-      // On second attempt, don't retry — fall through to stale
+      return { records, source: "live" };
+    } catch {
+      // Trip the breaker — next request skips the fetch
+      await cacheSet("mandi:upstream_down", Date.now(), 60);
     }
   }
 
   // 3. Fallback: serve stale cache if we have one
   const stale = await cacheGet<MandiRecord[]>(staleKey);
-  if (stale) {
-    console.warn(`[mandi] upstream failed, serving stale (${stale.length} records)`);
-    return stale;
+  if (stale && stale.length > 0) {
+    console.warn(`[mandi] upstream down, serving stale (${stale.length} records)`);
+    return { records: stale, source: "stale-cache" };
   }
 
-  // 4. Give up
-  const msg = lastErr instanceof Error ? lastErr.message : String(lastErr);
-  throw new Error(`Mandi upstream unavailable: ${msg}`);
+  // 4. Last resort: bundled seed. Government API can be down for hours,
+  // but the app must still show something instead of an error page.
+  const records = seedRecords(filters);
+  console.warn(`[mandi] upstream + stale both empty, serving seed (${records.length} records)`);
+  return { records, source: "seed", asOf: (SEED as { asOf: string }).asOf };
+}
+
+// Legacy simple API — most callers only need the records array
+export async function fetchMandi(filters: MandiFilters = {}): Promise<MandiRecord[]> {
+  const r = await fetchMandiWithSource(filters);
+  return r.records;
 }
 
 // Aggregate: for each commodity, pick the market with the highest modal price.

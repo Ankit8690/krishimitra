@@ -28,6 +28,8 @@ type SortKey = "modalPrice" | "commodity" | "market";
 export default function PricesPage() {
   const { t, locale } = useI18n();
   const [records, setRecords] = useState<Record[] | null>(null);
+  const [source, setSource] = useState<"live" | "stale-cache" | "seed" | null>(null);
+  const [asOf, setAsOf] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [commodity, setCommodity] = useState<string>("");
   const [sortKey, setSortKey] = useState<SortKey>("modalPrice");
@@ -37,8 +39,11 @@ export default function PricesPage() {
     fetch("/api/mandi")
       .then((r) => r.json())
       .then((d) => {
-        if (d.records) setRecords(d.records);
-        else setError(d.error ?? "Failed to load prices");
+        if (d.records) {
+          setRecords(d.records);
+          setSource(d.source ?? null);
+          setAsOf(d.asOf ?? null);
+        } else setError(d.error ?? "Failed to load prices");
       })
       .catch(() => setError("Failed to load prices"));
   }, []);
@@ -89,6 +94,16 @@ export default function PricesPage() {
 
       {records && (
         <>
+          {source && source !== "live" && (
+            <div className="mb-3 rounded-xl px-3 py-2 text-xs bg-amber-100 text-amber-800 border border-amber-200 inline-flex items-center gap-2">
+              <span className="text-base leading-none">⚠️</span>
+              <span>
+                {source === "stale-cache"
+                  ? "data.gov.in is slow — showing cached prices from the last successful fetch."
+                  : `data.gov.in is down — showing historical sample prices${asOf ? ` (${asOf})` : ""}.`}
+              </span>
+            </div>
+          )}
           <div className="mb-3">
             <Combobox
               options={["", ...commodities]}

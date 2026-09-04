@@ -1,0 +1,52 @@
+{
+  "asOf": "2026-09-01",
+  "note": "Historical snapshot from data.gov.in Agmarknet. Served when the live API is unreachable.",
+  "records": [
+    { "state": "Punjab", "district": "Ludhiana", "market": "Khanna", "commodity": "Wheat", "variety": "Dara", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2280, "maxPrice": 2340, "modalPrice": 2320 },
+    { "state": "Punjab", "district": "Amritsar", "market": "Amritsar", "commodity": "Wheat", "variety": "Dara", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2260, "maxPrice": 2325, "modalPrice": 2300 },
+    { "state": "Punjab", "district": "Hoshiarpur", "market": "Tanda Urmur APMC", "commodity": "Potato", "variety": "Local", "grade": "Grade A", "arrivalDate": "01/09/2026", "minPrice": 1000, "maxPrice": 1200, "modalPrice": 1100 },
+    { "state": "Punjab", "district": "Jalandhar", "market": "Jalandhar", "commodity": "Rice", "variety": "PR-126", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2050, "maxPrice": 2180, "modalPrice": 2130 },
+    { "state": "Punjab", "district": "Bathinda", "market": "Bathinda", "commodity": "Cotton", "variety": "H-4", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 7200, "maxPrice": 7550, "modalPrice": 7400 },
+    { "state": "Punjab", "district": "Ludhiana", "market": "Ludhiana", "commodity": "Onion", "variety": "Onion", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4500, "maxPrice": 5800, "modalPrice": 5200 },
+    { "state": "Punjab", "district": "Ludhiana", "market": "Khanna", "commodity": "Tomato", "variety": "Local", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 3800, "maxPrice": 4600, "modalPrice": 4250 },
+
+    { "state": "Haryana", "district": "Karnal", "market": "Karnal", "commodity": "Wheat", "variety": "Dara", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2270, "maxPrice": 2335, "modalPrice": 2310 },
+    { "state": "Haryana", "district": "Karnal", "market": "Karnal", "commodity": "Rice", "variety": "1121 Basmati", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4200, "maxPrice": 4650, "modalPrice": 4500 },
+    { "state": "Haryana", "district": "Hisar", "market": "Hisar", "commodity": "Mustard", "variety": "Local", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 5350, "maxPrice": 5680, "modalPrice": 5525 },
+    { "state": "Haryana", "district": "Sonipat", "market": "Sonipat", "commodity": "Sugarcane", "variety": "General", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 355, "maxPrice": 380, "modalPrice": 370 },
+
+    { "state": "Uttar Pradesh", "district": "Lucknow", "market": "Lucknow", "commodity": "Wheat", "variety": "Dara", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2200, "maxPrice": 2290, "modalPrice": 2265 },
+    { "state": "Uttar Pradesh", "district": "Meerut", "market": "Meerut", "commodity": "Sugarcane", "variety": "General", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 355, "maxPrice": 380, "modalPrice": 370 },
+    { "state": "Uttar Pradesh", "district": "Agra", "market": "Agra", "commodity": "Potato", "variety": "Local", "grade": "Grade A", "arrivalDate": "01/09/2026", "minPrice": 900, "maxPrice": 1150, "modalPrice": 1050 },
+    { "state": "Uttar Pradesh", "district": "Varanasi", "market": "Varanasi", "commodity": "Onion", "variety": "Onion", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4200, "maxPrice": 5500, "modalPrice": 4900 },
+
+    { "state": "Rajasthan", "district": "Jaipur", "market": "Jaipur", "commodity": "Mustard", "variety": "Local", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 5300, "maxPrice": 5650, "modalPrice": 5480 },
+    { "state": "Rajasthan", "district": "Kota", "market": "Kota", "commodity": "Soybean", "variety": "Yellow", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4200, "maxPrice": 4550, "modalPrice": 4400 },
+    { "state": "Rajasthan", "district": "Sikar", "market": "Sikar", "commodity": "Groundnut", "variety": "Bold", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 5600, "maxPrice": 6050, "modalPrice": 5850 },
+
+    { "state": "Maharashtra", "district": "Pune", "market": "Pune", "commodity": "Onion", "variety": "Onion", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 3800, "maxPrice": 5100, "modalPrice": 4600 },
+    { "state": "Maharashtra", "district": "Nashik", "market": "Lasalgaon", "commodity": "Onion", "variety": "Red", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4000, "maxPrice": 5400, "modalPrice": 4850 },
+    { "state": "Maharashtra", "district": "Nagpur", "market": "Nagpur", "commodity": "Cotton", "variety": "Bunny", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 7100, "maxPrice": 7450, "modalPrice": 7300 },
+    { "state": "Maharashtra", "district": "Nagpur", "market": "Nagpur", "commodity": "Soybean", "variety": "Yellow", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4200, "maxPrice": 4600, "modalPrice": 4450 },
+
+    { "state": "Madhya Pradesh", "district": "Indore", "market": "Indore", "commodity": "Soybean", "variety": "Yellow", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 4180, "maxPrice": 4520, "modalPrice": 4380 },
+    { "state": "Madhya Pradesh", "district": "Bhopal", "market": "Bhopal", "commodity": "Wheat", "variety": "Sharbati", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2400, "maxPrice": 2700, "modalPrice": 2560 },
+    { "state": "Madhya Pradesh", "district": "Ujjain", "market": "Ujjain", "commodity": "Chickpea", "variety": "Desi", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 5450, "maxPrice": 5900, "modalPrice": 5700 },
+
+    { "state": "Gujarat", "district": "Rajkot", "market": "Rajkot", "commodity": "Groundnut", "variety": "Java", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 5700, "maxPrice": 6150, "modalPrice": 5950 },
+    { "state": "Gujarat", "district": "Ahmedabad", "market": "Ahmedabad", "commodity": "Cotton", "variety": "Shankar-6", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 7250, "maxPrice": 7580, "modalPrice": 7420 },
+
+    { "state": "Karnataka", "district": "Bengaluru", "market": "Yeshwanthpur", "commodity": "Tomato", "variety": "Hybrid", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 3500, "maxPrice": 4400, "modalPrice": 4000 },
+    { "state": "Karnataka", "district": "Mysuru", "market": "Mysuru", "commodity": "Rice", "variety": "Sona Masuri", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 3200, "maxPrice": 3600, "modalPrice": 3450 },
+
+    { "state": "Andhra Pradesh", "district": "Guntur", "market": "Guntur", "commodity": "Chili", "variety": "Teja", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 12500, "maxPrice": 15800, "modalPrice": 14000 },
+    { "state": "Tamil Nadu", "district": "Coimbatore", "market": "Coimbatore", "commodity": "Tomato", "variety": "Local", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 3600, "maxPrice": 4400, "modalPrice": 4000 },
+    { "state": "Tamil Nadu", "district": "Thanjavur", "market": "Thanjavur", "commodity": "Rice", "variety": "Ponni", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 3800, "maxPrice": 4200, "modalPrice": 4000 },
+
+    { "state": "West Bengal", "district": "Kolkata", "market": "Sealdah", "commodity": "Potato", "variety": "Jyoti", "grade": "Grade A", "arrivalDate": "01/09/2026", "minPrice": 950, "maxPrice": 1200, "modalPrice": 1080 },
+    { "state": "West Bengal", "district": "Bardhaman", "market": "Bardhaman", "commodity": "Rice", "variety": "Swarna", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2650, "maxPrice": 2900, "modalPrice": 2780 },
+
+    { "state": "Bihar", "district": "Patna", "market": "Patna", "commodity": "Wheat", "variety": "Dara", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2200, "maxPrice": 2320, "modalPrice": 2270 },
+    { "state": "Bihar", "district": "Muzaffarpur", "market": "Muzaffarpur", "commodity": "Maize", "variety": "Yellow", "grade": "FAQ", "arrivalDate": "01/09/2026", "minPrice": 2050, "maxPrice": 2250, "modalPrice": 2150 }
+  ]
+}
