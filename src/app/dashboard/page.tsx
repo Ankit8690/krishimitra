@@ -241,7 +241,7 @@ export default function DashboardHome() {
 
         {/* Schemes card — tappable */}
         <Link href="/dashboard/schemes" className="block">
-          <Card className="relative overflow-hidden bg-gradient-to-br from-brand-accent/15 to-white active:scale-[0.99] transition">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-indigo-100 via-violet-50 to-white border-indigo-200 active:scale-[0.99] transition">
             <div className="absolute top-0 right-0 text-8xl opacity-15 pointer-events-none select-none">
               🏛️
             </div>
