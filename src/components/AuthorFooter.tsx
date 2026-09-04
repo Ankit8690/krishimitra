@@ -28,18 +28,36 @@ function LinkedinIcon({ className }: { className?: string }) {
 export function AuthorFooter() {
   return (
     <footer className="mt-16 mb-6 pt-8 border-t border-brand-line">
-      {/* Personal quote */}
-      <div className="max-w-3xl mx-auto text-center mb-8 px-4">
-        <p className="text-lg md:text-xl font-semibold text-brand-ink leading-relaxed italic">
-          &ldquo;Technology serves best when it serves the hands that feed us.
-          Every farmer, in every village, deserves the same tools a Bengaluru
-          startup takes for granted — KrishiMitra is my small step toward
-          closing that gap.&rdquo;
-        </p>
-        <p className="mt-3 text-sm text-brand-mute">
-          — <span className="font-semibold text-brand-ink">Ankit Sharma</span>,
-          builder of KrishiMitra
-        </p>
+      {/* Personal quote — wrapped in a solid card so it stays readable over
+       * the dashboard backdrop image */}
+      <div className="max-w-3xl mx-auto mb-8 px-4">
+        <div className="relative rounded-2xl bg-brand-surface border border-brand-line shadow-md px-6 py-7 md:px-10 md:py-9 text-center">
+          <span
+            aria-hidden
+            className="absolute top-2 left-3 text-6xl font-serif text-brand-primary/30 leading-none select-none"
+          >
+            &ldquo;
+          </span>
+          <span
+            aria-hidden
+            className="absolute bottom-4 right-4 text-6xl font-serif text-brand-primary/30 leading-none select-none"
+          >
+            &rdquo;
+          </span>
+          <p className="relative text-lg md:text-xl font-bold text-brand-ink leading-relaxed">
+            Technology serves best when it serves the hands that feed us. Every
+            farmer, in every village, deserves the same tools a Bengaluru
+            startup takes for granted — KrishiMitra is my small step toward
+            closing that gap.
+          </p>
+          <div className="relative mt-4 flex items-center justify-center gap-2 pt-3 border-t border-brand-line/60">
+            <span className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-primary to-emerald-700 text-white grid place-items-center font-bold text-xs shadow-sm">
+              AS
+            </span>
+            <span className="font-bold text-brand-ink">Ankit Sharma</span>
+            <span className="text-brand-mute text-sm">· builder of KrishiMitra</span>
+          </div>
+        </div>
       </div>
 
       {/* Contact card */}
