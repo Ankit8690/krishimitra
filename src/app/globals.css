@@ -99,6 +99,20 @@
 :root[data-theme="dark"] .from-orange-100 { --tw-gradient-from: rgb(124 45 18 / 0.55) !important; }
 :root[data-theme="dark"] .from-orange-50  { --tw-gradient-from: rgb(124 45 18 / 0.30) !important; }
 :root[data-theme="dark"] .via-orange-50   { --tw-gradient-via:  rgb(124 45 18 / 0.30) !important; }
+:root[data-theme="dark"] .via-orange-100  { --tw-gradient-via:  rgb(124 45 18 / 0.40) !important; }
+
+/* Green (not emerald) — used in Best crop tile as `via-green-100` */
+:root[data-theme="dark"] .from-green-100  { --tw-gradient-from: rgb(20 83 45 / 0.55) !important; }
+:root[data-theme="dark"] .from-green-50   { --tw-gradient-from: rgb(20 83 45 / 0.30) !important; }
+:root[data-theme="dark"] .via-green-100   { --tw-gradient-via:  rgb(20 83 45 / 0.40) !important; }
+:root[data-theme="dark"] .via-green-50    { --tw-gradient-via:  rgb(20 83 45 / 0.30) !important; }
+
+/* Opacity variants like from-emerald-500/15 — Tailwind emits them as
+ * `rgb(...) / 0.15` which is fine on light but makes a bright halo in dark.
+ * Dampen them by pulling the gradient stop toward the surface tone. */
+:root[data-theme="dark"] .from-emerald-500\/15 { --tw-gradient-from: rgb(16 185 129 / 0.10) !important; }
+:root[data-theme="dark"] .from-amber-400\/20   { --tw-gradient-from: rgb(251 191 36 / 0.10) !important; }
+:root[data-theme="dark"] .from-brand-primary\/10 { --tw-gradient-from: rgb(78 163 84 / 0.10) !important; }
 
 :root[data-theme="dark"] .from-pink-100   { --tw-gradient-from: rgb(131 24 67 / 0.55) !important; }
 :root[data-theme="dark"] .from-pink-50    { --tw-gradient-from: rgb(131 24 67 / 0.30) !important; }
