@@ -26,6 +26,7 @@ import { weatherEmoji, weatherLabel } from "@/lib/weather";
 import { tCommodity, tWeather } from "@/lib/dictionaries";
 import { DailyQuote } from "@/components/DailyQuote";
 import { commodityIcon } from "@/lib/commodityIcons";
+import { DashboardBackdrop } from "@/components/DashboardBackdrop";
 
 type Me = {
   id: string;
@@ -108,7 +109,8 @@ export default function DashboardHome() {
   }
 
   return (
-    <div className="km-page-wrapper km-wide">
+    <div className="km-page-wrapper km-wide relative">
+      <DashboardBackdrop />
       <header className="flex items-center justify-between mb-6 lg:mb-8">
         <div>
           <p className="text-sm text-brand-mute lg:hidden">{t("brand")}</p>
