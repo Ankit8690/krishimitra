@@ -655,7 +655,7 @@ export default function AskPage() {
   const currentVoiceOk = hasVoiceForLang(currentLang.bcp47);
 
   return (
-    <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100vh-4rem)] relative">
+    <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100dvh-5rem)] lg:h-[calc(100dvh-2rem)] relative overflow-hidden">
       {showSessions && (
         <SessionsPanel
           sessions={sessions}

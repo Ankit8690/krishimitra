@@ -18,7 +18,7 @@ export function BottomNav() {
   const { t } = useI18n();
   const pathname = usePathname();
   return (
-    <nav className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-brand-line pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur border-t border-brand-line pb-safe shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
       <ul className="max-w-md mx-auto grid grid-cols-5">
         {TABS.map(({ href, icon: Icon, k }) => {
           const active =
