@@ -201,6 +201,20 @@
 :root[data-theme="dark"] .to-green-50   { --tw-gradient-to: rgb(20 83 45 / 0.30) !important; }
 :root[data-theme="dark"] .to-yellow-50  { --tw-gradient-to: rgb(113 63 18 / 0.30) !important; }
 
+/* Chat page: containment so long code blocks / URLs / preformatted text
+ * inside a message never push the whole chat wider than the viewport,
+ * which was clipping the mic and send buttons on real phones. */
+.km-chat-shell,
+.km-chat-shell * {
+  max-width: 100%;
+}
+.km-chat-shell pre,
+.km-chat-shell code {
+  overflow-x: auto;
+  word-break: break-word;
+}
+.km-chat-shell a { word-break: break-all; }
+
 /* Photo banner overlays already use pure black gradients — keep as-is */
 
 /* Dashboard-home backdrop: when the ambient farm image is mounted, drop

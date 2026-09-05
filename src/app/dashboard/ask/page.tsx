@@ -655,7 +655,7 @@ export default function AskPage() {
   const currentVoiceOk = hasVoiceForLang(currentLang.bcp47);
 
   return (
-    <div className="max-w-md mx-auto pt-4 flex flex-col h-[calc(100dvh-5rem)] lg:h-[calc(100dvh-2rem)] relative overflow-hidden">
+    <div className="w-full max-w-md mx-auto pt-4 flex flex-col h-[calc(100dvh-5rem)] lg:h-[calc(100dvh-2rem)] relative overflow-hidden km-chat-shell">
       {showSessions && (
         <SessionsPanel
           sessions={sessions}
@@ -991,7 +991,7 @@ export default function AskPage() {
           e.preventDefault();
           send(input);
         }}
-        className="border-t border-brand-line bg-brand-surface px-3 py-3 flex flex-col gap-2"
+        className="km-chat-form border-t border-brand-line bg-brand-surface px-2 sm:px-3 py-3 flex flex-col gap-2 w-full max-w-full overflow-hidden"
       >
         {pendingImage && (
           <div className="flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/30 rounded-lg p-2">
@@ -1021,7 +1021,7 @@ export default function AskPage() {
             </button>
           </div>
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 w-full">
         <input
           ref={imageInputRef}
           type="file"
@@ -1039,7 +1039,7 @@ export default function AskPage() {
           onClick={() => imageInputRef.current?.click()}
           disabled={sending || recording || transcribing}
           className={cn(
-            "w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
+            "w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full grid place-items-center transition",
             "bg-white border border-brand-line text-brand-primary",
             "hover:bg-brand-primary hover:text-white hover:border-brand-primary",
             "disabled:opacity-50 disabled:pointer-events-none"
@@ -1058,7 +1058,7 @@ export default function AskPage() {
           onClick={recording ? stopRecording : startRecording}
           disabled={transcribing || sending}
           className={cn(
-            "relative w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
+            "relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full grid place-items-center transition",
             recording
               ? "bg-brand-danger text-white"
               : transcribing
@@ -1098,7 +1098,7 @@ export default function AskPage() {
                 : t("dashboard.ask_placeholder")
           }
           disabled={recording || transcribing || sending}
-          className="flex-1 h-11 px-4 rounded-full bg-brand-bg border border-brand-line focus:outline-none focus:ring-2 focus:ring-brand-primary/40 text-sm"
+          className="flex-1 min-w-0 h-10 sm:h-11 px-3 sm:px-4 rounded-full bg-brand-bg border border-brand-line focus:outline-none focus:ring-2 focus:ring-brand-primary/40 text-sm"
         />
         <button
           type="submit"
@@ -1106,7 +1106,7 @@ export default function AskPage() {
             (!input.trim() && !pendingImage) || sending || recording || transcribing
           }
           className={cn(
-            "w-11 h-11 shrink-0 rounded-full grid place-items-center transition",
+            "w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full grid place-items-center transition",
             "bg-brand-primary text-white hover:bg-brand-primary-hover",
             "disabled:opacity-40 disabled:pointer-events-none"
           )}
