@@ -21,12 +21,22 @@ export function ViewModeProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
-  // Reflect on <html> so pure-CSS overrides work
+  // Reflect on <html> so pure-CSS overrides work. Only apply the FORCE
+  // classes when they would actually flip the layout — on a real narrow
+  // viewport `force-mobile` is redundant AND harmful (the 26rem centered
+  // frame gets a negative offset and pushes UI off-screen). Same reverse
+  // for `force-desktop` on a wide viewport.
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove("force-mobile", "force-desktop");
-    if (mode === "mobile") root.classList.add("force-mobile");
-    else if (mode === "desktop") root.classList.add("force-desktop");
+    const apply = () => {
+      root.classList.remove("force-mobile", "force-desktop");
+      const isNarrow = window.innerWidth < 1024;
+      if (mode === "mobile" && !isNarrow) root.classList.add("force-mobile");
+      else if (mode === "desktop" && isNarrow) root.classList.add("force-desktop");
+    };
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
   }, [mode]);
 
   const setMode = (m: ViewMode) => {

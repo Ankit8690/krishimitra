@@ -539,11 +539,13 @@ body {
   box-shadow: 0 0 0 100vmax rgb(15 23 42 / 0.35);
 }
 /* Emulated phone frame edges — every position:fixed element uses these
- * anchors instead of viewport 0/100% so it stays inside the mobile column. */
+ * anchors instead of viewport 0/100% so it stays inside the mobile column.
+ * `max(0px, …)` clamps the anchors: on a viewport narrower than 26rem the
+ * frame collapses to full width instead of going negative. */
 .force-mobile {
-  --frame-left: calc(50vw - 13rem);
-  --frame-right: calc(50vw - 13rem);
-  --frame-width: 26rem;
+  --frame-left: max(0px, calc(50vw - 13rem));
+  --frame-right: max(0px, calc(50vw - 13rem));
+  --frame-width: min(26rem, 100vw);
 }
 /* Floating toggle must sit relative to the viewport, not the narrow body */
 .force-mobile .km-floating-toggle {
